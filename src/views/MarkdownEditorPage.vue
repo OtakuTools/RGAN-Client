@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <MDEditor msg="This is a markdown editor"/>
+    <MDEditor />
   </div>
 </template>
 
