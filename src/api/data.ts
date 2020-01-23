@@ -6,3 +6,10 @@ export const test = () => {
     method: 'get'
   })
 }
+
+export const getBlogList = () => {
+  return axios.request({
+    url: 'api/blog',
+    method: 'get'
+  })
+}

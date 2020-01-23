@@ -40,7 +40,7 @@ import * as MD from 'markdown-it'
 import * as monaco from 'monaco-editor'
 import MonacoEditor from './MonacoEditor.vue'
 import mavonEditor from 'mavon-editor'
-import { test } from '@/api/data'
+import { getBlogList } from '@/api/data'
 
 @Component({
   components: {
@@ -74,12 +74,12 @@ export default class MDEditor extends Vue {
   }
 
   onSubmit() {
-    // test().then(res => {
-    //   console.log(res)
-    // }).catch(error => {
-    //   console.error(error)
-    // })
-    this.insertContent("# hello world")
+    getBlogList().then(res => {
+      console.log(res)
+    }).catch(error => {
+      console.error(error)
+    })
+    // this.insertContent("# hello world")
   }
 
   insertContent (text: string) {
