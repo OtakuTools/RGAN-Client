@@ -371,7 +371,7 @@ h1 {
 h2 {
     font-size: 1.75rem;
     line-height: 1.225;
-    margin: 35px 0 15px;
+    margin: 35px 0 15px 0;
     padding-bottom: 0.5em;
     border-bottom: 1px solid #ddd;
 }

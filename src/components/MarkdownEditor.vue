@@ -15,11 +15,20 @@
       <!-- <el-main>
         <mavon-editor style="height: 100%" v-model="blogInfo.blogContent"/>
       </el-main> -->
-      <el-aside id="test" width="50%" style="border: 1px solid #ccc; overflow: hidden;">
-        <MonacoEditor @on-content-change="handleCodeChange" :resize="onResize" style="height: calc(100vh - 85px)" />
-      </el-aside>
-      <el-main width="50%" style="border: 1px solid #ccc; overflow: hidden;">
-        <div v-html="blogMdText" style="height: calc(100vh - 85px)" v-highlight></div>
+      <el-main style="border: 1px solid #ccc; overflow: hidden; padding: 0;">
+        <el-row>
+          <el-col :span="12">
+            <MonacoEditor
+              ref="monacoEditor"
+              style="height: calc(100vh - 63px);"
+              @on-content-change="handleCodeChange"
+              @on-content-scroll="handleCodeScroll"
+            />
+          </el-col>
+          <el-col :span="12">
+            <div ref="display" v-html="blogMdText" style="height: calc(100vh - 63px); max-height: calc(100vh - 63px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;" v-highlight></div>
+          </el-col>
+        </el-row>
       </el-main>
     </el-container>
   </el-container>
@@ -55,22 +64,37 @@ export default class MDEditor extends Vue {
     this.blogMdText = this.MdEditor.render(this.blogInfo.blogContent)
   }
   
-  handleCodeChange(val) {
+  handleCodeChange(val: string) {
     this.blogInfo.blogContent = val
     this.MdTranslationFunc()
   }
 
+  handleCodeScroll(percentage: number) {
+    this.$refs.display.scrollTop = percentage * (this.$refs.display.scrollHeight - this.$refs.display.clientHeight)
+  }
+
   onSubmit() {
-    test().then(res => {
-      console.log(res)
-    }).catch(error => {
-      console.error(error)
-    })
+    // test().then(res => {
+    //   console.log(res)
+    // }).catch(error => {
+    //   console.error(error)
+    // })
+    this.insertContent("# hello world")
+  }
+
+  insertContent (text: string) {
+    if (this.$refs.monacoEditor.monacoEditor) {
+      let selection = this.$refs.monacoEditor.monacoEditor.getSelection()
+      let range = new monaco.Range(selection.startLineNumber, selection.startColumn, selection.endLineNumber, selection.endColumn)
+      let id = { major: 1, minor: 1 }
+      let op = { identifier: id, range: range, text: text, forceMoveMarkers: true}
+      this.$refs.monacoEditor.monacoEditor.executeEdits('', [op])
+      this.$refs.monacoEditor.monacoEditor.focus()
+    }
   }
 
   mounted () {
-    // this.MdEditor = new MD()
-    this.MdEditor = mavonEditor.markdownIt
+    this.MdEditor = new MD()
   }
 }
 </script>
@@ -78,4 +102,5 @@ export default class MDEditor extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import url('./../editor-styles/style-vue/vue.css');
+@import url('./../editor-styles/highlight/styles/github.css');
 </style>

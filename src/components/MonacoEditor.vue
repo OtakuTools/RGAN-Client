@@ -1,7 +1,5 @@
 <template>
-  <!-- <div id="test" class="monaco-container"> -->
-    <div id="test" ref="container"></div>
-  <!-- </div> -->
+  <div id="test" ref="container"></div>
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -18,7 +16,6 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 export default class MonacoEditor extends Vue {
   @Prop({ default: 'markdown', type: String }) language!: String;
   @Prop({ default: '', type: String }) codeInput!: String;
-  @Prop({ default: false, type: Boolean }) resize!: Boolean;
   
   monacoEditor = null
   code = this.codeInput
@@ -26,6 +23,7 @@ export default class MonacoEditor extends Vue {
   editorOptions = {
     selectOnLineNumbers: true,
     roundedSelection: false,
+    scrollBeyondLastLine: true,
     readOnly: false, // 只读
     cursorStyle: 'line', // 光标样式
     automaticLayout: true, // 自动布局
@@ -41,22 +39,35 @@ export default class MonacoEditor extends Vue {
     this.monacoEditor = monaco.editor.create(this.$refs.container, {
       value: this.code,
       language: this.language,
-      theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
+      // theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
       editorOptions: this.editorOptions // 同codes
     });
 
-    this.monacoEditor.onDidChangeModelContent(event => {
-      const value = this.monacoEditor.getValue()
-      if (this.codeInput !== value) {
+    if (this.monacoEditor) {
+      this.monacoEditor.onDidChangeModelContent(event => {
+        const value = this.monacoEditor.getValue()
         this.code = value
+        const count = this.monacoEditor.getModel().getLineCount() || 0;
+        this.monacoEditor.revealLine(count, 0);
         this.$emit('on-content-change', this.code)
-      }
-    })
+      })
+
+      this.monacoEditor.onDidScrollChange(event => {
+        let originHeight = this.$refs.container.clientHeight
+        this.$emit('on-content-scroll', event.scrollTop / ( event.scrollHeight - originHeight))
+      })
+    }
 
     this.erd = elementResizeDetectorMaker()
-    this.erd.listenTo(document.getElementById("test"), () => {
-      this.monacoEditor.layout()
-    })
+    if (this.erd) {
+      this.erd.listenTo(document.getElementById("test"), () => {
+        this.monacoEditor.layout()
+      })
+    }
+  }
+
+  destroy() {
+    this.monacoEditor.dispose()
   }
 }
 </script>
