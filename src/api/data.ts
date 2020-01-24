@@ -13,3 +13,18 @@ export const getBlogList = () => {
     method: 'get'
   })
 }
+
+export const addBlog = (data: Object) => {
+  return axios.request({
+    url: 'api/blog',
+    method: 'post',
+    data
+  })
+}
+
+export const getBlogById = (id: number) => {
+  return axios.request({
+    url: `api/blog/${id}`,
+    method: 'get'
+  })
+}

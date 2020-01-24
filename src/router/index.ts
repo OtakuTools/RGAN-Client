@@ -22,6 +22,11 @@ const routes = [
     path: '/editor',
     name: 'editor',
     component: () => import(/* webpackChunkName: "about" */ '../views/MarkdownEditorPage.vue')
+  },
+  {
+    path: '/blog',
+    name: 'blog',
+    component: () => import(/* webpackChunkName: "about" */ '../views/BlogViewerPage.vue')
   }
 ]
 

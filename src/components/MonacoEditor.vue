@@ -14,8 +14,8 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 
 @Component
 export default class MonacoEditor extends Vue {
-  @Prop({ default: 'markdown', type: String }) language!: String;
-  @Prop({ default: '', type: String }) codeInput!: String;
+  @Prop({ default: 'markdown', type: String }) language!: string;
+  @Prop({ default: '', type: String }) codeInput!: string;
   
   monacoEditor = null
   code = this.codeInput
