@@ -1,15 +1,22 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header style="padding: 0">
       <!-- 标题 -->
-      <el-form :inline="true" ref="blogInfo" :model="blogInfo" label-width="80px">
-        <el-form-item label="博客标题">
-          <el-input v-model="blogInfo.title" placeholder="请输入标题..."></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        </el-form-item>
-      </el-form>
+      <!-- <el-row>
+        <el-form :inline="true" ref="blogInfo" :model="blogInfo" label-width="80px">
+          <el-form-item label="博客标题">
+            <el-input v-model="blogInfo.title" placeholder="请输入标题..."></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row> -->
+      <div>
+        <span style="width: 100px; text-align: left">博客标题</span>
+        <el-input placeholder="请输入标题" v-model="blogInfo.title" style="margin: 0 10px; width: calc(100% - 180px)"></el-input>
+        <el-button type="primary" @click="onSubmit" style="width: 100px">发布博客</el-button>
+      </div>
     </el-header>
     <el-container>
       <!-- <el-main>
