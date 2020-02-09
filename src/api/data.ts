@@ -9,14 +9,14 @@ export const test = () => {
 
 export const getBlogList = () => {
   return axios.request({
-    url: 'api/blog',
+    url: '/api/blogs',
     method: 'get'
   })
 }
 
 export const addBlog = (data: Object) => {
   return axios.request({
-    url: 'api/blog',
+    url: '/api/blogs',
     method: 'post',
     data
   })
@@ -24,7 +24,7 @@ export const addBlog = (data: Object) => {
 
 export const getBlogById = (id: number) => {
   return axios.request({
-    url: `api/blog/${id}`,
+    url: `api/blogs/${id}`,
     method: 'get'
   })
 }

@@ -52,7 +52,8 @@ import { addBlog } from '@/api/data'
 export default class MDEditor extends Vue {
   blogInfo = {
     title: '',
-    content: ''
+    content: '',
+    tags: ["a", "b"]
   }
 
   MdEditor = null
@@ -71,7 +72,7 @@ export default class MDEditor extends Vue {
     addBlog(this.blogInfo).then(res => {
       console.log(res)
     }).catch(error => {
-      console.error(error)
+      this.$message.error('提交博客失败')
     })
   }
 

@@ -11,7 +11,6 @@ axiosRetry(axios, {
   },
   // 重传间隔
   retryDelay: (retryCount) => {
-    console.log(retryCount)
     return 1000;
   }
 });

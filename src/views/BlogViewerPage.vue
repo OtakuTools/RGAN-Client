@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      test: "# hello world"
+      test: ""
     }
   },
   mounted () {
