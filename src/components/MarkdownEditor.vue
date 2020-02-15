@@ -1,40 +1,26 @@
 <template>
-  <el-container>
+  <el-container style="padding: 10px 10px 0 10px;">
     <el-header style="padding: 0">
       <!-- 标题 -->
-      <!-- <el-row>
-        <el-form :inline="true" ref="blogInfo" :model="blogInfo" label-width="80px">
-          <el-form-item label="博客标题">
-            <el-input v-model="blogInfo.title" placeholder="请输入标题..."></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          </el-form-item>
-        </el-form>
-      </el-row> -->
       <div>
         <span style="width: 100px; text-align: left">博客标题</span>
         <el-input placeholder="请输入标题" v-model="blogInfo.title" style="margin: 0 10px; width: calc(100% - 180px)"></el-input>
         <el-button type="primary" @click="onSubmit" style="width: 100px">发布博客</el-button>
       </div>
     </el-header>
-    <el-container>
-      <!-- <el-main>
-        <mavon-editor style="height: 100%" v-model="blogInfo.content"/>
-      </el-main> -->
+    <el-container style="padding-bottom: 0px;">
       <el-main style="border: 1px solid #ccc; overflow: hidden; padding: 0;">
         <el-row>
           <el-col :span="12">
             <MonacoEditor
               ref="monacoEditor"
-              style="height: calc(100vh - 63px);"
+              style="height: calc(100vh - 73px);"
               @on-content-change="handleCodeChange"
               @on-content-scroll="handleCodeScroll"
             />
           </el-col>
           <el-col :span="12">
-            <!-- <div ref="display" v-html="blogMdText" style="height: calc(100vh - 63px); max-height: calc(100vh - 63px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;" v-highlight></div> -->
-            <MarkdownViewer ref="markdownViewer" :inputText="blogInfo.content" style="height: calc(100vh - 63px); max-height: calc(100vh - 63px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;"></MarkdownViewer>
+            <MarkdownViewer ref="markdownViewer" :inputText="blogInfo.content" style="height: calc(100vh - 73px); max-height: calc(100vh - 73px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;"></MarkdownViewer>
           </el-col>
         </el-row>
       </el-main>

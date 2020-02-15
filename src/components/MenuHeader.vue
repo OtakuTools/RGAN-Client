@@ -12,14 +12,14 @@
       <el-button @click="() => { this.$router.push('/editor'); }">写博客</el-button>
     </el-col>
     <el-col :span="4">
-      <div v-if="true">
+      <div v-if="$store.state.currentUser.name !== ''">
         <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
         <div class="user-box">
-          <span>username</span>
+          <span>{{$store.state.currentUser.name}}</span>
         </div>
       </div>
       <div v-else>
-        <el-button>登录/注册</el-button>
+        <el-button @click="Login">登录/注册</el-button>
       </div>
     </el-col>
   </el-row>
@@ -58,6 +58,10 @@ export default class MenuHeader extends Vue {
     return {
       searchValue: ""
     }
+  }
+
+  Login() {
+    this.$router.push('/login')
   }
 }
 </script>

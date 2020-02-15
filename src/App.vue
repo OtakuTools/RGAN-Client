@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header style="padding: 0; z-index: 100;">
+      <el-header v-if="$route.name !== 'editor' && $route.name !== 'login'" style="padding: 0; z-index: 100;">
         <MenuHeader class="menu-style" />
       </el-header>
-      <el-main>
+      <el-main style="padding: 0">
         <router-view></router-view>
       </el-main>
     </el-container>
