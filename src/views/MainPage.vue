@@ -23,23 +23,23 @@
             <el-main style="padding: 0;">
               <el-row>
                 <el-col :span="24">
-                  <span style="font-weight: bold; font-size: 14pt;">{{blog.title}}</span>
+                  <span style="font-weight: bold; font-size: 14pt;" @click="$router.push({ name: 'blog', params: { id: blog.id }})">{{blog.title}}</span>
                 </el-col>
               </el-row>
               <el-row style="margin: 5px 0 10px 0;">
                 <el-col :span="24">
-                  <span style="color: #ccc; font-size: 10pt;">{{blog.content}}</span>
+                  <span style="color: #ccc; font-size: 10pt;">{{ blog.content }}</span>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="15">
                   <el-tag
                     v-for="tag in blog.tags"
-                    :key="tag"
+                    :key="tag.id"
                     type="normal"
                     size="mini"
                     style="margin-right: 3px;">
-                    {{ tag }}
+                    {{ tag.title }}
                   </el-tag>
                 </el-col>
                 <el-col :span="5">
@@ -76,7 +76,7 @@ export default {
   },
   mounted () {
     getBlogList().then(res => {
-      this.blogList = res.data.data || [{
+      this.blogList = res.data || [{
         id: 0,
         title: "测试",
         content: "这是测试博客",

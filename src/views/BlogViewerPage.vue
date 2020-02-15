@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted () {
-    getBlogById(1).then(res => {
+    getBlogById(this.$route.params.id).then(res => {
       this.test = res.data.content
     })
   }
