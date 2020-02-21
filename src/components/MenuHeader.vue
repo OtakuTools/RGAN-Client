@@ -12,10 +12,10 @@
       <el-button @click="() => { this.$router.push('/editor'); }">写博客</el-button>
     </el-col>
     <el-col :span="4">
-      <div v-if="$store.state.currentUser.name !== ''">
+      <div v-if="$store.state.user.name !== ''">
         <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
         <div class="user-box">
-          <span>{{$store.state.currentUser.name}}</span>
+          <span>{{$store.state.user.name}}</span>
         </div>
       </div>
       <div v-else>

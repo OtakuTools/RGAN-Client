@@ -9,12 +9,8 @@
           <el-form-item label="密码">
             <el-input type="password" v-model="userInfo.password"></el-input>
           </el-form-item>
-          <el-form-item label="">
-            <el-checkbox v-model="userInfo.rememberMe">记住我</el-checkbox>
-          </el-form-item>
           <el-form-item>
-            <el-button style="width: 100%" type="primary" @click="onSubmit" :loading="loading">登 录</el-button>
-            <el-button style="float: right" type="text" @click="$router.push({ name: 'regist' })">没有账号？去注册</el-button>
+            <el-button style="width: 100%" type="primary" @click="onSubmit" :loading="loading">注 册</el-button>
           </el-form-item>
         </el-form>
       </el-main>
@@ -38,8 +34,9 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { regist } from '@/api/user'
 export default {
-  name: 'LoginPage',
+  name: 'RegistPage',
   components: {
     
   },
@@ -47,8 +44,7 @@ export default {
     return {
       userInfo: {
         username: '',
-        password: '',
-        rememberMe: false
+        password: ''
       },
       loading: false
     }
@@ -56,9 +52,9 @@ export default {
   methods: {
     onSubmit () {
       this.loading = true
-      this.$store.dispatch('handleLogin', this.userInfo).then(res => {
+      regist(this.userInfo).then(res => {
         this.loading = false
-        this.$router.push('/')
+        this.$router.push({ name: 'login' })
       }).catch(err => {
         this.loading = false
         this.$message({
