@@ -4,26 +4,31 @@
       <el-main>
         <el-row v-for="blog in blogList" v-bind:key="blog.id">
           <el-container>
-            <el-aside width="50" style="text-align: center; border-right: 1px solid #ccc; padding-right: 10px; margin-right: 10px;">
-              <el-row>
-                <el-col :span="24" style="border-bottom: 1px solid #ccc; margin-bottom: 6px; padding-bottom: 6px;">
-                  <span>{{blog.vote}}</span>
-                  <br/>
-                  <span>Votes</span>
+            <el-aside style="width: 50px; text-align: center; border-right: 1px solid #ccc; margin-right: 10px;">
+              <el-row style="height: calc(50% - 1px)">
+                <el-col :span="24" style="height:100%;">
+                  <div style="height: 40px;" class="view-vote-style">
+                    <span>{{blog.vote}}</span>
+                    <br/>
+                    <span>Votes</span>
+                  </div>
                 </el-col>
               </el-row>
-              <el-row>
-                <el-col :span="24">
-                  <span>{{blog.views}}</span>
-                  <br/>
-                  <span>Views</span>
+              <div style="width: 100%; height: 1px; background-color:#ccc; margin: 0"></div>
+              <el-row style="height: calc(50% - 1px);">
+                <el-col :span="24" style="height:100%;">
+                  <div style="height: 40px;" class="view-vote-style">
+                    <span>{{blog.views}}</span>
+                    <br/>
+                    <span>Views</span>
+                  </div>
                 </el-col>
               </el-row>
             </el-aside>
-            <el-main style="padding: 0;">
+            <el-main style="padding: 15px 0px;">
               <el-row>
                 <el-col :span="24">
-                  <span style="font-weight: bold; font-size: 14pt;" @click="$router.push({ name: 'blog', params: { id: blog.id }})">{{blog.title}}</span>
+                  <span style="font-weight: bold; font-size: 14pt;" class="blog-title" @click="$router.push({ name: 'blog', params: { id: blog.id }})">{{blog.title}}</span>
                 </el-col>
               </el-row>
               <el-row style="margin: 5px 0 10px 0;">
@@ -51,12 +56,30 @@
               </el-row>
             </el-main>
           </el-container>
-          <el-divider></el-divider>
+          <div style="width: 100%; height: 1px; background-color:#ccc; margin: 0"></div>
         </el-row>
       </el-main>
     </el-container>
   </div>
 </template>
+
+<style scoped>
+.view-vote-style {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.blog-title:hover {
+  color: #F56C6C;
+  cursor: pointer;
+}
+</style>
 
 <script>
 // @ is an alias to /src
@@ -76,25 +99,20 @@ export default {
   },
   mounted () {
     getBlogList().then(res => {
-      this.blogList = res.data || [{
-        id: 0,
-        title: "测试",
-        content: "这是测试博客",
-        tags: ["javascript", "test", "JAVA", "测试"],
-        date: "2020-02-02 02:02",
-        author: "admin",
-        views: 20,
-        vote: 10
-      },{
-        id: 1,
-        title: "测试1",
-        content: "这是测试博客1",
-        tags: ["javascript", "test", "JAVA", "测试"],
-        date: "2020-02-02 02:02",
-        author: "admin",
-        views: 20,
-        vote: 10
-      }]
+      this.blogList = res.data.map(item => {
+        let dataFormat = {
+          id: 0,
+          title: "",
+          content: "",
+          tags: [],
+          date: "2020-02-02 02:02",
+          author: "admin",
+          views: 0,
+          vote: 0
+        }
+        Object.assign(dataFormat, item)
+        return dataFormat
+      })
     }).catch(err => {
       this.$message.error('获取博客列表失败')
     })
