@@ -18,10 +18,10 @@ export default {
       state.avatarImgPath = avatarPath
     },
     setUserId (state : any, id : any) {
-      state.userId = id
+      state.id = id
     },
     setUserName (state : any, name : any) {
-      state.userName = name
+      state.name = name
     },
     setAccess (state : any, access : any) {
       state.access = access
@@ -47,7 +47,9 @@ export default {
           rememberMe
         }).then(res => {
           const data = res.data
-          commit('setToken', data.token)
+          commit('setUserId', data.id)
+          commit('setUserName', data.username)
+          commit('setToken', data.username)
           resolve()
         }).catch(err => {
           reject(err)
@@ -72,10 +74,11 @@ export default {
         try {
           getUserInfo(state.token).then(res => {
             const data = res.data
-            commit('setAvatar', data.avatar)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
+            // commit('setAvatar', data.avatar)
+            commit('setUserName', data.username)
+            commit('setUserId', data.id)
+            commit('setToken', data.username)
+            // commit('setAccess', data.access)
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

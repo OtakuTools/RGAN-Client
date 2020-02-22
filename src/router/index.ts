@@ -25,7 +25,7 @@ const turnTo = (to : any, access : any, next : any) => {
 const token = ""
 
 // router.beforeEach((to, from, next) => {
-//   // const token = getToken()
+//   const token = store.state.user.token
 //   if (!token && to.name !== LOGIN_PAGE_NAME) {
 //     // 未登录且要跳转的页面不是登录页
 //     next({
