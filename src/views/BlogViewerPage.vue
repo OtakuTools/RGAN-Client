@@ -1,7 +1,21 @@
 <template>
-  <div class="home">
-    <MarkdownViewer :inputText="test" style="height: 100vh; width: 100vw"/>
-  </div>
+  <el-container>
+    <el-main>
+      <div style="width: 85%; margin: 0 auto;">
+        <h1>{{blogInfo.title}}</h1>
+        <el-tag
+          v-for="tag in blogInfo.tags"
+          :key="tag.id"
+          type="normal"
+          size="mini"
+          style="margin-right: 3px;">
+          {{ tag.title }}
+        </el-tag>
+        <el-divider />
+        <MarkdownViewer :inputText="blogInfo.content"/>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -16,12 +30,14 @@ export default {
   },
   data() {
     return {
-      test: ""
+      blogInfo: ""
     }
   },
   mounted () {
-    getBlogById(this.$route.params.id).then(res => {
-      this.test = res.data.content
+    getBlogById(this.$route.query.id).then(res => {
+      this.blogInfo = res.data
+    }).catch(err => {
+      this.$message.error("获取博客信息失败")
     })
   }
 }

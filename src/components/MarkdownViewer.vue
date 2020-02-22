@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div ref="display" v-html="blogMdText" v-highlight></div>
-  </div>
+  <div ref="display" v-html="blogMdText" v-highlight></div>
 </template>
 
 <script lang="ts">

@@ -8,7 +8,7 @@
               <el-row style="height: calc(50% - 1px)">
                 <el-col :span="24" style="height:100%;">
                   <div style="height: 40px;" class="view-vote-style">
-                    <span>{{blog.vote}}</span>
+                    <span>{{blog.upvoteCount}}</span>
                     <br/>
                     <span>Votes</span>
                   </div>
@@ -18,7 +18,7 @@
               <el-row style="height: calc(50% - 1px);">
                 <el-col :span="24" style="height:100%;">
                   <div style="height: 40px;" class="view-vote-style">
-                    <span>{{blog.views}}</span>
+                    <span>{{blog.visitorCount}}</span>
                     <br/>
                     <span>Views</span>
                   </div>
@@ -28,7 +28,7 @@
             <el-main style="padding: 15px 0px;">
               <el-row>
                 <el-col :span="24">
-                  <span style="font-weight: bold; font-size: 14pt;" class="blog-title" @click="$router.push({ name: 'blog', params: { id: blog.id }})">{{blog.title}}</span>
+                  <span style="font-weight: bold; font-size: 14pt;" class="blog-title" @click="$router.push({ name: 'blog', query: { id: blog.id }})">{{blog.title}}</span>
                 </el-col>
               </el-row>
               <el-row style="margin: 5px 0 10px 0;">
@@ -107,8 +107,8 @@ export default {
           tags: [],
           date: "2020-02-02 02:02",
           author: "admin",
-          views: 0,
-          vote: 0
+          upvoteCount: 0,
+          visitorCount: 0
         }
         Object.assign(dataFormat, item)
         return dataFormat
