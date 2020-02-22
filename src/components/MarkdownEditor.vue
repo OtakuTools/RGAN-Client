@@ -79,7 +79,8 @@ export default class MDEditor extends Vue {
   blogInfo = {
     title: '',
     content: '',
-    tags: []
+    tags: [],
+    type: 'original'
   }
 
   submitFormVisible = false
