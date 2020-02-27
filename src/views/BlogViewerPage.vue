@@ -1,7 +1,7 @@
 <template>
-  <el-container>
-    <el-main>
-      <div style="width: 85%; margin: 0 auto;">
+  <el-container style="margin: 60px auto; width: 85%;">
+    <el-main style="padding: 0">
+      <div>
         <h1>{{blogInfo.title}}</h1>
         <el-tag
           v-for="tag in blogInfo.tags"

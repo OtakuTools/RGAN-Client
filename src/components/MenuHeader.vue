@@ -12,7 +12,7 @@
       <el-button @click="() => { this.$router.push('/editor'); }">写博客</el-button>
     </el-col>
     <el-col :span="4">
-      <div v-if="$store.state.user.name !== ''">
+      <div v-if="$store.state.user.name !== ''" @click="UserInfo" class="logined-user">
         <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
         <div class="user-box">
           <span>{{$store.state.user.name}}</span>
@@ -47,6 +47,9 @@
   -o-transform: translate(0%, -50%);
   transform: translate(0%, -50%);
 }
+.logined-user {
+  cursor: pointer;
+}
 </style>
 
 <script lang="ts">
@@ -60,8 +63,12 @@ export default class MenuHeader extends Vue {
     }
   }
 
-  Login() {
+  Login () {
     this.$router.push('/login')
+  }
+
+  UserInfo () {
+    this.$router.push('/userinfo')
   }
 }
 </script>

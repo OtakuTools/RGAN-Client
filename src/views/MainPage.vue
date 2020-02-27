@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <el-container style="margin: 0 auto; width: 85%;">
-      <el-main>
+    <el-container style="margin: 60px auto; width: 85%;">
+      <el-main style="padding: 0">
         <el-row v-for="blog in blogList" v-bind:key="blog.id">
           <el-container>
             <el-aside style="width: 50px; text-align: center; border-right: 1px solid #ccc; margin-right: 10px;">
@@ -33,7 +33,7 @@
               </el-row>
               <el-row style="margin: 5px 0 10px 0;">
                 <el-col :span="24">
-                  <span style="color: #ccc; font-size: 10pt;">{{ blog.content }}</span>
+                  <span style="color: #ccc; font-size: 10pt;">{{ blog.content.substr(0, 50) }}</span>
                 </el-col>
               </el-row>
               <el-row>
@@ -93,7 +93,6 @@ export default {
   },
   data() {
     return {
-      test: "",
       blogList: []
     }
   },

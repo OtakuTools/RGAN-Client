@@ -23,6 +23,11 @@ export default [
     path: '/regist',
     name: 'regist',
     component: () => import('../views/Regist.vue')
+  },
+  {
+    path: '/userinfo',
+    name: 'userinfo',
+    component: () => import('../views/UserInfo.vue')
   }
 ]
 
