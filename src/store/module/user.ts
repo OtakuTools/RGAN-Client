@@ -3,12 +3,13 @@ import {
   logout,
   getUserInfo,
 } from '@/api/user'
+import { setToken, getToken } from '@/libs/util'
 
 export default {
   state: {
     id : '',
     name: '',
-    token: '',
+    token: getToken(),
     avatarImgPath: '',
     access: '',
     hasGetInfo: false,
@@ -28,6 +29,7 @@ export default {
     },
     setToken (state : any, token : any) {
       state.token = token
+      setToken(token)
     },
     setHasGetInfo (state : any, status : any) {
       state.hasGetInfo = status
@@ -49,7 +51,7 @@ export default {
           const data = res.data
           commit('setUserId', data.id)
           commit('setUserName', data.username)
-          commit('setToken', data.username)
+          commit('setToken', data.id)
           resolve()
         }).catch(err => {
           reject(err)
@@ -77,7 +79,7 @@ export default {
             // commit('setAvatar', data.avatar)
             commit('setUserName', data.username)
             commit('setUserId', data.id)
-            commit('setToken', data.username)
+            commit('setToken', data.id)
             // commit('setAccess', data.access)
             commit('setHasGetInfo', true)
             resolve(data)

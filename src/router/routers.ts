@@ -28,6 +28,11 @@ export default [
     path: '/userinfo',
     name: 'userinfo',
     component: () => import('../views/UserInfo.vue')
+  },
+  {
+    path: '/verification/:mode/:action',
+    name: 'verification',
+    component: () => import('../views/VerificationPage.vue')
   }
 ]
 

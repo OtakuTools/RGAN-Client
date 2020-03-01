@@ -24,7 +24,7 @@ export const addBlog = (data: Object) => {
 
 export const getBlogById = (id: number) => {
   return axios.request({
-    url: `api/blogs/${id}`,
+    url: `/api/blogs/${id}`,
     method: 'get'
   })
 }

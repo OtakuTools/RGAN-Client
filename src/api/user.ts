@@ -2,7 +2,7 @@ import { axios } from './request'
 
 export const login = (data : Object) => {
   return axios.request({
-    url: 'api/login',
+    url: '/api/login',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export const login = (data : Object) => {
 
 export const regist = (data: Object) => {
   return axios.request({
-    url: 'api/register',
+    url: '/api/register',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export const regist = (data: Object) => {
 
 export const logout = (token: string) => {
   return axios.request({
-    url: 'api/logout',
+    url: '/api/logout',
     method: 'post',
     data: {
       token
@@ -26,9 +26,9 @@ export const logout = (token: string) => {
   })
 }
 
-export const getUserInfo = (id: number) => {
+export const getUserInfo = (id: string) => {
   return axios.request({
-    url: `api/user`,
+    url: `/api/users/${id}`,
     method: 'get'
   })
 }

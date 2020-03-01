@@ -1,6 +1,15 @@
 <template>
   <el-container>
     <el-main>
+      <h1>用户信息绑定</h1>
+      <el-form ref="userInfo" :model="userInfo" label-width="80px">
+        <el-form-item label="用户邮箱">
+          <el-input v-model="userInfo.email" style="width: 300px"></el-input>
+          <el-button type="text" @click="verifyEmail" style="margin-left: 10px">验证邮箱</el-button>
+        </el-form-item>
+      </el-form>
+      <el-divider></el-divider>
+      <h1>用户基础信息</h1>
       <el-form ref="userInfo" :model="userInfo" label-width="80px">
         <el-form-item label="用户头像">
           <el-avatar :size="100" :src="userInfo.avatarUrl" fit="scale-down"></el-avatar>
@@ -10,10 +19,6 @@
         </el-form-item>
         <el-form-item label="用户密码">
           <el-input v-model="userInfo.password"></el-input>
-        </el-form-item>
-        <el-form-item label="用户邮箱">
-          <el-input v-model="userInfo.email"></el-input>
-          <el-button type="text" @click="verifyEmail">验证邮箱</el-button>
         </el-form-item>
         <el-form-item label="个人简介">
           <el-input type="textarea" v-model="userInfo.description"></el-input>
@@ -30,6 +35,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
+import { getUserInfo } from '@/api/user'
 
 @Component
 export default class UserInfoEditor extends Vue {
@@ -43,7 +49,11 @@ export default class UserInfoEditor extends Vue {
   }
 
   mounted () {
-    
+    getUserInfo(this.$store.state.user.id).then(res => {
+      console.log(res.data)
+    }).catch(err => {
+      this.$message.error(err)
+    })
   }
 
   verifyEmail () {
@@ -51,9 +61,15 @@ export default class UserInfoEditor extends Vue {
       emailVerificationSend({
         email: this.userInfo.email
       }).then(res => {
-        console.log(res.data)
+        this.$message({
+          message: '验证邮件发送成功，请到邮箱中查收',
+          type: 'success'
+        });
       }).catch(err => {
-        this.$message.error(err)
+        this.$message({
+          message: err,
+          type: 'error'
+        });
       })
     }
   }

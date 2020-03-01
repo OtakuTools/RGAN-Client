@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <el-container style="margin: 30px auto 0 auto; width: 85%;">
+    <el-container style="margin: 65px auto 0 auto; width: 85%;">
       <el-main style="padding: 0">
         <el-tabs v-model="activateTab" type="border-card" tab-position="left" style="height: calc(100vh - 80px)">
           <el-tab-pane label="用户管理" name="first">
