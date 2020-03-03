@@ -38,7 +38,7 @@ import { regist } from '@/api/user'
 export default {
   name: 'RegistPage',
   components: {
-    
+
   },
   data () {
     return {

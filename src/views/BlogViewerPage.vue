@@ -28,16 +28,16 @@ export default {
   components: {
     MarkdownViewer
   },
-  data() {
+  data () {
     return {
-      blogInfo: ""
+      blogInfo: ''
     }
   },
   mounted () {
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
     }).catch(err => {
-      this.$message.error("获取博客信息失败")
+      this.$message.error('获取博客信息失败')
     })
   }
 }

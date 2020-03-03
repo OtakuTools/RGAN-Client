@@ -36,10 +36,10 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
 import { getUserInfo } from '@/api/user'
+/ tslint:disable /
 
 @Component
 export default class UserInfoEditor extends Vue {
-
   userInfo = {
     username: '',
     password: '',
@@ -64,12 +64,12 @@ export default class UserInfoEditor extends Vue {
         this.$message({
           message: '验证邮件发送成功，请到邮箱中查收',
           type: 'success'
-        });
+        })
       }).catch(err => {
         this.$message({
           message: err,
           type: 'error'
-        });
+        })
       })
     }
   }

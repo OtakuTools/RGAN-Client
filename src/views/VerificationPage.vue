@@ -37,7 +37,7 @@ import { emailVerificationReceive } from '@/api/verification'
 export default {
   name: 'VerificationPage',
   components: {
-    
+
   },
   data () {
     return {
@@ -58,7 +58,6 @@ export default {
       this.status = 'success'
     }).catch(err => {
       this.status = 'error'
-      console.log(JSON.stringify(err))
       this.$message({
         message: err.message,
         type: 'error'

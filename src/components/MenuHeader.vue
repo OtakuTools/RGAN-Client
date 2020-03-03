@@ -57,9 +57,9 @@ import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 
 @Component
 export default class MenuHeader extends Vue {
-  data() {
+  data () {
     return {
-      searchValue: ""
+      searchValue: ''
     }
   }
 

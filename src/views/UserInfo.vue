@@ -29,13 +29,13 @@ export default {
   components: {
     UserInfoEditor
   },
-  data() {
+  data () {
     return {
       activateTab: 'first'
     }
   },
   mounted () {
-    
+
   }
 }
 </script>

@@ -91,7 +91,7 @@ export default {
   components: {
     MarkdownViewer
   },
-  data() {
+  data () {
     return {
       blogList: []
     }
@@ -101,11 +101,11 @@ export default {
       this.blogList = res.data.map(item => {
         let dataFormat = {
           id: 0,
-          title: "",
-          content: "",
+          title: '',
+          content: '',
           tags: [],
-          date: "2020-02-02 02:02",
-          author: "admin",
+          date: '2020-02-02 02:02',
+          author: 'admin',
           upvoteCount: 0,
           visitorCount: 0
         }

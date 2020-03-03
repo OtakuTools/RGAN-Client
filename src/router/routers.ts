@@ -1,3 +1,4 @@
+/ tslint:disable /
 export default [
   {
     path: '/',
@@ -35,5 +36,3 @@ export default [
     component: () => import('../views/VerificationPage.vue')
   }
 ]
-
-

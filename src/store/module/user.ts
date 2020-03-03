@@ -1,18 +1,19 @@
 import {
   login,
   logout,
-  getUserInfo,
+  getUserInfo
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+/ tslint:disable /
 
 export default {
   state: {
-    id : '',
+    id: '',
     name: '',
     token: getToken(),
     avatarImgPath: '',
     access: '',
-    hasGetInfo: false,
+    hasGetInfo: false
   },
   mutations: {
     setAvatar (state : any, avatarPath : string) {
@@ -36,7 +37,7 @@ export default {
     }
   },
   getters: {
-    
+
   },
   actions: {
     // 登录

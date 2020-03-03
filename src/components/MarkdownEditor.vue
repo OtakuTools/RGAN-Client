@@ -63,11 +63,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
-import * as MD from 'markdown-it'
+import * as MarkdownIt from 'markdown-it'
 import * as monaco from 'monaco-editor'
 import MonacoEditor from './MonacoEditor.vue'
 import MarkdownViewer from '@/components/MarkdownViewer.vue'
 import { addBlog } from '@/api/data'
+/ tslint:disable /
 
 @Component({
   components: {
@@ -76,15 +77,15 @@ import { addBlog } from '@/api/data'
   }
 })
 export default class MDEditor extends Vue {
-  blogInfo = {
+  blogInfo : any = {
     title: '',
     content: '',
     tags: [],
     type: 'original'
   }
 
-  submitFormVisible = false
-  tagOptions = [
+  submitFormVisible : boolean = false
+  tagOptions : any = [
     {
       value: 'FE',
       label: '前端'
@@ -111,39 +112,42 @@ export default class MDEditor extends Vue {
     }
   ]
 
-  MdEditor = null
-  erd = null
-  
-  handleCodeChange(val: string) {
+  MdEditor : any = null
+  erd : any = null
+
+  handleCodeChange (val: string) {
     this.blogInfo.content = val
   }
 
-  handleCodeScroll(percentage: number) {
-    let viewer = this.$refs.markdownViewer.$refs.display
+  handleCodeScroll (percentage: number) {
+    let mdViewer : any = this.$refs.markdownViewer
+    let viewer : any = mdViewer.$refs.display
     viewer.scrollTop = percentage * (viewer.scrollHeight - viewer.clientHeight)
   }
 
-  onSubmit() {
+  onSubmit () {
     addBlog(this.blogInfo).then(res => {
-      this.$message.success("提交博客成功")
+      this.$message.success('提交博客成功')
     }).catch(error => {
       this.$message.error('提交博客失败')
     })
   }
 
   insertContent (text: string) {
-    if (this.$refs.monacoEditor.monacoEditor) {
-      let selection = this.$refs.monacoEditor.monacoEditor.getSelection()
+    let editor : any = this.$refs.monacoEditor
+    let moEd : any = editor.monacoEditor
+    if (moEd) {
+      let selection = moEd.getSelection()
       let range = new monaco.Range(selection.startLineNumber, selection.startColumn, selection.endLineNumber, selection.endColumn)
       let id = { major: 1, minor: 1 }
-      let op = { identifier: id, range: range, text: text, forceMoveMarkers: true}
-      this.$refs.monacoEditor.monacoEditor.executeEdits('', [op])
-      this.$refs.monacoEditor.monacoEditor.focus()
+      let op = { identifier: id, range: range, text: text, forceMoveMarkers: true }
+      moEd.executeEdits('', [op])
+      moEd.focus()
     }
   }
 
   mounted () {
-    this.MdEditor = new MD()
+    this.MdEditor = new MarkdownIt.default()
   }
 }
 </script>
