@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="20" style="height: 60px; margin: 0px; ">
     <el-col :span="4">
-      <p>RGAN</p>
+      <p @click="$router.push('/')">RGAN</p>
     </el-col>
     <el-col :span="14">
       <el-input placeholder="请输入内容" v-model="searchValue" class="input-with-select">

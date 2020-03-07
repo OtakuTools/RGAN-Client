@@ -1,6 +1,9 @@
 <template>
-  <el-container style="margin: 60px auto; width: 85%;">
-    <el-main style="padding: 0">
+  <el-container>
+    <el-header style="position: fixed; width: 100vw; padding: 0; z-index: 100;">
+      <MenuHeader class="menu-style" />
+    </el-header>
+    <el-main style="padding: 0; margin: 60px auto 0 auto; width: 85%;">
       <div>
         <h1>{{blogInfo.title}}</h1>
         <el-tag
@@ -18,15 +21,28 @@
   </el-container>
 </template>
 
+<style scoped>
+.menu-style {
+  padding: 10px 10%;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+</style>
+
 <script>
 // @ is an alias to /src
-import MarkdownViewer from '@/components/MarkdownViewer.vue'
+import MarkdownViewer from '@/components/MarkdownViewer'
+import MenuHeader from '@/components/MenuHeader'
 import { getBlogById } from '@/api/data'
 
 export default {
   name: 'BlogViewerPage',
   components: {
-    MarkdownViewer
+    MarkdownViewer,
+    MenuHeader
   },
   data () {
     return {
@@ -37,7 +53,10 @@ export default {
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
     }).catch(err => {
-      this.$message.error('获取博客信息失败')
+      this.$message({
+        message: err.response.data.message,
+        type: 'error'
+      })
     })
   }
 }

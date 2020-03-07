@@ -59,7 +59,7 @@ export default {
         this.loading = false
         this.$message({
           type: 'error',
-          message: err
+          message: err.response.data.message
         })
       })
     }

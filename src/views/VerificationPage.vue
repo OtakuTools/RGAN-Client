@@ -59,7 +59,7 @@ export default {
     }).catch(err => {
       this.status = 'error'
       this.$message({
-        message: err.message,
+        message: err.response.data.message,
         type: 'error'
       })
     }).finally(() => {

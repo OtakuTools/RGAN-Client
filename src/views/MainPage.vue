@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <el-container style="margin: 60px auto; width: 85%;">
-      <el-main style="padding: 0">
+    <el-container>
+      <el-header style="position: fixed; width: 100vw; padding: 0; z-index: 100;">
+        <MenuHeader class="menu-style" />
+      </el-header>
+      <el-main style="padding: 0; margin: 60px auto 0 auto; width: 85%;">
         <el-row v-for="blog in blogList" v-bind:key="blog.id">
           <el-container>
             <el-aside style="width: 50px; text-align: center; border-right: 1px solid #ccc; margin-right: 10px;">
@@ -59,11 +62,31 @@
           <div style="width: 100%; height: 1px; background-color:#ccc; margin: 0"></div>
         </el-row>
       </el-main>
+      <el-footer style="text-align: center">
+        <el-pagination
+          @size-change="handlePageSizeChange"
+          @current-change="handlePageChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="blogList.length">
+        </el-pagination>
+      </el-footer>
     </el-container>
   </div>
 </template>
 
 <style scoped>
+.menu-style {
+  padding: 10px 10%;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+
 .view-vote-style {
   position: absolute;
   left: 50%;
@@ -83,17 +106,19 @@
 
 <script>
 // @ is an alias to /src
-import MarkdownViewer from '@/components/MarkdownViewer.vue'
 import { getBlogList } from '@/api/data'
+import MenuHeader from '@/components/MenuHeader'
 
 export default {
   name: 'BlogViewerPage',
   components: {
-    MarkdownViewer
+    MenuHeader
   },
   data () {
     return {
-      blogList: []
+      blogList: [],
+      currentPage: 1,
+      currentPageSize: 10
     }
   },
   mounted () {
@@ -115,6 +140,14 @@ export default {
     }).catch(err => {
       this.$message.error('获取博客列表失败')
     })
+  },
+  methods: {
+    handlePageSizeChange (val) {
+      this.currentPageSize = val
+    },
+    handlePageChange (val) {
+      this.currentPage = val
+    }
   }
 }
 </script>

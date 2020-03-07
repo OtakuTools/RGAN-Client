@@ -80,4 +80,10 @@ router.afterEach(to => {
   window.scrollTo(0, 0)
 })
 
+
+const originalPush = router.push;
+router.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+};
+
 export default router

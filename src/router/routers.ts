@@ -31,7 +31,7 @@ export default [
     component: () => import('../views/UserInfo.vue')
   },
   {
-    path: '/verification/:mode/:action',
+    path: '/verification/:mode',
     name: 'verification',
     component: () => import('../views/VerificationPage.vue')
   }
