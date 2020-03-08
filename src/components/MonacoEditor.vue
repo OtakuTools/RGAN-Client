@@ -1,5 +1,5 @@
 <template>
-  <div id="test" ref="container"></div>
+  <div id="editorContainer" ref="container"></div>
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -64,7 +64,7 @@ export default class MonacoEditor extends Vue {
 
     this.erd = elementResizeDetectorMaker()
     if (this.erd) {
-      this.erd.listenTo(document.getElementById('test'), () => {
+      this.erd.listenTo(document.getElementById('editorContainer'), () => {
         this.monacoEditor.layout()
       })
     }

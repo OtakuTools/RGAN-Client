@@ -9,6 +9,23 @@
       </div>
     </el-header>
     <el-container style="padding-bottom: 0px;">
+      <el-header style="border: 1px solid #ccc; overflow: hidden; padding: 0; height: 40px">
+        <el-button-group>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('bold')">加粗</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('italic')">斜体</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('title')">标题</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('delete')">删除线</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('quote')">引用</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('codeblock')">代码块</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('table')">表格</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('link')">超链接</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('image')">图片</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('save')">保存</el-button>
+          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('derive')">导出</el-button>
+          <el-button type="plain" icon="el-icon-full-screen">全屏</el-button>
+          <el-button type="plain" icon="el-icon-view">预览</el-button>
+        </el-button-group>
+      </el-header>
       <el-main style="border: 1px solid #ccc; overflow: hidden; padding: 0;">
         <el-row>
           <el-col :span="12">
@@ -133,16 +150,89 @@ export default class MDEditor extends Vue {
     })
   }
 
-  insertContent (text: string) {
+  insertContentWithoutSelection (text: string, selectionPart? : string) {
     let editor : any = this.$refs.monacoEditor
     let moEd : any = editor.monacoEditor
-    if (moEd) {
-      let selection = moEd.getSelection()
-      let range = new monaco.Range(selection.startLineNumber, selection.startColumn, selection.endLineNumber, selection.endColumn)
-      let id = { major: 1, minor: 1 }
-      let op = { identifier: id, range: range, text: text, forceMoveMarkers: true }
-      moEd.executeEdits('', [op])
-      moEd.focus()
+    if (!(!!moEd)) {
+      return
+    }
+    let selection : any = moEd.getSelection()
+    let startCol : number = selection.startColumn
+    let startLine : number = selection.startLineNumber
+    let endCol : number = selection.endColumn
+    let endLine : number = selection.endLineNumber
+    // 全部插入
+    let range : any = new monaco.Range(startLine, startCol, endLine, endCol)
+    let id : any = { major: 1, minor: 1 }
+    let op : any = { identifier: id, range: range, text: text, forceMoveMarkers: true }
+    // 调整选中部分
+    let idx = text.indexOf(selectionPart || text[0])
+    let len = selectionPart ? selectionPart.length : text.length
+    selection = selection.setEndPosition(startLine, startCol + idx + len)
+    selection = selection.setStartPosition(startLine, startCol + idx)
+    moEd.executeEdits('', [op], [selection])
+    moEd.focus()
+  }
+
+  insertContentWithSelection (textFront: string, textBack?: string) {
+    let editor : any = this.$refs.monacoEditor
+    let moEd : any = editor.monacoEditor
+    if (!(!!moEd)) {
+      return
+    }
+    let selection : any = moEd.getSelection()
+    let startCol : number = selection.startColumn
+    let startLine : number = selection.startLineNumber
+    let endCol : number = selection.endColumn
+    let endLine : number = selection.endLineNumber
+    // 尾部插入
+    let range : any = new monaco.Range(endLine, endCol + 1, endLine, endCol + 1)
+    let id : any = { major: 1, minor: 1 }
+    let op1 : any = { identifier: id, range: range, text: textFront, forceMoveMarkers: false }
+    // 头部插入
+    range = new monaco.Range(startLine, startCol === 0? 0 : startCol - 1, startLine, startCol-1)
+    id = { major: 1, minor: 1 }
+    let op2 = { identifier: id, range: range, text: textBack? textBack : textFront, forceMoveMarkers: false }
+    // 调整选中部分
+    selection = selection.setEndPosition(endLine, endCol + (startLine === endLine ? textFront.length : 0))
+    selection = selection.setStartPosition(startLine, startCol + textFront.length)
+    moEd.executeEdits('', [op1, op2], [selection])
+    moEd.focus()
+  }
+
+  handleShortcut (mode: string) {
+    switch (mode) {
+      case 'bold':
+        this.insertContentWithSelection('**')
+        break
+      case 'italic':
+        this.insertContentWithSelection('*')
+        break
+      case 'title':
+        this.insertContentWithoutSelection('# 请插入标题', '请插入标题')
+        break
+      case 'delete':
+        this.insertContentWithSelection('~~')
+        break
+      case 'quote':
+        this.insertContentWithoutSelection('`输入引用内容`', '输入引用内容')
+        break
+      case 'codeblock':
+        this.insertContentWithoutSelection('```code\n\n```', 'code')
+        break
+      case 'table':
+        this.insertContentWithoutSelection(`|  |  |\n|--|--|\n|  |  |`, '  ')
+        break
+      case 'link':
+        this.insertContentWithoutSelection(`[链接内容](  )`, '链接内容')
+        break
+      case 'image':
+        this.insertContentWithoutSelection(`![图片](图片URL)`, '图片URL')
+        break
+      case 'save':
+      case 'derive':
+      default:
+        //
     }
   }
 
