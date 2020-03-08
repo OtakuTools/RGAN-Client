@@ -31,13 +31,13 @@
           <el-col :span="12">
             <MonacoEditor
               ref="monacoEditor"
-              style="height: calc(100vh - 73px);"
+              style="height: calc(100vh - 113px);"
               @on-content-change="handleCodeChange"
               @on-content-scroll="handleCodeScroll"
             />
           </el-col>
           <el-col :span="12">
-            <MarkdownViewer ref="markdownViewer" :inputText="blogInfo.content" style="height: calc(100vh - 73px); max-height: calc(100vh - 73px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;"></MarkdownViewer>
+            <MarkdownViewer ref="markdownViewer" :inputText="blogInfo.content" style="height: calc(100vh - 113px); max-height: calc(100vh - 113px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;"></MarkdownViewer>
           </el-col>
         </el-row>
       </el-main>
