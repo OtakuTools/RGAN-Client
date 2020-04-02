@@ -43,6 +43,9 @@ router.beforeEach((to, from, next) => {
       setToken('')
       next()
     }
+  } else if (to.name === homeName) {
+    // 未登陆且要跳转的页面是登录页
+    next() // 跳转
   } else if (!token && to.name === REGIST_PAGE_NAME) {
     // 未登录且要跳转的页面是注册页
     next()

@@ -13,10 +13,20 @@
     </el-col>
     <el-col :span="4">
       <div v-if="$store.state.user.name !== ''" @click="UserInfo" class="logined-user">
-        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-        <div class="user-box">
-          <span>{{$store.state.user.name}}</span>
-        </div>
+        <el-dropdown
+          placement="bottom-start"
+          @command="handleCommand"
+        >
+          <div>
+            <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            <div class="user-box">
+              <span>{{$store.state.user.name}}</span>
+            </div>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
       <div v-else>
         <el-button @click="Login">登录/注册</el-button>
@@ -54,12 +64,30 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
+import { mapActions } from 'vuex'
 
 @Component
 export default class MenuHeader extends Vue {
   data () {
     return {
       searchValue: ''
+    }
+  }
+
+  mounted() {
+    console.log(this.$store.state.user.token)
+  }
+
+  handleCommand(command : any) {
+    if (command === 'logout') {
+      this.$store.dispatch('handleLogOut').then(res => {
+        this.$router.push('/')
+      }).catch(err => {
+        this.$message({
+          type: 'error',
+          message: err.response.data.message
+        })
+      })
     }
   }
 
