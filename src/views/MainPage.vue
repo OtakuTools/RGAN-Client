@@ -123,7 +123,7 @@ export default {
   },
   mounted () {
     getBlogList().then(res => {
-      this.blogList = res.data.map(item => {
+      this.blogList = res.data.content.map(item => {
         let dataFormat = {
           id: 0,
           title: '',

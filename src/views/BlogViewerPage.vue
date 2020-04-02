@@ -3,7 +3,7 @@
     <el-header style="position: fixed; width: 100vw; padding: 0; z-index: 100;">
       <MenuHeader class="menu-style" />
     </el-header>
-    <el-main style="padding: 0; margin: 60px auto 0 auto; width: 85%;">
+    <el-main style="padding: 0; margin: 60px auto 10px auto; width: 85%;">
       <div>
         <h1>{{blogInfo.title}}</h1>
         <el-tag
@@ -15,7 +15,9 @@
           {{ tag.title }}
         </el-tag>
         <el-divider />
-        <MarkdownViewer :inputText="blogInfo.content"/>
+        <MarkdownViewer :inputText="blogInfo.content" />
+        <el-divider />
+        <BlogComment :blogId ="blogId" />
       </div>
     </el-main>
   </el-container>
@@ -35,6 +37,7 @@
 <script>
 // @ is an alias to /src
 import MarkdownViewer from '@/components/MarkdownViewer'
+import BlogComment from '@/components/BlogComment'
 import MenuHeader from '@/components/MenuHeader'
 import { getBlogById } from '@/api/data'
 
@@ -42,14 +45,17 @@ export default {
   name: 'BlogViewerPage',
   components: {
     MarkdownViewer,
-    MenuHeader
+    MenuHeader,
+    BlogComment
   },
   data () {
     return {
-      blogInfo: ''
+      blogId: 0,
+      blogInfo: {}
     }
   },
   mounted () {
+    this.blogId = parseInt(this.$route.query.id)
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
     }).catch(err => {

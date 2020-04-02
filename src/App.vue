@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-// import MenuHeader from './components/MenuHeader.vue'
 
 @Component({
   components: {
