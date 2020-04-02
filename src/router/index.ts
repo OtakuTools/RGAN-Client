@@ -20,6 +20,7 @@ const canTurnTo = (name : any, access : any, routes : any) => {
 const homeName = 'mainPage'
 const LOGIN_PAGE_NAME = 'login'
 const VERIFIATION_PAGE_NAME = 'verification'
+const REGIST_PAGE_NAME = 'regist'
 
 const turnTo = (to : any, access : any, next : any) => {
   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
@@ -42,6 +43,9 @@ router.beforeEach((to, from, next) => {
       setToken('')
       next()
     }
+  } else if (!token && to.name === REGIST_PAGE_NAME) {
+    // 未登录且要跳转的页面是注册页
+    next()
   } else if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({

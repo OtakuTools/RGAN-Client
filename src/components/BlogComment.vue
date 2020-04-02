@@ -192,7 +192,7 @@ export default class BlogComment extends Vue {
   }
 
   @Watch('blogId')
-  handleTextChange (newVal: number) {
+  handleBlogIdChange (newVal: number) {
     this.getComments()
   }
 }
