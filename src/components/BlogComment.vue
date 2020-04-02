@@ -14,9 +14,9 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <ul>
+      <ul style="padding: 0">
         <li v-for="comment in commentTree" v-bind:key="comment.id">
-          <div>
+          <div style="margin-left: 2.2rem">
             <span style="font-weight: bold; font-size: 18px;">{{comment.authorName}}</span>
             <span style="margin-left: 10px; font-size: 16px;">{{comment.modifiedTime}}</span>
             <span style="float: right">
@@ -26,24 +26,24 @@
               </el-button-group>
             </span>
           </div>
-          <div>
+          <div style="margin-left: 2.2rem">
             <p style="font-size: 15px;">{{comment.content}}</p>
           </div>
           <ul>
             <li v-for="subComment in comment.comments" v-bind:key="subComment.id">
-              <div>
+              <div style="margin-left: 2.2rem">
                 <span style="font-weight: bold; font-size: 18px;">{{subComment.authorName}}</span>
                 <span style="font-size: 16px; margin: 0 10px;">回复</span>
-                <span style="font-weight: bold; font-size: 18px;">{{comment.authorName}}</span>
+                <span style="font-weight: bold; font-size: 18px;">{{commentLevelTree[subComment.replyTo].authorName}}</span>
                 <span style="margin-left: 10px; font-size: 16px;">{{subComment.modifiedTime}}</span>
                 <span style="float: right">
                   <el-button-group>
                     <el-button type="text" style="margin-right: 10px;" @click="deleteComment(subComment.id)">删除</el-button>
-                    <el-button type="text" @click="replyTo = comment.id">回复</el-button>
+                    <el-button type="text" @click="replyTo = subComment.id">回复</el-button>
                   </el-button-group>
                 </span>
               </div>
-              <div>
+              <div style="margin-left: 2.2rem">
                 <p style="font-size: 15px;">{{subComment.content}}</p>
               </div>
             </li>
@@ -78,32 +78,7 @@ class Comment {
 export default class BlogComment extends Vue {
   @Prop({ default: '', type: Number }) blogId!: number;
 
-  commentList : Array<Comment> = [
-    {
-      id: 0,
-      replyTo: null,
-      authorName: 'test',
-      content: 'test_aaa',
-      createdTime: '2020-02-02 18:00',
-      modifiedTime: '2020-02-02 19:00'
-    },
-    {
-      id: 1,
-      replyTo: null,
-      authorName: 'test',
-      content: 'test_bbb',
-      createdTime: '2020-02-02 18:00',
-      modifiedTime: '2020-02-02 19:00'
-    },
-    {
-      id: 2,
-      replyTo: 1,
-      authorName: 'test_ccc',
-      content: 'test_ddd',
-      createdTime: '2020-02-02 18:00',
-      modifiedTime: '2020-02-02 19:00'
-    },
-  ]
+  commentLevelTree : any = {}
 
   commentTree : Array<any> = []
 
@@ -117,8 +92,7 @@ export default class BlogComment extends Vue {
 
   getComments () {
     getBlogComments(this.blogId).then(res => {
-      this.commentList = res.data.content
-      this.commentTree = this.buildCommentTree(this.commentList)
+      this.commentTree = this.buildCommentTree(res.data.content)
     }).catch(err => {
       this.$message({
         message: err,
@@ -180,6 +154,10 @@ export default class BlogComment extends Vue {
   buildCommentTree (commentList: Array<Comment>) {
     let tree : Object = {}
     let commentTree : any = []
+    this.commentLevelTree = {}
+    for (let comment of commentList) {
+      this.commentLevelTree[comment.id] = comment
+    }
     for (let comment of commentList) {
       if (comment.replyTo === null) {
         if (!tree.hasOwnProperty(comment.id)) {
@@ -189,12 +167,16 @@ export default class BlogComment extends Vue {
         }
         Object.assign(tree[comment.id], comment)
       } else {
-        if (!tree.hasOwnProperty(comment.replyTo)) {
-          tree[comment.replyTo] = {
+        let root = comment.replyTo
+        while (this.commentLevelTree[root].replyTo) {
+          root = this.commentLevelTree[root].replyTo
+        }
+        if (!tree.hasOwnProperty(root)) {
+          tree[root] = {
             comments: []
           }
         }
-        tree[comment.replyTo].comments.push(comment)
+        tree[root].comments.push(comment)
       }
     }
     for (let [key, value] of Object.entries(tree)) {
@@ -218,5 +200,9 @@ export default class BlogComment extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+li {
+  list-style-type: none;
+  background: url("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png") no-repeat 0rem -0.2rem;
+  background-size: 2rem 2rem;
+}
 </style>
