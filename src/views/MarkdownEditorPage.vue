@@ -6,7 +6,7 @@
 
 <script>
 // @ is an alias to /src
-import MDEditor from '@/components/MarkdownEditor.vue'
+const MDEditor = () => import('@/components/MarkdownEditor.vue')
 
 export default {
   name: 'MDEditorPage',

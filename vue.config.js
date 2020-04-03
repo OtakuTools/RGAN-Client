@@ -1,14 +1,42 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   lintOnSave: true,
   configureWebpack: {
+    devtool     : 'none',     // webpack内关闭sourceMap                   
+    optimization: {   // 优化配置                           
+      splitChunks: {
+        chunks     : 'all',
+        cacheGroups: {
+          // 拆分Vue
+          vue: {
+            test: /[\\/]node_modules[\\/]vue[\\/]/,
+            name: 'chunk-vue'  
+          },
+          // 拆分Element
+          element: {
+            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+            name: 'chunk-element'
+          }
+        }
+      }
+    },
     plugins: [
       new MonacoWebpackPlugin({
         // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
         languages: ['javascript', 'css', 'html', 'typescript', 'json']
+      }),
+
+      new CompressionPlugin({
+        test: /\.js$|\.html$|\.css$/,
+        threshold: 10240,
+        deleteOriginalAssets: false
       })
-    ]
+    ],
+    externals: {
+      'highlight': 'highlight',
+    }
   },
   devServer: {
     host: 'localhost', // target host
@@ -22,6 +50,7 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
-      } }
+      }
+    }
   }
 }

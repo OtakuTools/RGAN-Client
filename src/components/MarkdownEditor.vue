@@ -82,10 +82,12 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import * as MarkdownIt from 'markdown-it'
 import * as monaco from 'monaco-editor'
-import MonacoEditor from './MonacoEditor.vue'
-import MarkdownViewer from '@/components/MarkdownViewer.vue'
 import { addBlog } from '@/api/data'
-/ tslint:disable /
+
+// import MonacoEditor from './MonacoEditor.vue'
+// import MarkdownViewer from '@/components/MarkdownViewer.vue'
+const MonacoEditor = () => import('./MonacoEditor.vue')
+const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
 
 @Component({
   components: {

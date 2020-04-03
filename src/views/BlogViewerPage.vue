@@ -36,10 +36,10 @@
 
 <script>
 // @ is an alias to /src
-import MarkdownViewer from '@/components/MarkdownViewer'
-import BlogComment from '@/components/BlogComment'
-import MenuHeader from '@/components/MenuHeader'
 import { getBlogById } from '@/api/data'
+const MarkdownViewer = () => import('@/components/MarkdownViewer')
+const BlogComment = () => import('@/components/BlogComment')
+const MenuHeader = () => import('@/components/MenuHeader')
 
 export default {
   name: 'BlogViewerPage',

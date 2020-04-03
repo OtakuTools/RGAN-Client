@@ -107,7 +107,7 @@
 <script>
 // @ is an alias to /src
 import { getBlogList } from '@/api/data'
-import MenuHeader from '@/components/MenuHeader'
+const MenuHeader = () => import('@/components/MenuHeader')
 
 export default {
   name: 'BlogViewerPage',

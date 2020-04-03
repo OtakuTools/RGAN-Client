@@ -32,8 +32,8 @@
 // @ is an alias to /src
 import { getBlogList } from '@/api/data'
 import { getUserInfo } from '@/api/user'
-import UserInfoEditor from '@/components/UserInfoEditor'
-import MenuHeader from '@/components/MenuHeader'
+const UserInfoEditor = () => import('@/components/UserInfoEditor')
+const MenuHeader = () => import('@/components/MenuHeader')
 
 export default {
   name: 'UserInfoPage',
