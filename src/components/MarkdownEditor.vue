@@ -80,14 +80,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
+import { addBlog } from '@/api/data'
 import * as MarkdownIt from 'markdown-it'
 import * as monaco from 'monaco-editor'
-import { addBlog } from '@/api/data'
 
 // import MonacoEditor from './MonacoEditor.vue'
 // import MarkdownViewer from '@/components/MarkdownViewer.vue'
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
+
+// const monaco = () => import('monaco-editor')
 
 @Component({
   components: {
@@ -140,8 +142,10 @@ export default class MDEditor extends Vue {
 
   handleCodeScroll (percentage: number) {
     let mdViewer : any = this.$refs.markdownViewer
-    let viewer : any = mdViewer.$refs.display
-    viewer.scrollTop = percentage * (viewer.scrollHeight - viewer.clientHeight)
+    if (mdViewer) {
+      let viewer : any = mdViewer.$refs.display
+      viewer.scrollTop = percentage * (viewer.scrollHeight - viewer.clientHeight)
+    }
   }
 
   onSubmit () {
@@ -154,8 +158,11 @@ export default class MDEditor extends Vue {
 
   insertContentWithoutSelection (text: string, selectionPart? : string) {
     let editor : any = this.$refs.monacoEditor
+    if (!editor) {
+      return
+    }
     let moEd : any = editor.monacoEditor
-    if (!(!!moEd)) {
+    if (!moEd) {
       return
     }
     let selection : any = moEd.getSelection()
@@ -179,7 +186,7 @@ export default class MDEditor extends Vue {
   insertContentWithSelection (textFront: string, textBack?: string) {
     let editor : any = this.$refs.monacoEditor
     let moEd : any = editor.monacoEditor
-    if (!(!!moEd)) {
+    if (!moEd) {
       return
     }
     let selection : any = moEd.getSelection()
@@ -192,9 +199,9 @@ export default class MDEditor extends Vue {
     let id : any = { major: 1, minor: 1 }
     let op1 : any = { identifier: id, range: range, text: textFront, forceMoveMarkers: false }
     // 头部插入
-    range = new monaco.Range(startLine, startCol === 0? 0 : startCol - 1, startLine, startCol-1)
+    range = new monaco.Range(startLine, startCol === 0 ? 0 : startCol - 1, startLine, startCol - 1)
     id = { major: 1, minor: 1 }
-    let op2 = { identifier: id, range: range, text: textBack? textBack : textFront, forceMoveMarkers: false }
+    let op2 = { identifier: id, range: range, text: textBack || textFront, forceMoveMarkers: false }
     // 调整选中部分
     selection = selection.setEndPosition(endLine, endCol + (startLine === endLine ? textFront.length : 0))
     selection = selection.setStartPosition(startLine, startCol + textFront.length)

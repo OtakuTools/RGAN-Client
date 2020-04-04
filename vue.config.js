@@ -4,7 +4,7 @@ const CompressionPlugin = require('compression-webpack-plugin')
 module.exports = {
   lintOnSave: true,
   configureWebpack: {
-    devtool     : 'none',     // webpack内关闭sourceMap                   
+    devtool     : 'none',     // webpack内关闭sourceMap
     optimization: {   // 优化配置                           
       splitChunks: {
         chunks     : 'all',
@@ -18,6 +18,11 @@ module.exports = {
           element: {
             test: /[\\/]node_modules[\\/]element-ui[\\/]/,
             name: 'chunk-element'
+          },
+          // 拆分monaco
+          monaco_editor: {
+            test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
+            name: 'chunk-monaco'
           }
         }
       }
@@ -35,7 +40,12 @@ module.exports = {
       })
     ],
     externals: {
-      'highlight': 'highlight',
+      'highlight': 'highlight.js',
+      'vue': 'Vue',
+      'vue-router': 'VueRouter',
+      'vuex': 'Vuex',
+      'axios': 'axios',
+      'element-ui': 'ELEMENT'
     }
   },
   devServer: {
