@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import * as MarkdownIt from 'markdown-it'
+// import * as MarkdownIt from 'markdown-it'
 / tslint:disable /
 
 @Component
@@ -15,12 +15,15 @@ export default class MarkdownViewer extends Vue {
 
   MdEditor : any = null
 
+  // MarkdownIt = window.markdownit()
+
   MdTranslationFunc () {
     this.blogMdText = this.MdEditor.render(this.inputText)
   }
 
   mounted () {
-    this.MdEditor = new MarkdownIt.default()
+    // this.MdEditor = new MarkdownIt.default()
+    this.MdEditor = require('markdown-it')()
     this.MdTranslationFunc()
   }
 

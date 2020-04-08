@@ -81,15 +81,10 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog } from '@/api/data'
-import * as MarkdownIt from 'markdown-it'
-import * as monaco from 'monaco-editor'
+// import * as monaco from 'monaco-editor'
 
-// import MonacoEditor from './MonacoEditor.vue'
-// import MarkdownViewer from '@/components/MarkdownViewer.vue'
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
-
-// const monaco = () => import('monaco-editor')
 
 @Component({
   components: {
@@ -133,8 +128,8 @@ export default class MDEditor extends Vue {
     }
   ]
 
-  MdEditor : any = null
   erd : any = null
+  loading: any = null
 
   handleCodeChange (val: string) {
     this.blogInfo.content = val
@@ -171,7 +166,7 @@ export default class MDEditor extends Vue {
     let endCol : number = selection.endColumn
     let endLine : number = selection.endLineNumber
     // 全部插入
-    let range : any = new monaco.Range(startLine, startCol, endLine, endCol)
+    let range : any = new window.monaco.Range(startLine, startCol, endLine, endCol)
     let id : any = { major: 1, minor: 1 }
     let op : any = { identifier: id, range: range, text: text, forceMoveMarkers: true }
     // 调整选中部分
@@ -195,11 +190,11 @@ export default class MDEditor extends Vue {
     let endCol : number = selection.endColumn
     let endLine : number = selection.endLineNumber
     // 尾部插入
-    let range : any = new monaco.Range(endLine, endCol + 1, endLine, endCol + 1)
+    let range : any = new window.monaco.Range(endLine, endCol + 1, endLine, endCol + 1)
     let id : any = { major: 1, minor: 1 }
     let op1 : any = { identifier: id, range: range, text: textFront, forceMoveMarkers: false }
     // 头部插入
-    range = new monaco.Range(startLine, startCol === 0 ? 0 : startCol - 1, startLine, startCol - 1)
+    range = new window.monaco.Range(startLine, startCol === 0 ? 0 : startCol - 1, startLine, startCol - 1)
     id = { major: 1, minor: 1 }
     let op2 = { identifier: id, range: range, text: textBack || textFront, forceMoveMarkers: false }
     // 调整选中部分
@@ -245,8 +240,16 @@ export default class MDEditor extends Vue {
     }
   }
 
+  created () {
+    this.loading = this.$loading({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+  }
   mounted () {
-    this.MdEditor = new MarkdownIt.default()
+    this.loading.close()
   }
 }
 </script>

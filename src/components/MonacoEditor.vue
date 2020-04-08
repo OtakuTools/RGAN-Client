@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import * as monaco from 'monaco-editor'
+// import * as monaco from 'monaco-editor'
 import elementResizeDetectorMaker from 'element-resize-detector'
 / tslint:disable /
 
@@ -20,6 +20,7 @@ export default class MonacoEditor extends Vue {
 
   monacoEditor : any = null
   code : string = this.codeInput
+  monaco : any = window.monaco
   // 主要配置
   editorOptions : any = {
     selectOnLineNumbers: true,
@@ -44,7 +45,7 @@ export default class MonacoEditor extends Vue {
       // theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
       editorOptions: this.editorOptions // 同codes
     }
-    this.monacoEditor = monaco.editor.create(container, opt)
+    this.monacoEditor = this.monaco.editor.create(container, opt)
 
     if (this.monacoEditor) {
       this.monacoEditor.onDidChangeModelContent((event : any) => {

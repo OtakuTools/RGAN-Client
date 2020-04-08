@@ -23,15 +23,19 @@ module.exports = {
           monaco_editor: {
             test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
             name: 'chunk-monaco'
+          },
+          markdown_it: {
+            test: /[\\/]node_modules[\\/]markdown-it[\\/]/,
+            name: 'chunk-markdownit'
           }
         }
       }
     },
     plugins: [
-      new MonacoWebpackPlugin({
-        // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
-        languages: ['javascript', 'css', 'html', 'typescript', 'json']
-      }),
+      // new MonacoWebpackPlugin({
+      //   // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+      //   languages: ['javascript', 'css', 'html', 'typescript', 'json']
+      // }),
 
       new CompressionPlugin({
         test: /\.js$|\.html$|\.css$/,
@@ -45,7 +49,9 @@ module.exports = {
       'vue-router': 'VueRouter',
       'vuex': 'Vuex',
       'axios': 'axios',
-      'element-ui': 'ELEMENT'
+      'element-ui': 'ELEMENT',
+      'markdown-it': 'markdownit',
+      'monaco-editor': 'monaco'
     }
   },
   devServer: {
