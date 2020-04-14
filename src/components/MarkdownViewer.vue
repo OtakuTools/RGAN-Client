@@ -36,15 +36,19 @@ export default class MarkdownViewer extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-pre > code {
-  width: 100%;
-}
 .v-application code:after, .v-application code:before {
   content: "" !important;
 }
-code {
+.v-application code {
   box-shadow: none !important;
+  color: unset;
+}
+pre > code {
+  width: 100%;
+}
+p > code {
+  color: #bd4147 !important;
 }
 </style>
-<style src="@/assets/editor-styles/highlight/styles/github.css"></style>
+<style src="./../assets/editor-styles/highlight/styles/atom-one-light.css"></style>
 <!-- <style src="@/assets/editor-styles/style-vue/vue.css" scoped></style> -->
