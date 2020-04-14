@@ -1,37 +1,41 @@
 <template>
-  <el-container>
-    <el-header style="position: fixed; width: 100vw; padding: 0; z-index: 100;">
-      <MenuHeader class="menu-style" />
-    </el-header>
-    <el-main style="padding: 0; margin: 60px auto 10px auto; width: 85%;">
-      <div>
-        <h1>{{blogInfo.title}}</h1>
-        <el-tag
-          v-for="tag in blogInfo.tags"
-          :key="tag.id"
-          type="normal"
-          size="mini"
-          style="margin-right: 3px;">
-          {{ tag.title }}
-        </el-tag>
-        <el-divider />
-        <MarkdownViewer :inputText="blogInfo.content" />
-        <el-divider />
-        <BlogComment :blogId ="blogId" />
-      </div>
-    </el-main>
-  </el-container>
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <MenuHeader />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <div style="padding-top: 20px;">
+            <h1>{{blogInfo.title}}</h1>
+            <el-tag
+              v-for="tag in blogInfo.tags"
+              :key="tag.id"
+              type="normal"
+              size="mini"
+              style="margin-right: 3px;">
+              {{ tag.title }}
+            </el-tag>
+            <el-divider />
+            <MarkdownViewer :inputText="blogInfo.content" />
+            <el-divider />
+            <BlogComment :blogId ="blogId" />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
 </template>
 
 <style scoped>
-.menu-style {
+/* .menu-style {
   padding: 10px 10%;
   width: 100%;
   position: fixed;
   top: 0px;
   border-bottom: 1px solid #ccc;
   background-color: white;
-}
+} */
 </style>
 
 <script>

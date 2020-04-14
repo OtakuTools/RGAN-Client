@@ -1,10 +1,10 @@
 <template>
-  <el-container style="padding: 10px 10px 0 10px;">
-    <el-header style="padding: 0">
+  <el-container>
+    <el-header style="padding: 5px 5px 0 5px">
       <!-- 标题 -->
       <div>
         <span style="width: 100px; text-align: left">博客标题</span>
-        <el-input placeholder="请输入标题" v-model="blogInfo.title" style="margin: 0 10px; width: calc(100% - 180px)"></el-input>
+        <el-input placeholder="请输入标题" v-model="blogInfo.title" style="margin: 0 10px; width: calc(100% - 190px)"></el-input>
         <el-button type="primary" @click="submitFormVisible = true" style="width: 100px">发布博客</el-button>
       </div>
     </el-header>

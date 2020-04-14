@@ -21,7 +21,7 @@
             <span style="margin-left: 10px; font-size: 16px;">{{comment.modifiedTime}}</span>
             <span style="float: right">
               <el-button-group>
-                <el-button type="text" style="margin-right: 10px;" @click="deleteComment(comment.id)">删除</el-button>
+                <el-button type="text" style="margin-right: 10px;" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">删除</el-button>
                 <el-button type="text" @click="replyTo = comment.id">回复</el-button>
               </el-button-group>
             </span>
@@ -38,7 +38,7 @@
                 <span style="margin-left: 10px; font-size: 16px;">{{subComment.modifiedTime}}</span>
                 <span style="float: right">
                   <el-button-group>
-                    <el-button type="text" style="margin-right: 10px;" @click="deleteComment(subComment.id)">删除</el-button>
+                    <el-button type="text" style="margin-right: 10px;" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">删除</el-button>
                     <el-button type="text" @click="replyTo = subComment.id">回复</el-button>
                   </el-button-group>
                 </span>

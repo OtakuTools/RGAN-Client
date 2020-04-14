@@ -40,7 +40,7 @@ import { getUserInfo } from '@/api/user'
 
 @Component
 export default class UserInfoEditor extends Vue {
-  userInfo = {
+  userInfo : any = {
     username: '',
     password: '',
     avatarUrl: '',
@@ -50,7 +50,8 @@ export default class UserInfoEditor extends Vue {
 
   mounted () {
     getUserInfo(this.$store.state.user.id).then(res => {
-      console.log(res.data)
+      // console.log(res.data)
+      Object.assign(this.userInfo, res.data)
     }).catch(err => {
       this.$message.error(err)
     })

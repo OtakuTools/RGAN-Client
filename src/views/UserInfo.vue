@@ -1,5 +1,27 @@
 <template>
-  <div class="home">
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <MenuHeader />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-tabs vertical style="padding-top: 20px;">
+          <v-tab>
+            <v-icon left>mdi-account</v-icon>
+            用户管理
+          </v-tab>
+          <v-tab-item>
+            <v-card flat>
+              <UserInfoEditor />
+            </v-card>
+          </v-tab-item>
+        </v-tabs>
+      </v-col>
+    </v-row>
+  </v-container>
+  <!-- <div class="home">
     <el-container>
       <el-header style="position: fixed; width: 100vw; padding: 0; z-index: 100;">
         <MenuHeader class="menu-style" />
@@ -14,18 +36,11 @@
         </el-tabs>
       </el-main>
     </el-container>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
-.menu-style {
-  padding: 10px 10%;
-  width: 100%;
-  position: fixed;
-  top: 0px;
-  border-bottom: 1px solid #ccc;
-  background-color: white;
-}
+
 </style>
 
 <script>

@@ -35,7 +35,10 @@ export default class MarkdownViewer extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-@import url('./../editor-styles/style-vue/vue.css');
-@import url('./../editor-styles/highlight/styles/github.css');
+<style>
+code {
+  width: 100%;
+}
 </style>
+<style src="@/assets/editor-styles/highlight/styles/github.css"></style>
+<!-- <style src="@/assets/editor-styles/style-vue/vue.css"></style> -->

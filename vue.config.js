@@ -1,5 +1,6 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   lintOnSave: true,
@@ -27,6 +28,10 @@ module.exports = {
           markdown_it: {
             test: /[\\/]node_modules[\\/]markdown-it[\\/]/,
             name: 'chunk-markdownit'
+          },
+          vuetify: {
+            test: /[\\/]node_modules[\\/]vuetify[\\/]/,
+            name: 'chunk-vuetify'
           }
         }
       }
@@ -41,7 +46,9 @@ module.exports = {
         test: /\.js$|\.html$|\.css$/,
         threshold: 10240,
         deleteOriginalAssets: false
-      })
+      }),
+
+      // new VuetifyLoaderPlugin()
     ],
     externals: {
       'highlight': 'highlight.js',
@@ -51,7 +58,8 @@ module.exports = {
       'axios': 'axios',
       'element-ui': 'ELEMENT',
       'markdown-it': 'markdownit',
-      'monaco-editor': 'monaco'
+      'monaco-editor': 'monaco',
+      'vuetify': 'Vuetify'
     }
   },
   devServer: {

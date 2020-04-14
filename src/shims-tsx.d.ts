@@ -12,6 +12,7 @@ declare global {
   }
 
   interface Window {
-    monaco: any
+    monaco: any,
+    Vuetify: any
   }
 }

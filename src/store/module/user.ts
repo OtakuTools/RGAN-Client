@@ -53,6 +53,7 @@ export default {
           commit('setUserId', data.id)
           commit('setUserName', data.username)
           commit('setToken', data.id)
+          commit('setHasGetInfo', true)
           resolve()
         }).catch(err => {
           reject(err)
@@ -64,9 +65,9 @@ export default {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('setToken', '')
-          commit('setAccess', [])
           commit('setUserId', '')
           commit('setUserName', '')
+          commit('setHasGetInfo', false)
           resolve()
         }).catch(err => {
           reject(err)
@@ -79,11 +80,9 @@ export default {
         try {
           getUserInfo(state.token).then(res => {
             const data = res.data
-            // commit('setAvatar', data.avatar)
             commit('setUserName', data.username)
             commit('setUserId', data.id)
             commit('setToken', data.id)
-            // commit('setAccess', data.access)
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

@@ -10,6 +10,9 @@ import hljs from 'highlight.js'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+// import vuetify from '@/plugins/vuetify'
+// import Vuetify from 'vuetify'
+// const Vuetify = require('vuetify')
 
 Vue.use(ELEMENT)
 Vue.use(VueAxios, axios)
@@ -36,5 +39,10 @@ Vue.directive('highlight', {
 new Vue({
   router,
   store,
-  render: h => h(App)
+  vuetify: window.Vuetify,
+  components: {
+    App
+  },
+  template: '<App/>'
+  // render: h => h(App)
 }).$mount('#app')
