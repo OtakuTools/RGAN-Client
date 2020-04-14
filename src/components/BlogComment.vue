@@ -1,16 +1,20 @@
 <template>
   <div>
     <div>
-      <el-input
-        type="textarea"
-        :rows="2"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="请输入评论内容"
+      <v-textarea
+        outlined
+        dense
+        auto-grow
+        counter
+        no-resize
+        hide-details
+        rows="2"
+        label="请输入评论内容"
         v-model="commentContent">
-      </el-input>
+      </v-textarea>
       <div style="margin-top: 10px;">
-        <el-button @click="replyTo = -1" type="default" v-if="replyTo !== -1">取消回复</el-button>
-        <el-button @click="addComment(replyTo)" type="primary">回复</el-button>
+        <v-btn depressed @click="replyTo = -1" v-if="replyTo !== -1" style="margin-right:10px">取消回复</v-btn>
+        <v-btn depressed @click="addComment(replyTo)" color="info">回复</v-btn>
       </div>
     </div>
     <div style="margin-top: 10px;">
@@ -20,10 +24,8 @@
             <span style="font-weight: bold; font-size: 18px;">{{comment.authorName}}</span>
             <span style="margin-left: 10px; font-size: 16px;">{{comment.modifiedTime}}</span>
             <span style="float: right">
-              <el-button-group>
-                <el-button type="text" style="margin-right: 10px;" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">删除</el-button>
-                <el-button type="text" @click="replyTo = comment.id">回复</el-button>
-              </el-button-group>
+              <v-btn text color="error" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">删除</v-btn>
+              <v-btn text color="info" @click="replyTo = comment.id">回复</v-btn>
             </span>
           </div>
           <div style="margin-left: 2.2rem">
@@ -37,10 +39,8 @@
                 <span style="font-weight: bold; font-size: 18px;">{{commentLevelTree[subComment.replyTo].authorName}}</span>
                 <span style="margin-left: 10px; font-size: 16px;">{{subComment.modifiedTime}}</span>
                 <span style="float: right">
-                  <el-button-group>
-                    <el-button type="text" style="margin-right: 10px;" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">删除</el-button>
-                    <el-button type="text" @click="replyTo = subComment.id">回复</el-button>
-                  </el-button-group>
+                  <v-btn text color="error" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">删除</v-btn>
+                  <v-btn text color="info" @click="replyTo = subComment.id">回复</v-btn>
                 </span>
               </div>
               <div style="margin-left: 2.2rem">
@@ -48,7 +48,7 @@
               </div>
             </li>
           </ul>
-          <el-divider />
+          <v-divider style="margin: 10px 0"/>
         </li>
       </ul>
     </div>

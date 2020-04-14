@@ -13,7 +13,7 @@
       clearable
       single-line
       v-model="searchValue"
-      hide-details="true"
+      hide-details
       append-icon="mdi-magnify"
       @click:append="search"
     ></v-text-field>

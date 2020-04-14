@@ -1,87 +1,167 @@
 <template>
-  <el-container>
-    <el-header style="padding: 5px 5px 0 5px">
+  <v-container style="height: 100vh; max-width: 100vw; padding: 0 5px; overflow-x: hidden;">
+    <v-row>
       <!-- 标题 -->
-      <div>
-        <span style="width: 100px; text-align: left">博客标题</span>
-        <el-input placeholder="请输入标题" v-model="blogInfo.title" style="margin: 0 10px; width: calc(100% - 190px)"></el-input>
-        <el-button type="primary" @click="submitFormVisible = true" style="width: 100px">发布博客</el-button>
-      </div>
-    </el-header>
-    <el-container style="padding-bottom: 0px;">
-      <el-header style="border: 1px solid #ccc; overflow: hidden; padding: 0; height: 40px">
-        <el-button-group>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('bold')">加粗</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('italic')">斜体</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('title')">标题</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('delete')">删除线</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('quote')">引用</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('codeblock')">代码块</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('table')">表格</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('link')">超链接</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('image')">图片</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('save')">保存</el-button>
-          <el-button type="plain" icon="el-icon-edit" @click="handleShortcut('derive')">导出</el-button>
-          <el-button type="plain" icon="el-icon-full-screen">全屏</el-button>
-          <el-button type="plain" icon="el-icon-view">预览</el-button>
-        </el-button-group>
-      </el-header>
-      <el-main style="border: 1px solid #ccc; overflow: hidden; padding: 0;">
-        <el-row>
-          <el-col :span="12">
-            <MonacoEditor
-              ref="monacoEditor"
-              style="height: calc(100vh - 113px);"
-              @on-content-change="handleCodeChange"
-              @on-content-scroll="handleCodeScroll"
-            />
-          </el-col>
-          <el-col :span="12">
-            <MarkdownViewer ref="markdownViewer" :inputText="blogInfo.content" style="height: calc(100vh - 113px); max-height: calc(100vh - 113px); overflow-y: scroll; border-left: 1px solid #ccc; padding: 0 10px;"></MarkdownViewer>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
-    <el-dialog title="发布文章" :visible.sync="submitFormVisible">
-      <el-form v-model="blogInfo" label-width="100">
-        <el-form-item label="文章标签">
-          <el-select
-            v-model="blogInfo.tags"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            placeholder="请选择标签"
-            style="width: calc(100% - 100px)">
-            <el-option
-              v-for="item in tagOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="文章类型">
-          <el-select v-model="blogInfo.type" placeholder="请选择文章类型" style="width: calc(100% - 100px)">
-            <el-option label="原创" value="original"></el-option>
-            <el-option label="转载" value="reprint"></el-option>
-            <el-option label="翻译" value="translation"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="submitFormVisible = false">取 消</el-button>
-        <el-button @click="submitFormVisible = false">保存为草稿</el-button>
-        <el-button type="primary" @click="onSubmit">提 交</el-button>
-      </div>
-    </el-dialog>
-  </el-container>
+      <v-col cols="12">
+        <v-app-bar
+          flat
+          color="white"
+          dense
+        >
+          <!-- <v-toolbar-title>博客标题</v-toolbar-title> -->
+          <v-text-field
+            label="博客标题"
+            outlined
+            hide-details
+            v-model="blogInfo.title"
+            style="margin-right: 20px;"
+            clearable
+            dense
+          ></v-text-field>
+          <v-btn color="info" @click="submitFormVisible = true">发布博客</v-btn>
+        </v-app-bar>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" style="padding: 0">
+        <v-toolbar
+          flat
+          dense
+          color="rgb(238, 238, 238)"
+          >
+          <v-btn-toggle
+            dense
+            group
+          >
+            <v-btn @click="handleShortcut('bold')">
+              <v-icon>mdi-format-bold</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('italic')">
+              <v-icon>mdi-format-italic</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('title')">
+              <v-icon>mdi-format-header-1</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('delete')">
+              <v-icon>mdi-format-strikethrough</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('quote')">
+              <v-icon>mdi-format-quote-close</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('codeblock')">
+              <v-icon>mdi-code-tags</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('table')">
+              <v-icon>mdi-table</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('link')">
+              <v-icon>mdi-link</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('image')">
+              <v-icon>mdi-image-search-outline</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('save')">
+              <v-icon>mdi-content-save-outline</v-icon>
+            </v-btn>
+            <v-btn @click="handleShortcut('derive')">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+            <v-btn>
+              <v-icon>mdi-fullscreen</v-icon>
+            </v-btn>
+            <v-btn>
+              <v-icon>mdi-eye-outline</v-icon>
+            </v-btn>
+          </v-btn-toggle>
+        </v-toolbar>
+      </v-col>
+    </v-row>
+    <v-row style="padding: 0; height: calc(100vh - 120px); overflow: hidden;">
+      <v-col cols="6" style="padding: 0;">
+        <v-card outlined style="height: calc(100vh - 120px);">
+          <MonacoEditor
+            ref="monacoEditor"
+            style="height: 100%"
+            @on-content-change="handleCodeChange"
+            @on-content-scroll="handleCodeScroll"
+          />
+        </v-card>
+      </v-col>
+      <v-col cols="6" style="padding: 0">
+        <MarkdownViewer 
+          ref="markdownViewer"
+          :inputText="blogInfo.content"
+          style="height: 100%; max-height: calc(100vh - 120px); overflow-y: scroll;"
+        ></MarkdownViewer>
+      </v-col>
+    </v-row>
+
+    <v-dialog
+      v-model="submitFormVisible"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="headline">发布文章</v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-combobox
+                v-model="blogInfo.tags"
+                :items="tagOptions"
+                outlined
+                dense
+                small-chips
+                label="博客标签"
+                multiple
+                hide-details
+              >
+              </v-combobox>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-combobox
+                v-model="blogInfo.type"
+                :items="blogTypeOptions"
+                label="文章类型"
+                outlined
+                dense
+                hide-details
+              ></v-combobox>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="submitFormVisible = false"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            text
+            @click="submitFormVisible = false"
+          >
+            保存为草稿
+          </v-btn>
+          <v-btn
+            color="info"
+            text
+            @click="onSubmit"
+          >
+            提交
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog } from '@/api/data'
-// import * as monaco from 'monaco-editor'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -97,35 +177,20 @@ export default class MDEditor extends Vue {
     title: '',
     content: '',
     tags: [],
-    type: 'original'
+    type: ''
   }
-
   submitFormVisible : boolean = false
   tagOptions : any = [
-    {
-      value: 'FE',
-      label: '前端'
-    },
-    {
-      value: 'BE',
-      label: '后端'
-    },
-    {
-      value: 'Java',
-      label: 'Java'
-    },
-    {
-      value: 'C++',
-      label: 'C++'
-    },
-    {
-      value: 'Python',
-      label: 'Python'
-    },
-    {
-      value: 'Other',
-      label: '其他'
-    }
+    '前端',
+    '后端',
+    'Java',
+    'C++',
+    'Python'
+  ]
+  blogTypeOptions : any = [
+    '原创',
+    '转载',
+    '翻译'
   ]
 
   erd : any = null
@@ -146,6 +211,7 @@ export default class MDEditor extends Vue {
   onSubmit () {
     addBlog(this.blogInfo).then(res => {
       this.$message.success('提交博客成功')
+      this.submitFormVisible = false
     }).catch(error => {
       this.$message.error('提交博客失败')
     })

@@ -32,16 +32,16 @@
                       >
                         <v-chip color="primary" outlined small label>
                           <v-icon left small>mdi-account</v-icon>
-                          {{blog.author}}
+                          {{blog.authorName}}
                         </v-chip>
                         <v-chip color="primary" outlined small label>
                           <v-icon left small>mdi-calendar</v-icon>
-                          {{blog.date}}
+                          {{blog.createdTime.replace("T", " ")}}
                         </v-chip>
 
                         <v-chip color="primary" outlined small label>
                           <v-icon left small>mdi-thumb-up</v-icon>
-                          {{blog.upvoteCount}}
+                          {{blog.voteCount}}
                         </v-chip>
 
                         <v-chip color="primary" outlined small label>
@@ -121,15 +121,16 @@ export default {
   },
   mounted () {
     getBlogList().then(res => {
-      this.blogList = res.data.content.map(item => {
+      let data = res.data.content
+      this.blogList = data.map(item => {
         let dataFormat = {
           id: 0,
           title: '',
           content: '',
           tags: [],
-          date: '2020-02-02 02:02',
-          author: 'admin',
-          upvoteCount: 0,
+          createdTime: '2020-02-02 02:02',
+          authorName: 'admin',
+          voteCount: 0,
           visitorCount: 0
         }
         Object.assign(dataFormat, item)
