@@ -18,39 +18,158 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <ul style="padding: 0">
-        <li v-for="comment in commentTree" v-bind:key="comment.id">
-          <div style="margin-left: 2.2rem">
-            <span style="font-weight: bold; font-size: 18px;">{{comment.authorName}}</span>
-            <span style="margin-left: 10px; font-size: 16px;">{{comment.modifiedTime}}</span>
-            <span style="float: right">
-              <v-btn text color="error" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">删除</v-btn>
-              <v-btn text color="info" @click="replyTo = comment.id">回复</v-btn>
-            </span>
-          </div>
-          <div style="margin-left: 2.2rem">
-            <p style="font-size: 15px;">{{comment.content}}</p>
-          </div>
-          <ul>
-            <li v-for="subComment in comment.comments" v-bind:key="subComment.id">
-              <div style="margin-left: 2.2rem">
-                <span style="font-weight: bold; font-size: 18px;">{{subComment.authorName}}</span>
-                <span style="font-size: 16px; margin: 0 10px;">回复</span>
-                <span style="font-weight: bold; font-size: 18px;">{{commentLevelTree[subComment.replyTo].authorName}}</span>
-                <span style="margin-left: 10px; font-size: 16px;">{{subComment.modifiedTime}}</span>
-                <span style="float: right">
-                  <v-btn text color="error" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">删除</v-btn>
-                  <v-btn text color="info" @click="replyTo = subComment.id">回复</v-btn>
-                </span>
-              </div>
-              <div style="margin-left: 2.2rem">
-                <p style="font-size: 15px;">{{subComment.content}}</p>
-              </div>
-            </li>
-          </ul>
-          <v-divider style="margin: 10px 0"/>
-        </li>
-      </ul>
+      <!-- <v-list flat>
+        <v-list-group
+          v-for="comment in commentTree"
+          :key="comment.id"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-avatar>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="comment.authorName" style="margin-bottom: 5px;"></v-list-item-title>
+              <v-list-item-subtitle class="text--primary" v-text="comment.content"></v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{comment.modifiedTime.replace("T", " ")}}
+                <v-btn
+                  x-small
+                  text
+                  :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                  @click="voteComment(comment.id)"
+                >
+                  <v-icon small left>mdi-thumb-up</v-icon>
+                  {{comment.voteCount}}
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
+                  回复
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
+                  删除
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)">
+                  查看更多
+                </v-btn>
+              </v-list-item-subtitle>
+              <v-list-item-subtitle v-text="comment.expand"></v-list-item-subtitle>
+            </v-list-item-content>
+          </template>
+          <v-list-item
+            v-for="subComment in comment.comments"
+            :key="subComment.id"
+          >
+            <v-list-item-avatar>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="`${subComment.authorName} 回复 ${commentLevelTree[subComment.replyTo].authorName}`"></v-list-item-title>
+              <v-list-item-subtitle class="text--primary" v-text="subComment.content"></v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{subComment.modifiedTime.replace("T", " ")}}
+                <v-btn
+                  x-small
+                  text
+                  :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                  @click="voteComment(subComment.id)"
+                >
+                  <v-icon small left>mdi-thumb-up</v-icon>
+                  {{subComment.voteCount}}
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
+                  回复
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
+                  删除
+                </v-btn>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider inset></v-divider>
+        </v-list-group>
+      </v-list> -->
+      <v-list flat>
+        <v-list-item
+          v-for="comment in commentTree"
+          :key="comment.id"
+          no-action
+        >
+          <v-list-item-icon>
+            <!-- <v-icon>mdi-account-circle</v-icon> -->
+            <v-avatar size="38" v-on="on">
+              <img
+                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                alt="user"
+              >
+            </v-avatar>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="comment.authorName" style="margin-bottom: 5px;"></v-list-item-title>
+            <v-list-item-subtitle class="text--primary" v-text="comment.content"></v-list-item-subtitle>
+            <v-list-item-subtitle>
+              {{comment.createdTime.replace("T", " ")}}
+              <v-btn
+                x-small
+                text
+                :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                @click="voteComment(comment.id)"
+              >
+                <v-icon small left>mdi-thumb-up</v-icon>
+                {{comment.voteCount}}
+              </v-btn>
+              <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
+                回复
+              </v-btn>
+              <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
+                删除
+              </v-btn>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <v-list>
+                <v-list-item
+                  v-for="subComment in comment.comments"
+                  :key="subComment.id"
+                >
+                  <v-list-item-icon>
+                    <!-- <v-icon>mdi-account-circle</v-icon> -->
+                    <v-avatar size="32" v-on="on">
+                      <img
+                        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                        alt="user"
+                      >
+                    </v-avatar>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="`${subComment.authorName} 回复 ${commentLevelTree[subComment.replyTo].authorName}`"></v-list-item-title>
+                    <v-list-item-subtitle class="text--primary" v-text="subComment.content"></v-list-item-subtitle>
+                    <v-list-item-subtitle>
+                      {{subComment.createdTime.replace("T", " ")}}
+                      <v-btn
+                        x-small
+                        text
+                        :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                        @click="voteComment(subComment.id)"
+                      >
+                        <v-icon small left>mdi-thumb-up</v-icon>
+                        {{subComment.voteCount}}
+                      </v-btn>
+                      <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
+                        回复
+                      </v-btn>
+                      <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
+                        删除
+                      </v-btn>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <v-divider></v-divider>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
@@ -63,6 +182,7 @@ import {
   editBlogComment,
   deleteBlogComment
 } from '@/api/data'
+import { getCommentStatus, voteComment } from '@/api/vote'
 / tslint:disable /
 
 class Comment {
@@ -72,6 +192,7 @@ class Comment {
   replyTo : number
   createdTime : string
   modifiedTime: string
+  voteCount : number
 }
 
 @Component
@@ -84,7 +205,12 @@ export default class BlogComment extends Vue {
 
   commentContent: string = ""
 
+  commentVote: any = {}
+
   replyTo : number = -1
+
+  UP_VOTE : number = 1
+  CANCEL_VOTE : number = 0
 
   mounted () {
     this.getComments()
@@ -92,13 +218,42 @@ export default class BlogComment extends Vue {
 
   getComments () {
     getBlogComments(this.blogId).then(res => {
-      this.commentTree = this.buildCommentTree(res.data.content)
+      let data = res.data.content
+      let commentIds = []
+      this.commentVote = {}
+      data.forEach(item => {
+        commentIds.push(item.id)
+      })
+      getCommentStatus(commentIds).then(res => {
+        res.data.forEach(item => {
+          this.commentVote[item.entityId] = item.status
+        })
+        this.commentTree = this.buildCommentTree(data)
+      }).catch(err => [
+        console.error(err)
+      ])
     }).catch(err => {
       this.$message({
         message: err,
         type: 'error'
       })
     })
+  }
+
+  voteComment (commentId : number) {
+    if (this.commentVote[commentId] === this.UP_VOTE) {
+      voteComment(commentId, this.CANCEL_VOTE).then(res => {
+        this.getComments()
+      }).catch(err => {
+        console.error(err)
+      })
+    } else {
+      voteComment(commentId, this.UP_VOTE).then(res => {
+        this.getComments()
+      }).catch(err => {
+        console.error(err)
+      })
+    }
   }
 
   addComment (commentId: number = -1) {
