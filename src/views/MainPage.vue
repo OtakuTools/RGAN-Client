@@ -16,7 +16,7 @@
                 <template>
                   <v-list-item-content>
                     <v-list-item-title v-text="blog.title"></v-list-item-title>
-                    <v-list-item-subtitle v-text="blog.title"></v-list-item-subtitle>
+                    <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
                     <v-list-item-subtitle>
                       <v-chip-group
                         column
@@ -29,22 +29,23 @@
                     <v-list-item-subtitle>
                       <v-chip-group
                         column
+                        disabled
                       >
-                        <v-chip color="primary" outlined small label>
+                        <v-chip tile outlined small label>
                           <v-icon left small>mdi-account</v-icon>
                           {{blog.authorName}}
                         </v-chip>
-                        <v-chip color="primary" outlined small label>
+                        <v-chip outlined small label>
                           <v-icon left small>mdi-calendar</v-icon>
                           {{blog.createdTime.replace("T", " ")}}
                         </v-chip>
 
-                        <v-chip color="primary" outlined small label>
+                        <v-chip outlined small label>
                           <v-icon left small>mdi-thumb-up</v-icon>
                           {{blog.voteCount}}
                         </v-chip>
 
-                        <v-chip color="primary" outlined small label>
+                        <v-chip outlined small label>
                           <v-icon left small>mdi-eye</v-icon>
                           {{blog.visitorCount}}
                         </v-chip>
@@ -127,6 +128,7 @@ export default {
           id: 0,
           title: '',
           content: '',
+          summary: '',
           tags: [],
           createdTime: '2020-02-02 02:02',
           authorName: 'admin',
@@ -157,6 +159,7 @@ export default {
             id: 0,
             title: '',
             content: '',
+            summary: '',
             tags: [],
             date: '2020-02-02 02:02',
             author: 'admin',

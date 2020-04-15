@@ -118,6 +118,20 @@
           </v-row>
           <v-row>
             <v-col cols="12">
+              <v-textarea
+                v-model="blogInfo.summary"
+                outlined
+                dense
+                rows="5"
+                label="博客摘要"
+                auto-grow
+                hide-details
+              >
+              </v-textarea>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
               <v-combobox
                 v-model="blogInfo.type"
                 :items="blogTypeOptions"
@@ -174,7 +188,8 @@ export default class MDEditor extends Vue {
     title: '',
     content: '',
     tags: [],
-    type: ''
+    type: '',
+    summary: ''
   }
   submitFormVisible : boolean = false
   tagOptions : any = [
