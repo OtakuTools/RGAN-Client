@@ -18,91 +18,17 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <!-- <v-list flat>
-        <v-list-group
-          v-for="comment in commentTree"
-          :key="comment.id"
-          no-action
-        >
-          <template v-slot:activator>
-            <v-list-item-avatar>
-              <v-icon>mdi-account-circle</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-text="comment.authorName" style="margin-bottom: 5px;"></v-list-item-title>
-              <v-list-item-subtitle class="text--primary" v-text="comment.content"></v-list-item-subtitle>
-              <v-list-item-subtitle>
-                {{comment.modifiedTime.replace("T", " ")}}
-                <v-btn
-                  x-small
-                  text
-                  :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
-                  @click="voteComment(comment.id)"
-                >
-                  <v-icon small left>mdi-thumb-up</v-icon>
-                  {{comment.voteCount}}
-                </v-btn>
-                <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
-                  回复
-                </v-btn>
-                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
-                  删除
-                </v-btn>
-                <v-btn x-small text color="rgba(0,0,0,.6)">
-                  查看更多
-                </v-btn>
-              </v-list-item-subtitle>
-              <v-list-item-subtitle v-text="comment.expand"></v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-          <v-list-item
-            v-for="subComment in comment.comments"
-            :key="subComment.id"
-          >
-            <v-list-item-avatar>
-              <v-icon>mdi-account-circle</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-text="`${subComment.authorName} 回复 ${commentLevelTree[subComment.replyTo].authorName}`"></v-list-item-title>
-              <v-list-item-subtitle class="text--primary" v-text="subComment.content"></v-list-item-subtitle>
-              <v-list-item-subtitle>
-                {{subComment.modifiedTime.replace("T", " ")}}
-                <v-btn
-                  x-small
-                  text
-                  :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
-                  @click="voteComment(subComment.id)"
-                >
-                  <v-icon small left>mdi-thumb-up</v-icon>
-                  {{subComment.voteCount}}
-                </v-btn>
-                <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
-                  回复
-                </v-btn>
-                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
-                  删除
-                </v-btn>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider inset></v-divider>
-        </v-list-group>
-      </v-list> -->
-      <v-list flat>
+      <v-list flat three-line>
         <v-list-item
           v-for="comment in commentTree"
           :key="comment.id"
-          no-action
         >
-          <v-list-item-icon>
-            <!-- <v-icon>mdi-account-circle</v-icon> -->
-            <v-avatar size="38" v-on="on">
-              <img
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                alt="user"
-              >
-            </v-avatar>
-          </v-list-item-icon>
+          <v-list-item-avatar>
+            <img
+              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              alt="user"
+            >
+          </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title v-text="comment.authorName" style="margin-bottom: 5px;"></v-list-item-title>
             <v-list-item-subtitle class="text--primary" v-text="comment.content"></v-list-item-subtitle>
@@ -125,20 +51,17 @@
               </v-btn>
             </v-list-item-subtitle>
             <v-list-item-subtitle>
-              <v-list>
+              <v-list flat three-line>
                 <v-list-item
                   v-for="subComment in comment.comments"
                   :key="subComment.id"
                 >
-                  <v-list-item-icon>
-                    <!-- <v-icon>mdi-account-circle</v-icon> -->
-                    <v-avatar size="32" v-on="on">
-                      <img
-                        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                        alt="user"
-                      >
-                    </v-avatar>
-                  </v-list-item-icon>
+                  <v-list-item-avatar>
+                    <img
+                      src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                      alt="user"
+                    >
+                  </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title v-text="`${subComment.authorName} 回复 ${commentLevelTree[subComment.replyTo].authorName}`"></v-list-item-title>
                     <v-list-item-subtitle class="text--primary" v-text="subComment.content"></v-list-item-subtitle>
@@ -359,5 +282,9 @@ li {
   list-style-type: none;
   background: url("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png") no-repeat 0rem -0.2rem;
   background-size: 2rem 2rem;
+}
+
+.v-list--three-line .v-list-item .v-list-item__subtitle, .v-list-item--three-line .v-list-item__subtitle {
+  -webkit-line-clamp: unset;
 }
 </style>
