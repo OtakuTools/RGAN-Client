@@ -114,7 +114,7 @@
                 :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
                 @click="voteComment(comment.id)"
               >
-                <v-icon small left>mdi-thumb-up</v-icon>
+                <v-icon small left>mdi-thumb-up-outline</v-icon>
                 {{comment.voteCount}}
               </v-btn>
               <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
@@ -150,7 +150,7 @@
                         :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
                         @click="voteComment(subComment.id)"
                       >
-                        <v-icon small left>mdi-thumb-up</v-icon>
+                        <v-icon small left>mdi-thumb-up-outline</v-icon>
                         {{subComment.voteCount}}
                       </v-btn>
                       <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
