@@ -28,51 +28,48 @@
           flat
           dense
           color="rgb(238, 238, 238)"
-          >
-          <v-btn-toggle
-            dense
-            group
-          >
-            <v-btn @click="handleShortcut('bold')">
+        >
+          <v-toolbar-items>
+            <v-btn depressed tile icon @click="handleShortcut('bold')">
               <v-icon>mdi-format-bold</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('italic')">
+            <v-btn depressed tile icon @click="handleShortcut('italic')">
               <v-icon>mdi-format-italic</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('title')">
+            <v-btn depressed tile icon @click="handleShortcut('title')">
               <v-icon>mdi-format-header-1</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('delete')">
+            <v-btn depressed tile icon @click="handleShortcut('delete')">
               <v-icon>mdi-format-strikethrough</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('quote')">
+            <v-btn depressed tile icon @click="handleShortcut('quote')">
               <v-icon>mdi-format-quote-close</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('codeblock')">
+            <v-btn depressed tile icon @click="handleShortcut('codeblock')">
               <v-icon>mdi-code-tags</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('table')">
+            <v-btn depressed tile icon @click="handleShortcut('table')">
               <v-icon>mdi-table</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('link')">
+            <v-btn depressed tile icon @click="handleShortcut('link')">
               <v-icon>mdi-link</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('image')">
+            <v-btn depressed tile icon @click="handleShortcut('image')">
               <v-icon>mdi-image-search-outline</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('save')">
+            <v-btn depressed tile icon @click="handleShortcut('save')">
               <v-icon>mdi-content-save-outline</v-icon>
             </v-btn>
-            <v-btn @click="handleShortcut('derive')">
+            <v-btn depressed tile icon @click="handleShortcut('derive')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
-            <v-btn>
+            <v-btn depressed tile icon>
               <v-icon>mdi-fullscreen</v-icon>
             </v-btn>
-            <v-btn>
+            <v-btn depressed tile icon>
               <v-icon>mdi-eye-outline</v-icon>
             </v-btn>
-          </v-btn-toggle>
+          </v-toolbar-items>
         </v-toolbar>
       </v-col>
     </v-row>
