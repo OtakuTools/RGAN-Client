@@ -40,11 +40,6 @@ export const getBlogComments = (blogId: number) => {
 }
 
 export const addBlogComment = (blogId: number, data: Object) => {
-  console.log({
-    url: `/api/blogs/${blogId}/comments`,
-    method: 'post',
-    data
-  })
   return axios.request({
     url: `/api/blogs/${blogId}/comments`,
     method: 'post',

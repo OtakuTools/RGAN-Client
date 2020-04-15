@@ -20,12 +20,16 @@
           </v-chip-group>
           <v-divider style="margin: 20px 0"/>
           <MarkdownViewer :inputText="blogInfo.content" />
+          <v-btn outlined color="orange" style="margin-right: 10px">
+            <v-icon left>mdi-star-outline</v-icon>
+            {{voteStatus}}
+          </v-btn>
           <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" style="margin-right: 10px">
-            <v-icon left>mdi-thumb-up</v-icon>
+            <v-icon left>mdi-thumb-up-outline</v-icon>
             赞
           </v-btn>
           <v-btn :outlined="voteStatus != DOWN_VOTE" @click="voteBlog(-1)" color="blue">
-            <v-icon left>mdi-thumb-down</v-icon>
+            <v-icon left>mdi-thumb-down-outline</v-icon>
             踩
           </v-btn>
           <v-divider style="margin: 20px 0"/>
@@ -80,7 +84,7 @@ export default {
   methods: {
     getVoteStatus () {
       getBlogStatus([this.$route.query.id]).then(res => {
-        this.voteStatus = res.data[0].status
+        this.voteStatus = res.data.length? res.data[0].status : 0
       }).catch(err => {
         this.$message({
           message: err.response.data.message,

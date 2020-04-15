@@ -4,7 +4,7 @@
     color="white"
     hide-on-scroll
   >
-    <v-toolbar-title>RGAN</v-toolbar-title>
+    <v-toolbar-title style="min-width: 100px">RGAN</v-toolbar-title>
 
     <v-spacer></v-spacer>
 

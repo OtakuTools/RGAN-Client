@@ -1,34 +1,77 @@
 <template>
-  <el-card class="card-box">
-    <el-container>
-      <el-main>
-        <el-form ref="userInfo" :model="userInfo" label-width="60px">
-          <el-form-item label="用户名">
-            <el-input v-model="userInfo.username"></el-input>
-          </el-form-item>
-          <el-form-item label="密码">
-            <el-input type="password" v-model="userInfo.password"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button style="width: 100%" type="primary" @click="onSubmit" :loading="loading">注 册</el-button>
-          </el-form-item>
-        </el-form>
-      </el-main>
-    </el-container>
-  </el-card>
+  <v-card class="card-box" style="width: 400px;">
+    <v-form v-model="valid" ref="form">
+      <v-container>
+        <v-row>
+          <v-col></v-col>
+          <v-col cols="10">
+            <v-text-field
+              label="用户名"
+              hide-details
+              v-model="userInfo.username"
+              :rules="usrRules"
+              prepend-icon="mdi-account-circle-outline"
+              clearable
+            ></v-text-field>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+        <v-row>
+          <v-col></v-col>
+          <v-col cols="10">
+            <v-text-field
+              label="密码"
+              hide-details
+              v-model="userInfo.password"
+              clearable
+              prepend-icon="mdi-lock-outline"
+              :rules="pswRules"
+              :append-icon="showPsw ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPsw ? 'text' : 'password'"
+              @click:append="showPsw = !showPsw"
+            ></v-text-field>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+        <v-row>
+          <v-col></v-col>
+          <v-col cols="10">
+            <v-btn :loading="loading" block rounded color="primary" @click="onSubmit()">
+              注册
+            </v-btn>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+  </v-card>
 </template>
 
 <style lang="less" scoped>
-.card-box {
-  width: 500px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+@media (max-width: 400px) {
+  .card-box {
+    position: absolute;
+    left:0%;
+    top: 50%;
+    -webkit-transform: translate(0%, -50%);
+    -moz-transform: translate(0%, -50%);
+    -ms-transform: translate(0%, -50%);
+    -o-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+  }
+}
+
+@media (min-width: 401px) {
+  .card-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
 }
 </style>
 
@@ -46,11 +89,20 @@ export default {
         username: '',
         password: ''
       },
-      loading: false
+      loading: false,
+      showPsw: false,
+      valid: false,
+      usrRules: [
+        v => !!v || 'Name is required',
+      ],
+      pswRules: [
+        v => !!v || 'Password is required',
+      ],
     }
   },
   methods: {
     onSubmit () {
+      if (!this.$refs.form.validate()) return
       this.loading = true
       regist(this.userInfo).then(res => {
         this.loading = false
