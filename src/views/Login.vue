@@ -57,7 +57,7 @@
         <v-row>
           <v-col></v-col>
           <v-col cols="10">
-            <v-btn x-small text flat @click="$router.push('/regist')" style="float: right;">没有账号？去注册</v-btn>
+            <v-btn x-small text @click="$router.push('/regist')" style="float: right;">没有账号？去注册</v-btn>
           </v-col>
           <v-col></v-col>
         </v-row>

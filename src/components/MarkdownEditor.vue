@@ -1,14 +1,12 @@
 <template>
   <v-container style="height: 100vh; max-width: 100vw; padding: 0 5px; overflow-x: hidden;">
     <v-row>
-      <!-- 标题 -->
       <v-col cols="12">
         <v-app-bar
           flat
           color="white"
           dense
         >
-          <!-- <v-toolbar-title>博客标题</v-toolbar-title> -->
           <v-text-field
             label="博客标题"
             outlined
@@ -63,33 +61,38 @@
             <v-btn depressed tile icon @click="handleShortcut('derive')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
-            <v-btn depressed tile icon>
-              <v-icon>mdi-fullscreen</v-icon>
+            <v-btn depressed tile icon @click="() => { fullScreen = !fullScreen; if (viewMode) { viewMode = false }}">
+              <v-icon v-if="fullScreen">mdi-fullscreen</v-icon>
+              <v-icon v-else>mdi-fullscreen-exit</v-icon>
             </v-btn>
-            <v-btn depressed tile icon>
-              <v-icon>mdi-eye-outline</v-icon>
+            <v-btn depressed tile icon @click="() => { viewMode = !viewMode; if (fullScreen) { fullScreen = false }}">
+              <v-icon v-if="viewMode">mdi-eye-off-outline</v-icon>
+              <v-icon v-else>mdi-eye-outline</v-icon>
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row style="padding: 0; height: calc(100vh - 120px); overflow: hidden;">
-      <v-col cols="6" style="padding: 0;">
+      <v-col v-if="!viewMode" :cols="fullScreen? 12 : 6" style="padding: 0;">
         <v-card outlined style="height: calc(100vh - 120px);">
           <MonacoEditor
             ref="monacoEditor"
             style="height: 100%"
+            :codeInput="blogInfo.content"
             @on-content-change="handleCodeChange"
             @on-content-scroll="handleCodeScroll"
           />
         </v-card>
       </v-col>
-      <v-col cols="6" style="padding: 0">
-        <MarkdownViewer 
-          ref="markdownViewer"
-          :inputText="blogInfo.content"
-          style="height: 100%; max-height: calc(100vh - 120px); overflow-y: scroll;"
-        ></MarkdownViewer>
+      <v-col v-if="!fullScreen" style="padding: 0">
+        <v-card outlined style="height: calc(100vh - 120px); padding-left: 10px">
+          <MarkdownViewer 
+            ref="markdownViewer"
+            :inputText="blogInfo.content"
+            style="height: 100%; max-height: calc(100vh - 120px); overflow-y: scroll;"
+          ></MarkdownViewer>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -99,7 +102,6 @@
     >
       <v-card>
         <v-card-title class="headline">发布文章</v-card-title>
-
         <v-card-text>
           <v-row>
             <v-col cols="12">
@@ -172,7 +174,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
-import { addBlog } from '@/api/data'
+import { addBlog, getBlogById } from '@/api/data'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -207,6 +209,9 @@ export default class MDEditor extends Vue {
 
   erd : any = null
   loading: any = null
+
+  viewMode : boolean = false
+  fullScreen : boolean = false
 
   handleCodeChange (val: string) {
     this.blogInfo.content = val
@@ -328,6 +333,14 @@ export default class MDEditor extends Vue {
   }
   mounted () {
     this.loading.close()
+    if (this.$route.query.hasOwnProperty("blog")) {
+      let blogId : any = this.$route.query.blog
+      getBlogById (parseInt(blogId)).then(res => {
+        this.blogInfo = res.data
+      }).catch(err => {
+        console.error(err)
+      })
+    }
   }
 }
 </script>

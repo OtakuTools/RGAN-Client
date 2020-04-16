@@ -74,5 +74,12 @@ export default class MonacoEditor extends Vue {
   destroy () {
     this.monacoEditor.dispose()
   }
+
+  @Watch('codeInput')
+  handleTextChange (newVal: string) {
+    if (newVal !== this.code) {
+      this.monacoEditor.setValue(newVal)
+    }
+  }
 }
 </script>

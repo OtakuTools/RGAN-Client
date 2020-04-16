@@ -21,7 +21,7 @@
                       <v-chip-group
                         column
                       >
-                        <v-chip v-for="tag in blog.tags" :key="tag.id" small>
+                        <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
                           {{ tag.title }}
                         </v-chip>
                       </v-chip-group>

@@ -9,20 +9,35 @@
       <v-col cols="12">
         <div style="padding-top: 20px;">
           <h1>{{blogInfo.title}}</h1>
-          <v-chip-group
-            column
-            active-class="primary--text"
-            readonly
-          >
-            <v-chip v-for="tag in blogInfo.tags" :key="tag.id" small>
-              {{ tag.title }}
-            </v-chip>
-          </v-chip-group>
-          <v-divider style="margin: 20px 0"/>
+          <v-list three-line flat>
+            <v-list-item style="padding: 0">
+              <v-list-item-content>
+                <v-list-item-subtitle>
+                  <v-chip color="orange" x-small label outlined style="margin-right: 10px">原创</v-chip>
+                  <a style="margin-right: 10px">{{blogInfo.authorName}}</a>
+                  <span>最后发表于 {{blogInfo.modifiedTime ? blogInfo.modifiedTime.replace("T", " ") : ""}}</span>
+                  <a style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
+                </v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  <v-chip-group
+                    column
+                    active-class="primary--text"
+                    readonly
+                  >
+                    <div style="line-height: 24px; margin-right: 5px">标签</div>
+                    <v-chip v-for="tag in blogInfo.tags" :key="tag.id" x-small>
+                      {{ tag.title }}
+                    </v-chip>
+                  </v-chip-group>
+                  <v-divider></v-divider>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
           <MarkdownViewer :inputText="blogInfo.content" />
           <v-btn outlined color="orange" style="margin-right: 10px">
             <v-icon left>mdi-star-outline</v-icon>
-            {{voteStatus}}
+            {{blogInfo.upvoteCount}}
           </v-btn>
           <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" style="margin-right: 10px">
             <v-icon left>mdi-thumb-up-outline</v-icon>
