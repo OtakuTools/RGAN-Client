@@ -109,17 +109,31 @@ export default {
     },
     upVote () {
       voteBlog(this.blogId, this.UP_VOTE).then(res => {
-        this.getVoteStatus()
+        // this.getVoteStatus()
+        this.blogInfo.upvoteCount -= this.voteStatus
+        this.blogInfo.upvoteCount += this.UP_VOTE
+        this.voteStatus = this.UP_VOTE
+      }).catch(err => {
+        console.error(err)
       })
     },
     downVote () {
       voteBlog(this.blogId, this.DOWN_VOTE).then(res => {
-        this.getVoteStatus()
+        // this.getVoteStatus()
+        this.blogInfo.upvoteCount -= this.voteStatus
+        this.blogInfo.upvoteCount += this.DOWN_VOTE
+        this.voteStatus = this.DOWN_VOTE
+      }).catch(err => {
+        console.error(err)
       })
     },
     cancelVote () {
       voteBlog(this.blogId, this.CANCEL_VOTE).then(res => {
-        this.getVoteStatus()
+        // this.getVoteStatus()
+        this.blogInfo.upvoteCount -= this.voteStatus
+        this.voteStatus = this.CANCEL_VOTE
+      }).catch(err => {
+        console.error(err)
       })
     },
     voteBlog(mode) {

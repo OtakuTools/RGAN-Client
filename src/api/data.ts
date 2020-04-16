@@ -15,6 +15,14 @@ export const addBlog = (data: Object) => {
   })
 }
 
+export const modifyBlog = (id : number, data : Object) => {
+  return axios.request({
+    url: `/api/blogs/${id}`,
+    method: 'put',
+    data
+  })
+}
+
 export const getBlogById = (id: number) => {
   return axios.request({
     url: `/api/blogs/${id}`,

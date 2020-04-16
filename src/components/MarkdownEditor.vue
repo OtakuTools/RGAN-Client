@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
-import { addBlog, getBlogById } from '@/api/data'
+import { addBlog, modifyBlog, getBlogById } from '@/api/data'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -226,12 +226,21 @@ export default class MDEditor extends Vue {
   }
 
   onSubmit () {
-    addBlog(this.blogInfo).then(res => {
-      this.$message.success('提交博客成功')
-      this.submitFormVisible = false
-    }).catch(error => {
-      this.$message.error('提交博客失败')
-    })
+    if (this.blogInfo.hasOwnProperty('id')) {
+      modifyBlog(this.blogInfo.id, this.blogInfo).then(res => {
+        this.$message.success('修改博客成功')
+        this.submitFormVisible = false
+      }).catch(error => {
+        this.$message.error('修改博客失败')
+      })
+    } else {
+      addBlog(this.blogInfo).then(res => {
+        this.$message.success('提交博客成功')
+        this.submitFormVisible = false
+      }).catch(error => {
+        this.$message.error('提交博客失败')
+      })
+    }
   }
 
   insertContentWithoutSelection (text: string, selectionPart? : string) {
@@ -324,19 +333,15 @@ export default class MDEditor extends Vue {
   }
 
   created () {
-    this.loading = this.$loading({
-      lock: true,
-      text: 'Loading',
-      spinner: 'el-icon-loading',
-      background: 'rgba(0, 0, 0, 0.7)'
-    })
+
   }
   mounted () {
-    this.loading.close()
     if (this.$route.query.hasOwnProperty("blog")) {
       let blogId : any = this.$route.query.blog
       getBlogById (parseInt(blogId)).then(res => {
-        this.blogInfo = res.data
+        let data = res.data
+        data.tags = data.tags.map(item => item.title)
+        this.blogInfo = data
       }).catch(err => {
         console.error(err)
       })

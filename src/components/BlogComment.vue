@@ -18,7 +18,7 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <v-list flat three-line>
+      <v-list flat three-line :key="forceRefresh">
         <v-list-item
           v-for="comment in commentTree"
           :key="comment.id"
@@ -41,7 +41,8 @@
                 @click="voteComment(comment.id)"
               >
                 <v-icon small left>mdi-thumb-up-outline</v-icon>
-                {{comment.voteCount}}
+                <!-- {{comment.voteCount}} -->
+                {{commentVoteCount[comment.id]}}
               </v-btn>
               <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
                 回复
@@ -74,7 +75,8 @@
                         @click="voteComment(subComment.id)"
                       >
                         <v-icon small left>mdi-thumb-up-outline</v-icon>
-                        {{subComment.voteCount}}
+                        <!-- {{subComment.voteCount}} -->
+                        {{commentVoteCount[subComment.id]}}
                       </v-btn>
                       <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
                         回复
@@ -129,11 +131,14 @@ export default class BlogComment extends Vue {
   commentContent: string = ""
 
   commentVote: any = {}
+  commentVoteCount: any = {}
 
   replyTo : number = -1
 
   UP_VOTE : number = 1
   CANCEL_VOTE : number = 0
+
+  forceRefresh : number = 0
 
   mounted () {
     this.getComments()
@@ -144,8 +149,10 @@ export default class BlogComment extends Vue {
       let data = res.data.content
       let commentIds = []
       this.commentVote = {}
+      this.commentVoteCount = {}
       data.forEach(item => {
         commentIds.push(item.id)
+        this.commentVoteCount[item.id] = item.voteCount
       })
       getCommentStatus(commentIds).then(res => {
         res.data.forEach(item => {
@@ -166,15 +173,23 @@ export default class BlogComment extends Vue {
   voteComment (commentId : number) {
     if (this.commentVote[commentId] === this.UP_VOTE) {
       voteComment(commentId, this.CANCEL_VOTE).then(res => {
-        this.getComments()
+        // this.getComments()
+        this.commentVote[commentId] -= this.UP_VOTE
+        this.commentVoteCount[commentId] -= this.UP_VOTE
       }).catch(err => {
         console.error(err)
+      }).finally(() => {
+        this.forceRefresh -= 1
       })
     } else {
       voteComment(commentId, this.UP_VOTE).then(res => {
-        this.getComments()
+        // this.getComments()
+        this.commentVote[commentId] += this.UP_VOTE
+        this.commentVoteCount[commentId] += this.UP_VOTE
       }).catch(err => {
         console.error(err)
+      }).finally(() => {
+        this.forceRefresh += 1
       })
     }
   }
