@@ -1,35 +1,116 @@
 <template>
-  <el-container>
-    <el-main>
-      <h1>用户信息绑定</h1>
-      <el-form ref="userInfo" :model="userInfo" label-width="80px">
-        <el-form-item label="用户邮箱">
-          <el-input v-model="userInfo.email" style="width: 300px"></el-input>
-          <el-button type="text" @click="verifyEmail" style="margin-left: 10px">验证邮箱</el-button>
-        </el-form-item>
-      </el-form>
-      <el-divider></el-divider>
-      <h1>用户基础信息</h1>
-      <el-form ref="userInfo" :model="userInfo" label-width="80px">
-        <el-form-item label="用户头像">
-          <el-avatar :size="100" :src="userInfo.avatarUrl" fit="scale-down"></el-avatar>
-        </el-form-item>
-        <el-form-item label="用户名">
-          <el-input v-model="userInfo.username"></el-input>
-        </el-form-item>
-        <el-form-item label="用户密码">
-          <el-input v-model="userInfo.password"></el-input>
-        </el-form-item>
-        <el-form-item label="个人简介">
-          <el-input type="textarea" v-model="userInfo.description"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
+  <v-container>
+    <v-list three-line flat>
+      <v-list-item>
+        <v-list-item-avatar size="120" class="avatarback">
+          <v-img
+            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+            alt="user"
+            class="avatar"
+            @click="chooseAvatar"
+          >
+          </v-img>
+          <!-- <p class="avatartext">修改图片</p> -->
+          <v-dialog
+            v-model="avatarDialog"
+            width="500"
+          >
+            <template v-slot:activator="{ on }">
+              <p class="avatartext" v-on="on">上传图片</p>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">图片上传</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-file-input show-size accept="image/*" label="选择图片文件"></v-file-input>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="avatarDialog = false">取消</v-btn>
+                <v-btn color="blue darken-1" text @click="avatarDialog = false">提交</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-subtitle style="font-size: 16pt; margin: 20px 0;">ID: {{userInfo.id}}</v-list-item-subtitle>
+          <v-list-item-subtitle style="margin: 15px 0;" v-text="`关注 0 粉丝 0`"></v-list-item-subtitle>
+          <v-list-item-subtitle>
+            <v-divider style="margin: 15px 0" />
+            <v-form>
+              <v-text-field
+                v-model="userInfo.username"
+                :counter="10"
+                label="昵称"
+                outlined
+                shaped
+                :readonly="!modifyMode"
+              ></v-text-field>
+              <v-text-field
+                v-if="modifyMode"
+                v-model="userInfo.email"
+                label="邮箱"
+                outlined
+                shaped
+                :loading="emailVerifyLoading"
+                append-outer-icon="mdi-email-check-outline"
+                @click:append-outer="verifyEmail()"
+              ></v-text-field>
+              <v-text-field
+                v-else
+                v-model="userInfo.email"
+                label="邮箱"
+                outlined
+                shaped
+                :readonly="!modifyMode"
+                @click:append-outer="verifyEmail()"
+              ></v-text-field>
+              <v-textarea
+                v-model="userInfo.description"
+                label="个人简介"
+                outlined
+                shaped
+                no-resize
+                auto-grow
+                :readonly="!modifyMode"
+              ></v-textarea>
+              <v-btn
+                v-if="!modifyMode"
+                color="primary"
+                @click="modifyMode = !modifyMode"
+              >
+                修改用户资料
+              </v-btn>
+
+              <v-btn
+                v-if="modifyMode"
+                color="warning"
+                @click="modifyMode = !modifyMode"
+                style="margin-right: 10px;"
+              >
+                取消修改
+              </v-btn>
+
+              <v-btn
+                v-if="modifyMode"
+                color="success"
+                @click="onSubmit()"
+              >
+                保存修改
+              </v-btn>
+            </v-form>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -41,6 +122,7 @@ import { getUserInfo } from '@/api/user'
 @Component
 export default class UserInfoEditor extends Vue {
   userInfo : any = {
+    id: '',
     username: '',
     password: '',
     avatarUrl: '',
@@ -48,9 +130,12 @@ export default class UserInfoEditor extends Vue {
     description: ''
   }
 
+  modifyMode : boolean = false
+  avatarDialog : boolean = false
+  emailVerifyLoading : boolean = false
+
   mounted () {
     getUserInfo(this.$store.state.user.id).then(res => {
-      // console.log(res.data)
       Object.assign(this.userInfo, res.data)
     }).catch(err => {
       this.$message.error(err)
@@ -59,6 +144,7 @@ export default class UserInfoEditor extends Vue {
 
   verifyEmail () {
     if (this.userInfo.email !== '') {
+      this.emailVerifyLoading = true
       emailVerificationSend({
         email: this.userInfo.email
       }).then(res => {
@@ -71,8 +157,14 @@ export default class UserInfoEditor extends Vue {
           message: err,
           type: 'error'
         })
+      }).finally(() => {
+        this.emailVerifyLoading = false
       })
     }
+  }
+
+  chooseAvatar () {
+    console.log("a")
   }
 
   onSubmit () {
@@ -83,5 +175,32 @@ export default class UserInfoEditor extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.avatartext {
+  position: absolute;
+  width: 80px;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  color: white;
+  visibility: hidden;
+  cursor: pointer;
+}
+.avatartext:hover .avatar {
+  filter: Alpha(Opacity=60);
+  opacity: 0.6;
+}
+.avatarback:hover {
+  background-color:#000;
+}
+.avatarback:hover .avatar{
+  filter: Alpha(Opacity=60);
+  opacity: 0.6;
+}
+.avatarback:hover .avatartext {
+  visibility: visible;
+}
 </style>

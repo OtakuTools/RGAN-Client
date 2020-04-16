@@ -85,7 +85,7 @@
           />
         </v-card>
       </v-col>
-      <v-col v-if="!fullScreen" style="padding: 0">
+      <v-col v-if="!fullScreen" :cols="viewMode? 12 : 6" style="padding: 0">
         <v-card outlined style="height: calc(100vh - 120px); padding-left: 10px">
           <MarkdownViewer 
             ref="markdownViewer"
