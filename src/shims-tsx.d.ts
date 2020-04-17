@@ -13,6 +13,8 @@ declare global {
 
   interface Window {
     monaco: any,
-    Vuetify: any
+    Vuetify: any,
+    L2Dwidget: any,
+    jQuery : any
   }
 }

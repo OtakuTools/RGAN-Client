@@ -72,6 +72,7 @@
         circle
       ></v-pagination>
     </v-row>
+    <KanBan />
   </v-container>
 </template>
 
@@ -106,11 +107,13 @@
 // @ is an alias to /src
 import { getBlogList, searchBlog } from '@/api/data'
 const MenuHeader = () => import('@/components/MenuHeader')
+const KanBan = () => import('@/components/KanBan')
 
 export default {
   name: 'BlogViewerPage',
   components: {
-    MenuHeader
+    MenuHeader,
+    KanBan
   },
   data () {
     return {

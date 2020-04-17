@@ -22,6 +22,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <KanBan />
   </v-container>
 </template>
 
@@ -33,12 +34,14 @@
 // @ is an alias to /src
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
+const KanBan = () => import('@/components/KanBan')
 
 export default {
   name: 'UserInfoPage',
   components: {
     UserInfoEditor,
-    MenuHeader
+    MenuHeader,
+    KanBan
   },
   data () {
     return {

@@ -40,12 +40,17 @@
     <script src="https://cdn.staticfile.org/highlight.js/9.18.1/highlight.min.js"></script>
     <script src="https://cdn.staticfile.org/markdown-it/10.0.0/markdown-it.min.js"></script>
     <script src="https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/loader.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.0.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.min.js"></script>
     <script>
       window.Vuetify = new Vuetify({
         icons: {
           iconfont: 'mdi', // default - only for display purposes
         },
       })
+      window.L2Dwidget = L2Dwidget
+      window.jQuery = $
       require.config({ paths: { 'vs': 'https://cdn.bootcss.com/monaco-editor/0.19.3/min/vs' }});
       require(['https://cdn.bootcss.com/monaco-editor/0.19.3/min/vs/editor/editor.main'], function() {
         window.monaco = monaco

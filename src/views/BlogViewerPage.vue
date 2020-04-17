@@ -52,6 +52,7 @@
         </div>
       </v-col>
     </v-row>
+    <KanBan /> 
   </v-container>
 </template>
 
@@ -66,13 +67,15 @@ import { voteBlog, getBlogStatus} from '@/api/vote'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
 const BlogComment = () => import('@/components/BlogComment')
 const MenuHeader = () => import('@/components/MenuHeader')
+const KanBan = () => import('@/components/KanBan')
 
 export default {
   name: 'BlogViewerPage',
   components: {
     MarkdownViewer,
     MenuHeader,
-    BlogComment
+    BlogComment,
+    KanBan
   },
   data () {
     return {
@@ -98,7 +101,9 @@ export default {
   },
   methods: {
     getVoteStatus () {
-      getBlogStatus([this.$route.query.id]).then(res => {
+      // if (!this.$route.query.hasOwnProperty('id')) return
+      // getBlogStatus([this.$route.query.id]).then(res => {
+      getBlogStatus([undefined]).then(res => {
         this.voteStatus = res.data.length? res.data[0].status : 0
       }).catch(err => {
         this.$message({
