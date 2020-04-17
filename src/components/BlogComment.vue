@@ -18,7 +18,7 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <v-list flat three-line :key="forceRefresh">
+      <v-list flat three-line>
         <v-list-item
           v-for="comment in commentTree"
           :key="comment.id"
@@ -37,6 +37,7 @@
               <v-btn
                 x-small
                 text
+                :key="forceRefresh"
                 :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
                 @click="voteComment(comment.id)"
               >
@@ -71,6 +72,7 @@
                       <v-btn
                         x-small
                         text
+                        :key="forceRefresh"
                         :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
                         @click="voteComment(subComment.id)"
                       >
