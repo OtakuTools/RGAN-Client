@@ -156,14 +156,16 @@ export default class BlogComment extends Vue {
         commentIds.push(item.id)
         this.commentVoteCount[item.id] = item.voteCount
       })
-      getCommentStatus(commentIds).then(res => {
-        res.data.forEach(item => {
-          this.commentVote[item.entityId] = item.status
-        })
-        this.commentTree = this.buildCommentTree(data)
-      }).catch(err => [
-        console.error(err)
-      ])
+      if (commentIds.length > 0) {
+        getCommentStatus(commentIds).then(res => {
+          res.data.forEach(item => {
+            this.commentVote[item.entityId] = item.status
+          })
+          this.commentTree = this.buildCommentTree(data)
+        }).catch(err => [
+          console.error(err)
+        ])
+      }
     }).catch(err => {
       this.$message({
         message: err,
@@ -289,6 +291,7 @@ export default class BlogComment extends Vue {
   @Watch('blogId')
   handleBlogIdChange (newVal: number) {
     this.getComments()
+    this.forceRefresh = newVal
   }
 }
 </script>
