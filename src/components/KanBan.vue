@@ -99,7 +99,7 @@ export default class KanBan extends Vue {
         "hOffset": 0,
         "vOffset": 0
       },
-      "modile": {
+      "mobile": {
         "show": false
       }
     });
