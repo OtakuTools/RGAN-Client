@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <MenuHeader />
+        <MenuHeader v-bind="$attrs" v-on="$listeners"/>
       </v-col>
     </v-row>
     <v-row>
@@ -34,7 +34,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <MarkdownViewer :inputText="blogInfo.content" />
+          <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
           <v-btn outlined color="orange" style="margin-right: 10px">
             <v-icon left>mdi-star-outline</v-icon>
             {{blogInfo.upvoteCount}}
@@ -48,11 +48,11 @@
             踩
           </v-btn>
           <v-divider style="margin: 20px 0"/>
-          <BlogComment :blogId ="blogId" />
+          <BlogComment :blogId ="blogId" v-bind="$attrs" v-on="$listeners"/>
         </div>
       </v-col>
     </v-row>
-    <KanBan /> 
+    <KanBan />
   </v-container>
 </template>
 
@@ -92,7 +92,7 @@ export default {
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
     }).catch(err => {
-      this.$message({
+      this.$emit('alertMsg', {
         message: err.response.data.message,
         type: 'error'
       })
@@ -101,12 +101,11 @@ export default {
   },
   methods: {
     getVoteStatus () {
-      // if (!this.$route.query.hasOwnProperty('id')) return
-      // getBlogStatus([this.$route.query.id]).then(res => {
-      getBlogStatus([undefined]).then(res => {
+      if (!this.$route.query.hasOwnProperty('id')) return
+      getBlogStatus([this.$route.query.id]).then(res => {
         this.voteStatus = res.data.length? res.data[0].status : 0
       }).catch(err => {
-        this.$message({
+        this.$emit('alertMsg', {
           message: err.response.data.message,
           type: 'error'
         })

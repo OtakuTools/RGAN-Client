@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
-    <MDEditor />
-  </div>
+  <MDEditor v-bind="$attrs" v-on="$listeners"/>
 </template>
 
 <script>

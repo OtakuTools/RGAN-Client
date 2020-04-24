@@ -7,6 +7,7 @@
           color="white"
           dense
         >
+          <v-toolbar-title style="min-width: 100px; cursor: pointer;" @click="$router.push('/')">返回首页</v-toolbar-title>
           <v-text-field
             label="博客标题"
             outlined
@@ -228,17 +229,29 @@ export default class MDEditor extends Vue {
   onSubmit () {
     if (this.blogInfo.hasOwnProperty('id')) {
       modifyBlog(this.blogInfo.id, this.blogInfo).then(res => {
-        this.$message.success('修改博客成功')
         this.submitFormVisible = false
+        this.$emit('alertMsg', {
+          message: '修改博客成功',
+          type: 'success'
+        })
       }).catch(error => {
-        this.$message.error('修改博客失败')
+        this.$emit('alertMsg', {
+          message: '修改博客失败',
+          type: 'error'
+        })
       })
     } else {
       addBlog(this.blogInfo).then(res => {
-        this.$message.success('提交博客成功')
         this.submitFormVisible = false
+        this.$emit('alertMsg', {
+          message: '提交博客成功',
+          type: 'success'
+        })
       }).catch(error => {
-        this.$message.error('提交博客失败')
+        this.$emit('alertMsg', {
+          message: '提交博客失败',
+          type: 'error'
+        })
       })
     }
   }

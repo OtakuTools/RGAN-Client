@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <MenuHeader />
+        <MenuHeader v-bind="$attrs" v-on="$listeners"/>
       </v-col>
     </v-row>
     <v-row>
@@ -13,9 +13,26 @@
               <v-icon left>mdi-account</v-icon>
               用户管理
             </v-tab>
+            <v-tab>
+              <v-icon left>mdi-account</v-icon>
+              关注/粉丝
+            </v-tab>
+            <v-tab>
+              <v-icon left>mdi-account</v-icon>
+              博客管理
+            </v-tab>
+            <v-tab>
+              <v-icon left>mdi-account</v-icon>
+              评论管理
+            </v-tab>
             <v-tab-item>
               <v-card flat>
-                <UserInfoEditor />
+                <UserInfoEditor v-bind="$attrs" v-on="$listeners" />
+              </v-card>
+            </v-tab-item>
+            <v-tab-item>
+              <v-card flat>
+                <Following v-bind="$attrs" v-on="$listeners" />
               </v-card>
             </v-tab-item>
           </v-tabs>
@@ -35,12 +52,14 @@
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
+const Following = () => import('@/components/FollingUsers')
 
 export default {
   name: 'UserInfoPage',
   components: {
     UserInfoEditor,
     MenuHeader,
+    Following,
     KanBan
   },
   data () {

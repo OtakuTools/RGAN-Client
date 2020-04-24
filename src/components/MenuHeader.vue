@@ -4,7 +4,7 @@
     color="white"
     hide-on-scroll
   >
-    <v-toolbar-title style="min-width: 100px">RGAN</v-toolbar-title>
+    <v-toolbar-title style="min-width: 100px; cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
@@ -83,7 +83,7 @@ export default class MenuHeader extends Vue {
           this.$store.dispatch('handleLogOut').then(res => {
             this.$router.push('/')
           }).catch(err => {
-            this.$message({
+            this.$emit('alertMsg', {
               type: 'error',
               message: err.response.data.message
             })

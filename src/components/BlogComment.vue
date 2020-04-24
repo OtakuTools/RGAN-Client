@@ -167,7 +167,7 @@ export default class BlogComment extends Vue {
         ])
       }
     }).catch(err => {
-      this.$message({
+      this.$emit('alertMsg', {
         message: err,
         type: 'error'
       })
@@ -212,7 +212,7 @@ export default class BlogComment extends Vue {
       this.commentContent = ""
       this.getComments()
     }).catch(err => {
-      this.$message({
+      this.$emit('alertMsg', {
         message: err.response.data.message,
         type: 'error'
       })
@@ -228,7 +228,7 @@ export default class BlogComment extends Vue {
     ).then(res => {
       this.getComments()
     }).catch(err => {
-      this.$message({
+      this.$emit('alertMsg', {
         message: err.response.data.message,
         type: 'error'
       })
@@ -241,7 +241,7 @@ export default class BlogComment extends Vue {
     ).then(res => {
       this.getComments()
     }).catch(err => {
-      this.$message({
+      this.$emit('alertMsg', {
         message: err.response.data.message,
         type: 'error'
       })

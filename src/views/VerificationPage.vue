@@ -1,21 +1,19 @@
 <template>
-  <el-card class="card-box">
-    <el-container>
-      <el-main>
-        <el-row>
-          <el-col :span="24">目前验证的内容: {{mode}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">收到的验证信息: {{uuid}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            验证状态: <el-button :type="status === 'success' ? 'success' : (status === 'loading' ? 'primary' : 'danger')" :loading="loading">{{status === 'success' ? '验证成功' : (status === 'loading' ? '验证中' : '验证失败')}}</el-button>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
-  </el-card>
+  <v-card class="card-box">
+    <v-container>
+      <v-row>
+        <v-col :span="24">目前验证的内容: {{mode}}</v-col>
+      </v-row>
+      <v-row>
+        <v-col :span="24">收到的验证信息: {{uuid}}</v-col>
+      </v-row>
+      <v-row>
+        <v-col :span="24">
+          验证状态: <v-btn :color="status === 'success' ? 'success' : (status === 'loading' ? 'primary' : 'error')" :loading="loading">{{status === 'success' ? '验证成功' : (status === 'loading' ? '验证中' : '验证失败')}}</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <style lang="less" scoped>
@@ -58,7 +56,7 @@ export default {
       this.status = 'success'
     }).catch(err => {
       this.status = 'error'
-      this.$message({
+      this.$emit('alertMsg', {
         message: err.response.data.message,
         type: 'error'
       })

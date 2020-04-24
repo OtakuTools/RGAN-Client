@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <MenuHeader @search="handleSearch"/>
+        <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
       </v-col>
     </v-row>
     <v-row>
@@ -57,7 +57,7 @@
 
               <v-divider
                 v-if="index + 1 < blogList.length"
-                :key="index"
+                :key="blog.id"
               ></v-divider>
             </template>
           </v-list-item-group>
@@ -67,9 +67,11 @@
     <v-row>
       <v-pagination
         v-model="currentPage"
-        :length="blogList.length / currentPageSize"
+        :length="totalPages"
         :total-visible="7"
-        circle
+        @input="handlePageChange"
+        @next="handleNextPage"
+        @previous="handlePrevPage"
       ></v-pagination>
     </v-row>
     <KanBan />
@@ -120,42 +122,55 @@ export default {
       blogList: [],
       currentPage: 1,
       currentPageSize: 10,
-      selected: null
+      totalPages: 1,
+      totalElements: 0,
+      selected: null,
     }
   },
   mounted () {
-    getBlogList().then(res => {
-      let data = res.data.content
-      this.blogList = data.map(item => {
-        let dataFormat = {
-          id: 0,
-          title: '',
-          content: '',
-          summary: '',
-          tags: [],
-          createdTime: '2020-02-02 02:02',
-          authorName: 'admin',
-          voteCount: 0,
-          visitorCount: 0
-        }
-        Object.assign(dataFormat, item)
-        return dataFormat
-      })
-    }).catch(err => {
-      this.$message.error('获取博客列表失败')
-    })
+    this.refreshBlogs()
   },
   methods: {
-    handlePageSizeChange (val) {
-      this.currentPageSize = val
+    refreshBlogs (page = 0, pageSize = 10) {
+      getBlogList(page, pageSize).then(res => {
+        let data = res.data.content
+        this.totalPages = res.data.totalPages
+        this.blogList = data.map(item => {
+          let dataFormat = {
+            id: 0,
+            title: '',
+            content: '',
+            summary: '',
+            tags: [],
+            createdTime: '2020-02-02 02:02',
+            authorName: 'admin',
+            voteCount: 0,
+            visitorCount: 0
+          }
+          Object.assign(dataFormat, item)
+          return dataFormat
+        })
+      }).catch(err => {
+        this.$emit('alertMsg', {
+          message: '获取博客列表失败',
+          type: 'error'
+        })
+      })
     },
     handlePageChange (val) {
       this.currentPage = val
+      this.refreshBlogs(val - 1, this.currentPageSize)
     },
-    handleSelected(id) {
+    handlePrevPage (val) {
+      this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
+    },
+    handleNextPage (val) {
+      this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
+    },
+    handleSelected (id) {
       this.$router.push({ name: 'blog', query: { id }})
     },
-    handleSearch(val) {
+    handleSearch (val) {
       searchBlog(val).then(res => {
         this.blogList = res.data.content.map(item => {
           let dataFormat = {
@@ -173,7 +188,10 @@ export default {
           return dataFormat
         })
       }).catch(err => {
-        this.$message.error('获取博客列表失败')
+        this.$emit('alertMsg', {
+          message: '获取博客列表失败',
+          type: 'error'
+        })
       })
     }
   }

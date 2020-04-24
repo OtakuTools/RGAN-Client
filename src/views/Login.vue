@@ -128,9 +128,9 @@ export default {
         this.$router.push('/')
       }).catch(err => {
         this.loading = false
-        this.$message({
-          type: 'error',
-          message: err.response.data.message
+        this.$emit('alertMsg', {
+          message: err.response.data.message,
+          type: 'error'
         })
       })
     }

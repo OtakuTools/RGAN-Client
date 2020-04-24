@@ -138,7 +138,10 @@ export default class UserInfoEditor extends Vue {
     getUserInfo(this.$store.state.user.id).then(res => {
       Object.assign(this.userInfo, res.data)
     }).catch(err => {
-      this.$message.error(err)
+      this.$emit('alertMsg', {
+        message: err,
+        type: 'error'
+      })
     })
   }
 
@@ -148,12 +151,12 @@ export default class UserInfoEditor extends Vue {
       emailVerificationSend({
         email: this.userInfo.email
       }).then(res => {
-        this.$message({
+        this.$emit('alertMsg', {
           message: '验证邮件发送成功，请到邮箱中查收',
           type: 'success'
         })
       }).catch(err => {
-        this.$message({
+        this.$emit('alertMsg', {
           message: err,
           type: 'error'
         })

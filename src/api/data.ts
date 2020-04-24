@@ -1,8 +1,8 @@
 import { axios } from './request'
 
-export const getBlogList = () => {
+export const getBlogList = (pages: number = 0, pageSize : number = 10) => {
   return axios.request({
-    url: '/api/blogs',
+    url: `/api/blogs?page=${pages}&size=${pageSize}`,
     method: 'get'
   })
 }
@@ -35,7 +35,7 @@ export const searchBlog = (keywords: string) => {
     url: `/api/blogs/search`,
     method: 'get',
     params: {
-      name: keywords
+      keyword: keywords
     }
   })
 }

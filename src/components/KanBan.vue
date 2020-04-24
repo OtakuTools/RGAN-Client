@@ -98,6 +98,9 @@ export default class KanBan extends Vue {
         "position": "right",
         "hOffset": 0,
         "vOffset": 0
+      },
+      "modile": {
+        "show": false
       }
     });
     $(document).ready(() => {
