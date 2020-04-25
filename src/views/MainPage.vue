@@ -161,10 +161,10 @@ export default {
       this.currentPage = val
       this.refreshBlogs(val - 1, this.currentPageSize)
     },
-    handlePrevPage (val) {
+    handlePrevPage () {
       this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
     },
-    handleNextPage (val) {
+    handleNextPage () {
       this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
     },
     handleSelected (id) {

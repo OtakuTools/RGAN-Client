@@ -2,8 +2,12 @@ import { axios } from './request'
 
 export const getBlogList = (pages: number = 0, pageSize : number = 10) => {
   return axios.request({
-    url: `/api/blogs?page=${pages}&size=${pageSize}`,
-    method: 'get'
+    url: `/api/blogs`,
+    method: 'get',
+    params: {
+      page: pages,
+      size: pageSize
+    }
   })
 }
 

@@ -14,23 +14,31 @@ export const unfollowUser = (userid : number) => {
   return axios.request({
     url: '/api/follow/user',
     method: 'delete',
-    data: {
+    params: {
       targetUserId: userid
     }
   })
 }
 
-export const getFollowers = (userid: number) => {
+export const getFollowers = (userid: number, pages: number = 0, pageSize : number = 10) => {
   return axios.request({
     url: `/api/users/${userid}/followers`,
-    method: 'get'
+    method: 'get',
+    params: {
+      page: pages,
+      size: pageSize
+    }
   })
 }
 
-export const getFollowings = (userid: number) => {
+export const getFollowings = (userid: number, pages: number = 0, pageSize : number = 10) => {
   return axios.request({
     url: `/api/users/${userid}/following`,
-    method: 'get'
+    method: 'get',
+    params: {
+      page: pages,
+      size: pageSize
+    }
   })
 }
 
