@@ -10,19 +10,19 @@
         <v-card>
           <v-tabs vertical style="padding-top: 20px;">
             <v-tab>
-              <v-icon left>mdi-account</v-icon>
+              <v-icon left>mdi-account-outline</v-icon>
               用户管理
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-account</v-icon>
+              <v-icon left>mdi-account-group-outline</v-icon>
               关注/粉丝
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-account</v-icon>
+              <v-icon left>mdi-text</v-icon>
               博客管理
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-account</v-icon>
+              <v-icon left>mdi-comment-outline</v-icon>
               评论管理
             </v-tab>
             <v-tab-item>
