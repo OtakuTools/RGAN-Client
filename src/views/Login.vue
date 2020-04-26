@@ -96,6 +96,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { formatErrorMsg } from '@/libs/util'
 export default {
   name: 'LoginPage',
   components: {
@@ -128,10 +129,7 @@ export default {
         this.$router.push('/')
       }).catch(err => {
         this.loading = false
-        this.$emit('alertMsg', {
-          message: err.response.data.message,
-          type: 'error'
-        })
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     }
   }

@@ -16,7 +16,7 @@
                   <v-chip color="orange" x-small label outlined style="margin-right: 10px">原创</v-chip>
                   <a style="margin-right: 10px">{{blogInfo.authorName}}</a>
                   <span>最后发表于 {{blogInfo.modifiedTime ? blogInfo.modifiedTime.replace("T", " ") : ""}}</span>
-                  <a style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
+                  <a v-if="blogInfo.authorName === $store.state.user.name" style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle>
                   <v-chip-group
@@ -64,6 +64,7 @@
 // @ is an alias to /src
 import { getBlogById } from '@/api/data'
 import { voteBlog, getBlogStatus} from '@/api/vote'
+import { formatErrorMsg } from '@/libs/util'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
 const BlogComment = () => import('@/components/BlogComment')
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -92,10 +93,7 @@ export default {
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err.response.data.message,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
     this.getVoteStatus()
   },
@@ -105,10 +103,7 @@ export default {
       getBlogStatus([this.$route.query.id]).then(res => {
         this.voteStatus = res.data.length? res.data[0].status : 0
       }).catch(err => {
-        this.$emit('alertMsg', {
-          message: err.response.data.message,
-          type: 'error'
-        })
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
     upVote () {
@@ -118,7 +113,7 @@ export default {
         this.blogInfo.upvoteCount += this.UP_VOTE
         this.voteStatus = this.UP_VOTE
       }).catch(err => {
-        console.error(err)
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
     downVote () {
@@ -128,7 +123,7 @@ export default {
         this.blogInfo.upvoteCount += this.DOWN_VOTE
         this.voteStatus = this.DOWN_VOTE
       }).catch(err => {
-        console.error(err)
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
     cancelVote () {
@@ -137,7 +132,7 @@ export default {
         this.blogInfo.upvoteCount -= this.voteStatus
         this.voteStatus = this.CANCEL_VOTE
       }).catch(err => {
-        console.error(err)
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
     voteBlog(mode) {

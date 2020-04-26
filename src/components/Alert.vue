@@ -29,6 +29,7 @@ export default class Alert extends Vue {
   @Prop({ default: '', type: String }) type!: string;
   @Prop({ default: '', type: String }) message!: string;
   @Prop({ default: 3000, type: Number }) delay!: number;
+  @Prop({ default: 0, type: Number}) msgId!: number;
 
   showAlert : boolean = false
 
@@ -39,9 +40,8 @@ export default class Alert extends Vue {
     }, this.delay)
   }
 
-  @Watch('message')
-  handleMessageChange (newVal : string) {
-    this.message = newVal
+  @Watch('msgId')
+  handleMsgIdChange (newVal : string) {
     this.show()
   }
 }

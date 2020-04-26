@@ -17,7 +17,8 @@ const canTurnTo = (name : any, access : any, routes : any) => {
   return true
 }
 
-const homeName = 'mainPage'
+const HOME_PAGE_NAME = 'mainPage'
+const BLOG_VIEWER_PAGE_NAME = 'blog'
 const LOGIN_PAGE_NAME = 'login'
 const VERIFIATION_PAGE_NAME = 'verification'
 const REGIST_PAGE_NAME = 'regist'
@@ -43,10 +44,13 @@ router.beforeEach((to, from, next) => {
       setToken('')
       next()
     }
-  } else if (to.name === homeName) {
-    // 未登陆且要跳转的页面是登录页
+  } else if (to.name === HOME_PAGE_NAME) {
+    // 未登陆且要跳转的页面是主页
     next() // 跳转
-  } else if (!token && to.name === REGIST_PAGE_NAME) {
+  } else if (to.name === BLOG_VIEWER_PAGE_NAME) {
+    // 未登陆且要跳转的页面是主页
+    next() // 跳转
+  }else if (!token && to.name === REGIST_PAGE_NAME) {
     // 未登录且要跳转的页面是注册页
     next()
   } else if (!token && to.name !== LOGIN_PAGE_NAME) {
@@ -60,7 +64,7 @@ router.beforeEach((to, from, next) => {
   } else if (token && to.name === LOGIN_PAGE_NAME) {
     // 已登录且要跳转的页面是登录页
     next({
-      name: homeName // 跳转到homeName页
+      name: HOME_PAGE_NAME // 跳转到HOME_PAGE_NAME页
     })
   } else {
     let obj : any = store.state

@@ -62,6 +62,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { mapActions } from 'vuex'
+import { formatErrorMsg } from '@/libs/util'
 
 @Component
 export default class MenuHeader extends Vue {
@@ -83,10 +84,7 @@ export default class MenuHeader extends Vue {
           this.$store.dispatch('handleLogOut').then(res => {
             this.$router.push('/')
           }).catch(err => {
-            this.$emit('alertMsg', {
-              type: 'error',
-              message: err.response.data.message
-            })
+            this.$emit('alertMsg', formatErrorMsg(err))
           })
         }
       }

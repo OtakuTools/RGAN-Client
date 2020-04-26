@@ -14,3 +14,10 @@ export const getToken = () => {
   if (token && token !== '') return token
   else return false
 }
+
+export const formatErrorMsg = (err) => {
+  return {
+    message: err.response ? err.response.data.message : err,
+    type: 'error'
+  }
+}

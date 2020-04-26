@@ -7,7 +7,9 @@
           color="white"
           dense
         >
-          <v-toolbar-title style="min-width: 100px; cursor: pointer;" @click="$router.push('/')">返回首页</v-toolbar-title>
+          <v-btn depressed icon @click="$router.push('/')">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
           <v-text-field
             label="博客标题"
             outlined

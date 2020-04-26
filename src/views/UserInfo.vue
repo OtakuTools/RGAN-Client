@@ -5,10 +5,10 @@
         <MenuHeader v-bind="$attrs" v-on="$listeners"/>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row style="margin-top: 20px;">
       <v-col cols="12">
         <v-card>
-          <v-tabs vertical style="padding-top: 20px;">
+          <v-tabs vertical>
             <v-tab>
               <v-icon left>mdi-account-outline</v-icon>
               用户管理

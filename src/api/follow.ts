@@ -1,6 +1,10 @@
 import { axios } from './request'
+import { getToken } from '@/libs/util'
 
 export const followUser = (userid : number) => {
+  if (!(!!getToken())) {
+    return Promise.reject('请先登录')
+  }
   return axios.request({
     url: '/api/follow/user',
     method: 'post',
@@ -11,10 +15,13 @@ export const followUser = (userid : number) => {
 }
 
 export const unfollowUser = (userid : number) => {
+  if (!(!!getToken())) {
+    return Promise.reject('请先登录')
+  }
   return axios.request({
     url: '/api/follow/user',
     method: 'delete',
-    params: {
+    data: {
       targetUserId: userid
     }
   })

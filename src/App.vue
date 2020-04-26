@@ -4,7 +4,7 @@
   </div> -->
   <div id="app">
     <v-app>
-      <Alert :type="alertType" :message="alertMsg" />
+      <Alert :type="alertType" :message="alertMsg" :msgId="alertId"/>
       <router-view @alertMsg="handleAlertMsg"></router-view>
     </v-app>
   </div>
@@ -22,10 +22,12 @@ const Alert = () => import('@/components/Alert.vue')
 export default class App extends Vue {
   alertType : string = 'success'
   alertMsg : string = ''
+  alertId : number = 0
 
   handleAlertMsg ( data: any ) {
     this.alertMsg = data.message
     this.alertType = data.type
+    this.alertId++
   }
 }
 </script>

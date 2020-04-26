@@ -23,17 +23,17 @@
           v-for="comment in commentTree"
           :key="comment.id"
         >
-          <v-list-item-avatar>
+          <v-list-item-avatar size="36">
             <img
               src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
               alt="user"
             >
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title v-text="comment.authorName" style="margin-bottom: 5px;"></v-list-item-title>
-            <v-list-item-subtitle class="text--primary" v-text="comment.content"></v-list-item-subtitle>
+            <v-list-item-title class="text--secondary" v-text="comment.authorName" style="font-size: 14px;"></v-list-item-title>
+            <v-list-item-subtitle class="text--primary" v-text="comment.content" style="margin: 5px 0; font-size: 16px"></v-list-item-subtitle>
             <v-list-item-subtitle>
-              {{comment.createdTime.replace("T", " ")}}
+              <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{comment.createdTime.replace("T", " ")}}</div>
               <v-btn
                 x-small
                 text
@@ -58,17 +58,21 @@
                   v-for="subComment in comment.comments"
                   :key="subComment.id"
                 >
-                  <v-list-item-avatar>
+                  <v-list-item-avatar size="26">
                     <img
                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                       alt="user"
                     >
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title v-text="`${subComment.authorName} 回复 ${commentLevelTree[subComment.replyTo].authorName}`"></v-list-item-title>
-                    <v-list-item-subtitle class="text--primary" v-text="subComment.content"></v-list-item-subtitle>
+                    <v-list-item-title class="text--secondary" style="font-size: 14px;">
+                      <span>{{subComment.authorName}}</span>
+                      <span class="text--primary" v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">&nbsp;回复&nbsp;</span>
+                      <span v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">{{commentLevelTree[subComment.replyTo].authorName}}</span>
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text--primary" v-text="subComment.content" style="margin: 5px 0; font-size: 16px"></v-list-item-subtitle>
                     <v-list-item-subtitle>
-                      {{subComment.createdTime.replace("T", " ")}}
+                      <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{subComment.createdTime.replace("T", " ")}}</div>
                       <v-btn
                         x-small
                         text
@@ -110,6 +114,7 @@ import {
   deleteBlogComment
 } from '@/api/data'
 import { getCommentStatus, voteComment } from '@/api/vote'
+import { formatErrorMsg } from '@/libs/util'
 / tslint:disable /
 
 class Comment {
@@ -157,11 +162,12 @@ export default class BlogComment extends Vue {
         this.commentVoteCount[item.id] = item.voteCount
       })
       if (commentIds.length > 0) {
+        this.commentTree = this.buildCommentTree(data)
         getCommentStatus(commentIds).then(res => {
           res.data.forEach(item => {
             this.commentVote[item.entityId] = item.status
           })
-          this.commentTree = this.buildCommentTree(data)
+          this.forceRefresh = 1 * this.forceRefresh
         }).catch(err => [
           console.error(err)
         ])
@@ -212,10 +218,7 @@ export default class BlogComment extends Vue {
       this.commentContent = ""
       this.getComments()
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err.response.data.message,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
   }
 
@@ -228,10 +231,7 @@ export default class BlogComment extends Vue {
     ).then(res => {
       this.getComments()
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err.response.data.message,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
   }
 
@@ -241,10 +241,7 @@ export default class BlogComment extends Vue {
     ).then(res => {
       this.getComments()
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err.response.data.message,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
   }
 

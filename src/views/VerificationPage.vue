@@ -32,6 +32,7 @@
 
 <script>
 import { emailVerificationReceive } from '@/api/verification'
+import { formatErrorMsg } from '@/libs/util'
 export default {
   name: 'VerificationPage',
   components: {
@@ -56,10 +57,7 @@ export default {
       this.status = 'success'
     }).catch(err => {
       this.status = 'error'
-      this.$emit('alertMsg', {
-        message: err.response.data.message,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     }).finally(() => {
       this.loading = false
     })

@@ -78,6 +78,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { regist } from '@/api/user'
+import { formatErrorMsg } from '@/libs/util'
 export default {
   name: 'RegistPage',
   components: {
@@ -109,10 +110,7 @@ export default {
         this.$router.push({ name: 'login' })
       }).catch(err => {
         this.loading = false
-        this.$emit('alertMsg', {
-          message: err.response.data.message,
-          type: 'error'
-        })
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     }
   }
