@@ -13,7 +13,7 @@
             <v-list-item style="padding: 0">
               <v-list-item-content>
                 <v-list-item-subtitle>
-                  <v-chip color="orange" x-small label outlined style="margin-right: 10px">原创</v-chip>
+                  <v-chip color="orange" x-small label outlined style="margin-right: 10px">{{ blogInfo.type }}</v-chip>
                   <a style="margin-right: 10px">{{blogInfo.authorName}}</a>
                   <span>最后发表于 {{blogInfo.modifiedTime ? blogInfo.modifiedTime.replace("T", " ") : ""}}</span>
                   <a v-if="blogInfo.authorName === $store.state.user.name" style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
@@ -108,7 +108,6 @@ export default {
     },
     upVote () {
       voteBlog(this.blogId, this.UP_VOTE).then(res => {
-        // this.getVoteStatus()
         this.blogInfo.upvoteCount -= this.voteStatus
         this.blogInfo.upvoteCount += this.UP_VOTE
         this.voteStatus = this.UP_VOTE
@@ -118,7 +117,6 @@ export default {
     },
     downVote () {
       voteBlog(this.blogId, this.DOWN_VOTE).then(res => {
-        // this.getVoteStatus()
         this.blogInfo.upvoteCount -= this.voteStatus
         this.blogInfo.upvoteCount += this.DOWN_VOTE
         this.voteStatus = this.DOWN_VOTE
@@ -128,7 +126,6 @@ export default {
     },
     cancelVote () {
       voteBlog(this.blogId, this.CANCEL_VOTE).then(res => {
-        // this.getVoteStatus()
         this.blogInfo.upvoteCount -= this.voteStatus
         this.voteStatus = this.CANCEL_VOTE
       }).catch(err => {

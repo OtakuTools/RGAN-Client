@@ -162,12 +162,11 @@ export default class BlogComment extends Vue {
         this.commentVoteCount[item.id] = item.voteCount
       })
       if (commentIds.length > 0) {
-        this.commentTree = this.buildCommentTree(data)
         getCommentStatus(commentIds).then(res => {
           res.data.forEach(item => {
             this.commentVote[item.entityId] = item.status
           })
-          this.forceRefresh = 1 * this.forceRefresh
+          this.commentTree = this.buildCommentTree(data)
         }).catch(err => [
           console.error(err)
         ])

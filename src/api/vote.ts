@@ -29,22 +29,22 @@ export const voteComment = (id : number, status: number) => {
 
 export const getBlogStatus = (idList : any) => {
   return axios.request({
-    // url: `/api/blogs/vote/status?${idList.map(id => `id=${id}`).join('&')}`,
-    url: `/api/blogs/vote/status`,
+    url: `/api/blogs/vote/status?${idList.map(id => `id=${id}`).join('&')}`,
+    // url: `/api/blogs/vote/status`,
     method: 'get',
-    params: {
-      id: idList
-    }
+    // params: {
+    //   id: idList
+    // }
   })
 }
 
 export const getCommentStatus = (idList : any) => {
   return axios.request({
-    // url: `/api/comments/vote/status?${idList.map(id => `id=${id}`).join('&')}`,
-    url: `/api/comments/vote/status`,
+    url: `/api/comments/vote/status?${idList.map(id => `id=${id}`).join('&')}`,
+    // url: `/api/comments/vote/status`,
     method: 'get',
-    params: {
-      id: idList
-    }
+    // params: {
+    //   id: idList
+    // }
   })
 }
