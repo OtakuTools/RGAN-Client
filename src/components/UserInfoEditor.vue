@@ -26,7 +26,7 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12">
-                      <v-file-input show-size accept="image/*" label="选择图片文件"></v-file-input>
+                      <v-file-input v-model="uploadAvartar" show-size accept="image/*" label="选择图片文件"></v-file-input>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -34,7 +34,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="avatarDialog = false">取消</v-btn>
-                <v-btn color="blue darken-1" text @click="avatarDialog = false">提交</v-btn>
+                <v-btn color="blue darken-1" text @click="onSubmitAvatar()">提交</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -117,6 +117,7 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
 import { getUserInfo } from '@/api/user'
+import { getStorageToken } from '@/api/storage'
 / tslint:disable /
 
 @Component
@@ -129,6 +130,8 @@ export default class UserInfoEditor extends Vue {
     email: '',
     description: ''
   }
+
+  uploadAvartar : any = ''
 
   modifyMode : boolean = false
   avatarDialog : boolean = false
@@ -171,7 +174,44 @@ export default class UserInfoEditor extends Vue {
   }
 
   onSubmit () {
-    console.log(this.userInfo)
+
+  }
+
+  onSubmitAvatar () {
+    var putExtra = {
+      fname: "test",
+      params: {},
+      mimeType: null
+    };
+    var observer = {
+      next(res){
+        console.log("next", res)
+      },
+      error(err){
+        console.log("err",err)
+      }, 
+      complete(res){
+        console.log("complete", res)
+      }
+    }
+    let compressOptions = {
+      quality: 0.92,
+      noCompressIfLarger: true
+      // maxWidth: 1000,
+      // maxHeight: 618
+    }
+    getStorageToken().then(res => {
+      let token = res.data
+      console.log(token)
+      window.qiniu.compressImage(this.uploadAvartar, compressOptions).then(() => {
+        let observable = window.qiniu.upload(this.uploadAvartar, this.uploadAvartar.name, token, putExtra)
+        let subscription = observable.subscribe(observer) // 上传开始
+        // subscription.unsubscribe()
+      })
+      
+    }).catch( err => {
+      console.log(err)
+    })
   }
 }
 </script>

@@ -15,6 +15,7 @@ declare global {
     monaco: any,
     Vuetify: any,
     L2Dwidget: any,
-    jQuery : any
+    jQuery : any,
+    qiniu: any
   }
 }

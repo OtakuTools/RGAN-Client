@@ -7,9 +7,6 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>rgan-client</title>
     <!-- 引入样式 -->
-    <!-- <link href="https://cdn.bootcss.com/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/vuetify/2.2.20/vuetify.min.css" rel="stylesheet"> -->
-    <!-- <link href="https://cdn.staticfile.org/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet"> -->
     <link href="https://cdn.staticfile.org/vuetify/2.2.20/vuetify.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
@@ -22,28 +19,20 @@
     <!-- built files will be auto injected -->
     <!-- 引入组件库 -->
     <div id="app"></div>
-    <!-- <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-    <script src="https://cdn.bootcss.com/vuetify/2.2.20/vuetify.min.js"></script>
-    <script src="https://cdn.bootcss.com/vuex/3.1.3/vuex.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js"></script>
-    <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.13.0/index.js"></script>
-    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
-    <script src="https://cdn.bootcss.com/markdown-it/10.0.0/markdown-it.min.js"></script>
-    <script src="https://cdn.bootcss.com/monaco-editor/0.19.3/min/vs/loader.min.js"></script> -->
     <script src="https://cdn.staticfile.org/vue/2.6.10/vue.min.js"></script>
     <script src="https://cdn.staticfile.org/vuetify/2.2.20/vuetify.min.js"></script>
     <script src="https://cdn.staticfile.org/vuex/3.1.3/vuex.min.js"></script>
     <script src="https://cdn.staticfile.org/vue-router/3.1.3/vue-router.min.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.19.2/axios.min.js"></script>
-    <!-- <script src="https://cdn.staticfile.org/element-ui/2.13.0/index.js"></script> -->
     <script src="https://cdn.staticfile.org/highlight.js/9.18.1/highlight.min.js"></script>
     <script src="https://cdn.staticfile.org/markdown-it/10.0.0/markdown-it.min.js"></script>
-    <script src="https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/loader.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.0.min.js"></script>
-    <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/qiniu-js/2.5.5/qiniu.min.js"></script>
+    <script src="https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/loader.min.js"></script>
     <script>
+      require.config({ paths: { 'vs': 'https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs' }});
       window.Vuetify = new Vuetify({
         icons: {
           iconfont: 'mdi', // default - only for display purposes
@@ -51,9 +40,8 @@
       })
       window.L2Dwidget = L2Dwidget
       window.jQuery = $
-      require.config({ paths: { 'vs': 'https://cdn.bootcss.com/monaco-editor/0.19.3/min/vs' }});
-      require(['https://cdn.bootcss.com/monaco-editor/0.19.3/min/vs/editor/editor.main'], function() {
-        window.monaco = monaco
+      require(['https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/editor/editor.main'], function() {
+        window.monaco = this.monaco
       });
     </script>
   </body>
