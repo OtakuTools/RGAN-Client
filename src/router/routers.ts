@@ -30,6 +30,11 @@ export default [
     component: () => import('../views/UserInfo.vue')
   },
   {
+    path: '/userspace',
+    name: 'userspace',
+    component: () => import('../views/UserBlogList.vue')
+  },
+  {
     path: '/verification/:mode',
     name: 'verification',
     component: () => import('../views/VerificationPage.vue')

@@ -1,6 +1,16 @@
 import { axios } from './request'
 import { getToken } from '@/libs/util'
 
+export const checkIsFollowing = (userid : number) => {
+  return axios.request({
+    url: `/api/follow/user`,
+    method: 'get',
+    params: {
+      targetUserId: userid
+    }
+  })
+}
+
 export const followUser = (userid : number) => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')

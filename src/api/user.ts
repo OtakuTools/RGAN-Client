@@ -28,7 +28,20 @@ export const logout = (token: string) => {
 
 export const getUserInfo = (id: string) => {
   return axios.request({
-    url: `/api/users/${id}`,
-    method: 'get'
+    url: `/api/users`,
+    method: 'get',
+    params: {
+      id: id
+    }
+  })
+}
+
+export const getUserInfoByName = (name: string) => {
+  return axios.request({
+    url: `/api/users`,
+    method: 'get',
+    params: {
+      name: name
+    }
   })
 }

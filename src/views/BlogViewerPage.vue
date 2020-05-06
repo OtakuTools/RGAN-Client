@@ -13,8 +13,8 @@
             <v-list-item style="padding: 0">
               <v-list-item-content>
                 <v-list-item-subtitle>
-                  <v-chip color="orange" x-small label outlined style="margin-right: 10px">{{ blogInfo.type }}</v-chip>
-                  <a style="margin-right: 10px">{{blogInfo.authorName}}</a>
+                  <v-chip :color="blogInfo.type === '0' ? 'green' : blogInfo.type === '1' ? 'orange' : 'red'" x-small label outlined style="margin-right: 10px">{{ blogType[blogInfo.type] }}</v-chip>
+                  <a style="margin-right: 10px" @click="$router.push({ name: 'userspace', query: { name: blogInfo.authorName }})">{{blogInfo.authorName}}</a>
                   <span>最后发表于 {{blogInfo.modifiedTime ? blogInfo.modifiedTime.replace("T", " ") : ""}}</span>
                   <a v-if="blogInfo.authorName === $store.state.user.name" style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
                 </v-list-item-subtitle>
@@ -65,6 +65,7 @@
 import { getBlogById } from '@/api/data'
 import { voteBlog, getBlogStatus} from '@/api/vote'
 import { formatErrorMsg } from '@/libs/util'
+import { BLOG_TYPE } from '@/libs/constant'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
 const BlogComment = () => import('@/components/BlogComment')
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -85,7 +86,9 @@ export default {
       voteStatus: 0,
       UP_VOTE: 1,
       CANCEL_VOTE: 0,
-      DOWN_VOTE: -1
+      DOWN_VOTE: -1,
+
+      blogType: BLOG_TYPE
     }
   },
   mounted () {

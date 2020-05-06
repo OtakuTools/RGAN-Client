@@ -10,20 +10,20 @@
         <v-card>
           <v-tabs vertical>
             <v-tab>
-              <v-icon left>mdi-account-outline</v-icon>
-              用户管理
+              <v-icon :left="!mobileMode">mdi-account-outline</v-icon>
+              {{ mobileMode? '' : '用户管理' }}
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-account-group-outline</v-icon>
-              关注/粉丝
+              <v-icon :left="!mobileMode">mdi-account-group-outline</v-icon>
+              {{ mobileMode? '' : '关注/粉丝'}}
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-text</v-icon>
-              博客管理
+              <v-icon :left="!mobileMode">mdi-text</v-icon>
+              {{ mobileMode? '' : '博客管理' }}
             </v-tab>
             <v-tab>
-              <v-icon left>mdi-comment-outline</v-icon>
-              评论管理
+              <v-icon :left="!mobileMode">mdi-comment-outline</v-icon>
+              {{ mobileMode? '' : '评论管理'}}
             </v-tab>
             <v-tab-item>
               <v-card flat>
@@ -54,6 +54,8 @@ const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
 
+import { isMobile } from '@/libs/util'
+
 export default {
   name: 'UserInfoPage',
   components: {
@@ -64,11 +66,17 @@ export default {
   },
   data () {
     return {
-      activateTab: 'first'
+      activateTab: 'first',
+      mobileMode: false
     }
   },
-  mounted () {
 
+  mounted () {
+    this.mobileMode = isMobile()
+  },
+
+  methods: {
+    
   }
 }
 </script>

@@ -41,12 +41,26 @@ export const getBlogById = (id: number) => {
   })
 }
 
-export const searchBlog = (keywords: string) => {
+export const searchBlog = (keywords: string, pages: number = 0, pageSize : number = 10) => {
   return axios.request({
     url: `/api/blogs/search`,
     method: 'get',
     params: {
-      keyword: keywords
+      keyword: keywords,
+      page: pages,
+      size: pageSize
+    }
+  })
+}
+
+export const getBlogByAuthor = (name: string, pages: number = 0, pageSize : number = 10) => {
+  return axios.request({
+    url: `/api/blogs/user`,
+    method: 'get',
+    params: {
+      name: name,
+      page: pages,
+      size: pageSize
     }
   })
 }

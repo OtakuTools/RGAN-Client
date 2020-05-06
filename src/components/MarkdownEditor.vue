@@ -102,6 +102,7 @@
     <v-dialog
       v-model="submitFormVisible"
       max-width="500"
+      persistent
     >
       <v-card>
         <v-card-title class="headline">发布文章</v-card-title>
@@ -172,12 +173,44 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="submitSuccVisible"
+      max-width="500"
+      persistent
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-card-title class="headline">提示</v-card-title>
+        <v-card-text>
+          博客提交成功
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="$router.push('/userinfo')"
+          >
+            前去个人页面
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$router.push('/')"
+          >
+            返回首页
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog, modifyBlog, getBlogById } from '@/api/data'
+import { BLOG_TYPE } from '@/libs/constant'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -193,10 +226,11 @@ export default class MDEditor extends Vue {
     title: '',
     content: '',
     tags: [],
-    type: '',
+    type: '原创',
     summary: ''
   }
   submitFormVisible : boolean = false
+  submitSuccVisible : boolean = false
   tagOptions : any = [
     '前端',
     '后端',
@@ -228,14 +262,37 @@ export default class MDEditor extends Vue {
     }
   }
 
+  valid () {
+    let errMsg : Array<string> = []
+    if (this.blogInfo.title === '') {
+      errMsg.push('博客标题不能为空')
+    }
+    if(this.blogInfo.content === '') {
+      errMsg.push('博客内容不能为空')
+    }
+
+    return errMsg.join('；')
+  }
+
   onSubmit () {
+    let errMsg = this.valid()
+    if (errMsg !== '') {
+      this.$emit('alertMsg', {
+        message: errMsg,
+        type: 'error'
+      })
+      return
+    }
+    let blog = {}
+    Object.assign(blog, this.blogInfo, { type: BLOG_TYPE[this.blogInfo.type] })
     if (this.blogInfo.hasOwnProperty('id')) {
-      modifyBlog(this.blogInfo.id, this.blogInfo).then(res => {
+      modifyBlog(this.blogInfo.id, blog).then(res => {
         this.submitFormVisible = false
-        this.$emit('alertMsg', {
-          message: '修改博客成功',
-          type: 'success'
-        })
+        // this.$emit('alertMsg', {
+        //   message: '修改博客成功',
+        //   type: 'success'
+        // })
+        this.submitSuccVisible = true
       }).catch(error => {
         this.$emit('alertMsg', {
           message: '修改博客失败',
@@ -243,12 +300,13 @@ export default class MDEditor extends Vue {
         })
       })
     } else {
-      addBlog(this.blogInfo).then(res => {
+      addBlog(blog).then(res => {
         this.submitFormVisible = false
-        this.$emit('alertMsg', {
-          message: '提交博客成功',
-          type: 'success'
-        })
+        // this.$emit('alertMsg', {
+        //   message: '提交博客成功',
+        //   type: 'success'
+        // })
+        this.submitSuccVisible = true
       }).catch(error => {
         this.$emit('alertMsg', {
           message: '提交博客失败',
@@ -356,6 +414,7 @@ export default class MDEditor extends Vue {
       getBlogById (parseInt(blogId)).then(res => {
         let data = res.data
         data.tags = data.tags.map(item => item.title)
+        data.type = BLOG_TYPE[data.type]
         this.blogInfo = data
       }).catch(err => {
         console.error(err)

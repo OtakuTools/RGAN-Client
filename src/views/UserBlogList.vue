@@ -6,7 +6,30 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="3" style="text-align: center; margin-top: 20px;">
+        <v-avatar
+          class="profile"
+          size="100"
+        >
+          <v-img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></v-img>
+        </v-avatar>
+        <v-list-item
+          color="rgba(0, 0, 0, .4)"
+          style="padding: 0"
+        >
+          <v-list-item-content>
+            <v-list-item-title class="title">{{userInfo.username}}</v-list-item-title>
+            <v-list-item-subtitle>
+              <v-btn block :color="isFollowing ? 'error' : 'primary'" @click="handleFollow()">
+                <v-icon left v-if="isFollowing">mdi-minus</v-icon>
+                <v-icon left v-else>mdi-plus</v-icon>
+                {{isFollowing ? "取 关": "关 注"}}
+              </v-btn>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-col>
+      <v-col cols="9">
         <v-list two-line flat style="padding-top: 20px;">
           <v-list-item-group
             multiple
@@ -79,35 +102,14 @@
 </template>
 
 <style scoped>
-/* .menu-style {
-  padding: 10px 10%;
-  width: 100%;
-  position: fixed;
-  top: 0px;
-  border-bottom: 1px solid #ccc;
-  background-color: white;
-}
 
-.view-vote-style {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.blog-title:hover {
-  color: #F56C6C;
-  cursor: pointer;
-} */
 </style>
 
 <script>
 // @ is an alias to /src
-import { getBlogList, searchBlog } from '@/api/data'
+import { getBlogByAuthor, searchBlog } from '@/api/data'
+import { getUserInfoByName } from '@/api/user'
+import { followUser, unfollowUser, checkIsFollowing} from '@/api/follow'
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 
@@ -119,6 +121,7 @@ export default {
   },
   data () {
     return {
+      userInfo: {},
       blogList: [],
       currentPage: 1,
       currentPageSize: 10,
@@ -126,72 +129,56 @@ export default {
       totalElements: 0,
       selected: null,
 
-      searchVal : ''
+      isFollowing: false
     }
   },
   mounted () {
-    this.refreshBlogs()
+    getUserInfoByName(this.$route.query.name).then(res => {
+      this.userInfo = res.data
+      checkIsFollowing(this.userInfo.id).then(res => {
+        this.isFollowing = res.data
+      }).catch(err => {
+        this.$emit('alertMsg', {
+          message: '获取关注状态失败',
+          type: 'error'
+        })
+      })
+      this.refreshBlogs()
+    })
   },
   methods: {
     refreshBlogs (page = 0, pageSize = 10) {
-      if (this.searchVal === '') {
-        getBlogList(page, pageSize).then(res => {
-          let data = res.data.content
-          this.totalPages = res.data.totalPages
-          this.blogList = data.map(item => {
-            let dataFormat = {
-              id: 0,
-              title: '',
-              content: '',
-              summary: '',
-              tags: [],
-              createdTime: '2020-02-02 02:02',
-              authorName: 'admin',
-              voteCount: 0,
-              visitorCount: 0
-            }
-            Object.assign(dataFormat, item)
-            return dataFormat
-          })
-        }).catch(err => {
-          this.$emit('alertMsg', {
-            message: '获取博客列表失败',
-            type: 'error'
-          })
-        })
-      } else {
-        searchBlog(this.searchVal, page, pageSize).then(res => {
-          this.totalPages = res.data.totalPages
-          this.blogList = res.data.content.map(item => {
-            let dataFormat = {
-              id: 0,
-              title: '',
-              content: '',
-              summary: '',
-              tags: [],
-              date: '2020-02-02 02:02',
-              author: 'admin',
-              upvoteCount: 0,
-              visitorCount: 0
-            }
-            Object.assign(dataFormat, item, { tags: item.tags.map(tag => {
-              if (Object.prototype.toString.call(tag) === '[object Array]') {
-                return {
-                  id: tag[0],
-                  title: tag[1]
-                }
+      getBlogByAuthor(this.userInfo.username, page, pageSize).then(res => {
+        let data = res.data.content
+        this.totalPages = res.data.totalPages
+        this.blogList = data.map(item => {
+          let dataFormat = {
+            id: 0,
+            title: '',
+            content: '',
+            summary: '',
+            tags: [],
+            createdTime: '2020-02-02 02:02',
+            authorName: 'admin',
+            voteCount: 0,
+            visitorCount: 0
+          }
+          Object.assign(dataFormat, item, { tags: item.tags.map(tag => {
+            if (Object.prototype.toString.call(tag) === '[object Array]') {
+              return {
+                id: tag[0],
+                title: tag[1]
               }
-            })})
-            return dataFormat
-          })
-        }).catch(err => {
-          this.$emit('alertMsg', {
-            message: '获取博客列表失败',
-            type: 'error'
-          })
+            }
+          })})
+          return dataFormat
         })
-      }
-      
+      }).catch(err => {
+        this.$emit('alertMsg', {
+          message: '获取博客列表失败',
+          type: 'error'
+        })
+      })
     },
     handlePageChange (val) {
       this.currentPage = val
@@ -206,9 +193,26 @@ export default {
     handleSelected (id) {
       this.$router.push({ name: 'blog', query: { id }})
     },
-    handleSearch (val) {
-      this.searchVal = val
-      this.refreshBlogs(0, this.currentPageSize)
+    handleFollow () {
+      if (this.isFollowing) {
+        unfollowUser(this.userInfo.id).then(res => {
+          this.isFollowing = false
+        }).catch(err => {
+          this.$emit('alertMsg', {
+            message: '取关用户失败',
+            type: 'error'
+          })
+        })
+      } else {
+        followUser(this.userInfo.id).then(res => {
+          this.isFollowing = true
+        }).catch(err => {
+          this.$emit('alertMsg', {
+            message: '关注用户失败',
+            type: 'error'
+          })
+        })
+      }
     }
   }
 }

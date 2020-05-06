@@ -204,6 +204,13 @@ export default class BlogComment extends Vue {
   }
 
   addComment (commentId: number = -1) {
+    if (this.commentContent === '') {
+      this.$emit('alertMsg', {
+        message: '评论不能为空',
+        type: 'error'
+      })
+      return
+    }
     let data = {}
     data['content'] = this.commentContent
     if (commentId !== -1) {
