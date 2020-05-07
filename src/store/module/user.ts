@@ -78,6 +78,9 @@ export default {
     getUserInfo ({ state, commit } : any) {
       return new Promise((resolve, reject) => {
         try {
+          if (!state.token) {
+            throw 'no token'
+          }
           getUserInfo(state.token).then(res => {
             const data = res.data
             commit('setUserName', data.username)

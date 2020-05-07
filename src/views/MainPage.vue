@@ -136,23 +136,7 @@ export default {
     refreshBlogs (page = 0, pageSize = 10) {
       if (this.searchVal === '') {
         getBlogList(page, pageSize).then(res => {
-          let data = res.data.content
-          this.totalPages = res.data.totalPages
-          this.blogList = data.map(item => {
-            let dataFormat = {
-              id: 0,
-              title: '',
-              content: '',
-              summary: '',
-              tags: [],
-              createdTime: '2020-02-02 02:02',
-              authorName: 'admin',
-              voteCount: 0,
-              visitorCount: 0
-            }
-            Object.assign(dataFormat, item)
-            return dataFormat
-          })
+          this.updateData(res)
         }).catch(err => {
           this.$emit('alertMsg', {
             message: '获取博客列表失败',
@@ -161,29 +145,7 @@ export default {
         })
       } else {
         searchBlog(this.searchVal, page, pageSize).then(res => {
-          this.totalPages = res.data.totalPages
-          this.blogList = res.data.content.map(item => {
-            let dataFormat = {
-              id: 0,
-              title: '',
-              content: '',
-              summary: '',
-              tags: [],
-              date: '2020-02-02 02:02',
-              author: 'admin',
-              upvoteCount: 0,
-              visitorCount: 0
-            }
-            Object.assign(dataFormat, item, { tags: item.tags.map(tag => {
-              if (Object.prototype.toString.call(tag) === '[object Array]') {
-                return {
-                  id: tag[0],
-                  title: tag[1]
-                }
-              }
-            })})
-            return dataFormat
-          })
+          this.updateData(res)
         }).catch(err => {
           this.$emit('alertMsg', {
             message: '获取博客列表失败',
@@ -193,6 +155,34 @@ export default {
       }
       
     },
+    updateData (res) {
+      this.totalPages = res.data.totalPages
+      this.blogList = res.data.content.map(item => {
+        let dataFormat = {
+          id: 0,
+          title: '',
+          content: '',
+          summary: '',
+          tags: [],
+          date: '2020-02-02 02:02',
+          author: 'admin',
+          upvoteCount: 0,
+          visitorCount: 0
+        }
+        Object.assign(dataFormat, item, { tags: item.tags.map(tag => {
+          if (Object.prototype.toString.call(tag) === '[object Array]') {
+            return {
+              id: tag[0],
+              title: tag[1]
+            }
+          } else {
+            return tag
+          }
+        })})
+        return dataFormat
+      })
+    },
+
     handlePageChange (val) {
       this.currentPage = val
       this.refreshBlogs(val - 1, this.currentPageSize)

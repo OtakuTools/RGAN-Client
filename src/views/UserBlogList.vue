@@ -54,10 +54,10 @@
                         column
                         disabled
                       >
-                        <v-chip tile outlined small label>
+                        <!-- <v-chip tile outlined small label>
                           <v-icon left small>mdi-account</v-icon>
                           {{blog.authorName}}
-                        </v-chip>
+                        </v-chip> -->
                         <v-chip outlined small label>
                           <v-icon left small>mdi-calendar</v-icon>
                           {{blog.createdTime.replace("T", " ")}}
@@ -129,7 +129,8 @@ export default {
       totalElements: 0,
       selected: null,
 
-      isFollowing: false
+      isFollowing: false,
+      needLogIn: false
     }
   },
   mounted () {
@@ -138,10 +139,10 @@ export default {
       checkIsFollowing(this.userInfo.id).then(res => {
         this.isFollowing = res.data
       }).catch(err => {
-        this.$emit('alertMsg', {
-          message: '获取关注状态失败',
-          type: 'error'
-        })
+        // this.$emit('alertMsg', {
+        //   message: '获取关注状态失败',
+        //   type: 'error'
+        // })
       })
       this.refreshBlogs()
     })
@@ -194,24 +195,41 @@ export default {
       this.$router.push({ name: 'blog', query: { id }})
     },
     handleFollow () {
-      if (this.isFollowing) {
-        unfollowUser(this.userInfo.id).then(res => {
-          this.isFollowing = false
-        }).catch(err => {
-          this.$emit('alertMsg', {
-            message: '取关用户失败',
-            type: 'error'
-          })
-        })
+      if (!this.$store.state.user.token) {
+        this.$router.push({ name: 'login' })
       } else {
-        followUser(this.userInfo.id).then(res => {
-          this.isFollowing = true
-        }).catch(err => {
-          this.$emit('alertMsg', {
-            message: '关注用户失败',
-            type: 'error'
+        let msg = {}
+        if (this.isFollowing) {
+          unfollowUser(this.userInfo.id).then(res => {
+            this.isFollowing = false
+            msg = {
+              message: '取关用户成功',
+              type: 'success'
+            }
+          }).catch(err => {
+            msg = {
+              message: '取关用户失败',
+              type: 'error'
+            }
+          }).finally(() => {
+            this.$emit('alertMsg', msg)
           })
-        })
+        } else {
+          followUser(this.userInfo.id).then(res => {
+            this.isFollowing = true
+            msg = {
+              message: '关注用户成功',
+              type: 'success'
+            }
+          }).catch(err => {
+            msg = {
+              message: '关注用户失败',
+              type: 'error'
+            }
+          }).finally(() => {
+            this.$emit('alertMsg', msg)
+          })
+        }
       }
     }
   }
