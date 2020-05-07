@@ -302,6 +302,7 @@ export default class ImageEditor extends Vue {
         break
     }
     this.current_obj_idx++
+    this.clearCanvas()
     this.renderObj()
   }
 
