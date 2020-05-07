@@ -35,6 +35,11 @@ export default [
     component: () => import('../views/UserBlogList.vue')
   },
   {
+    path: '/test',
+    name: 'test',
+    component: () => import('../views/test.vue')
+  },
+  {
     path: '/verification/:mode',
     name: 'verification',
     component: () => import('../views/VerificationPage.vue')

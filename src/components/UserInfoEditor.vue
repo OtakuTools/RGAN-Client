@@ -202,7 +202,6 @@ export default class UserInfoEditor extends Vue {
     }
     getStorageToken().then(res => {
       let token = res.data
-      console.log(token)
       window.qiniu.compressImage(this.uploadAvartar, compressOptions).then(() => {
         let observable = window.qiniu.upload(this.uploadAvartar, this.uploadAvartar.name, token, putExtra)
         let subscription = observable.subscribe(observer) // 上传开始
