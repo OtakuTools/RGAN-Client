@@ -60,12 +60,13 @@ module.exports = {
       'markdown-it': 'markdownit',
       'monaco-editor': 'monaco',
       'vuetify': 'Vuetify',
-      'qiniu': 'qiniu'
+      'qiniu': 'qiniu',
+      'showdown': 'showdown'
     }
   },
   devServer: {
     host: 'localhost', // target host
-    port: 8081,
+    port: 8121,
     // proxy:{'/api':{}},代理器中设置/api,项目中请求路径为/api的替换为target
     proxy: {
       '/api': {
