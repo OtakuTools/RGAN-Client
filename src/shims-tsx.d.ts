@@ -16,6 +16,7 @@ declare global {
     Vuetify: any,
     L2Dwidget: any,
     jQuery : any,
-    qiniu: any
+    qiniu: any,
+    showdown: any
   }
 }

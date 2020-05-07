@@ -43,6 +43,9 @@
             <v-btn depressed tile icon @click="handleShortcut('delete')">
               <v-icon>mdi-format-strikethrough</v-icon>
             </v-btn>
+            <v-btn depressed tile icon @click="handleShortcut('underline')">
+              <v-icon>mdi-format-underline</v-icon>
+            </v-btn>
             <v-btn depressed tile icon @click="handleShortcut('quote')">
               <v-icon>mdi-format-quote-close</v-icon>
             </v-btn>
@@ -382,6 +385,9 @@ export default class MDEditor extends Vue {
         break
       case 'delete':
         this.insertContentWithSelection('~~')
+        break
+      case 'underline':
+        this.insertContentWithSelection('__')
         break
       case 'quote':
         this.insertContentWithoutSelection('`输入引用内容`', '输入引用内容')

@@ -30,72 +30,78 @@
         </v-list-item>
       </v-col>
       <v-col cols="9">
-        <v-list two-line flat style="padding-top: 20px;">
-          <v-list-item-group
-            multiple
-          >
-            <template v-for="(blog, index) in blogList">
-              <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
-                <template>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="blog.title"></v-list-item-title>
-                    <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <v-chip-group
-                        column
-                      >
-                        <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
-                          {{ tag.title }}
-                        </v-chip>
-                      </v-chip-group>
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <v-chip-group
-                        column
-                        disabled
-                      >
-                        <!-- <v-chip tile outlined small label>
-                          <v-icon left small>mdi-account</v-icon>
-                          {{blog.authorName}}
-                        </v-chip> -->
-                        <v-chip outlined small label>
-                          <v-icon left small>mdi-calendar</v-icon>
-                          {{blog.createdTime.replace("T", " ")}}
-                        </v-chip>
+        <v-row>
+          <v-col cols="12">
+            <v-list two-line flat style="padding-top: 20px;">
+              <v-list-item-group
+                multiple
+              >
+                <template v-for="(blog, index) in blogList">
+                  <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
+                    <template>
+                      <v-list-item-content>
+                        <v-list-item-title v-text="blog.title"></v-list-item-title>
+                        <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                          <v-chip-group
+                            column
+                          >
+                            <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
+                              {{ tag.title }}
+                            </v-chip>
+                          </v-chip-group>
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                          <v-chip-group
+                            column
+                            disabled
+                          >
+                            <!-- <v-chip tile outlined small label>
+                              <v-icon left small>mdi-account</v-icon>
+                              {{blog.authorName}}
+                            </v-chip> -->
+                            <v-chip outlined small label>
+                              <v-icon left small>mdi-calendar</v-icon>
+                              {{blog.createdTime.replace("T", " ")}}
+                            </v-chip>
 
-                        <v-chip outlined small label>
-                          <v-icon left small>mdi-thumb-up</v-icon>
-                          {{blog.voteCount}}
-                        </v-chip>
+                            <v-chip outlined small label>
+                              <v-icon left small>mdi-thumb-up</v-icon>
+                              {{blog.voteCount}}
+                            </v-chip>
 
-                        <!-- <v-chip outlined small label>
-                          <v-icon left small>mdi-eye</v-icon>
-                          {{blog.visitorCount}}
-                        </v-chip> -->
-                      </v-chip-group>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
+                            <!-- <v-chip outlined small label>
+                              <v-icon left small>mdi-eye</v-icon>
+                              {{blog.visitorCount}}
+                            </v-chip> -->
+                          </v-chip-group>
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </template>
+                  </v-list-item>
+
+                  <v-divider
+                    v-if="index + 1 < blogList.length"
+                    :key="blog.id"
+                  ></v-divider>
                 </template>
-              </v-list-item>
-
-              <v-divider
-                v-if="index + 1 < blogList.length"
-                :key="blog.id"
-              ></v-divider>
-            </template>
-          </v-list-item-group>
-        </v-list>
+              </v-list-item-group>
+            </v-list>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-pagination
+              v-model="currentPage"
+              :length="totalPages"
+              :total-visible="7"
+              @input="handlePageChange"
+              @next="handleNextPage"
+              @previous="handlePrevPage"
+            ></v-pagination>
+          </v-col>
+        </v-row>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-pagination
-        v-model="currentPage"
-        :length="totalPages"
-        :total-visible="7"
-        @input="handlePageChange"
-        @next="handleNextPage"
-        @previous="handlePrevPage"
-      ></v-pagination>
     </v-row>
     <KanBan />
   </v-container>
