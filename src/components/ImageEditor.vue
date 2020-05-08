@@ -250,6 +250,20 @@ class Circle {
   }
 }
 
+class Picture {
+  data: any
+  startPoint: Point
+  width: number
+  height: number
+  show: boolean = true
+  constructor(obj: any) {
+    this.data = obj.data
+    this.startPoint = obj.startPoint
+    this.width = obj.width
+    this.height = obj.height
+  }
+}
+
 class ColorRec {
   pen: string = '#FF0000'
   line: string = '#FF0000'
@@ -285,19 +299,27 @@ export default class ImageEditor extends Vue {
   current_obj_idx: number = -1
 
   colorOpt: Array<string> = ['#FF0000', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#673AB7', '#FF9800']
-  widthOpt: Array<number> = [1, 2, 4, 8]
+  widthOpt: Array<number> = [1, 2, 3, 4, 5, 6, 7]
   
   picker : Picker = new Picker()
   color : ColorRec = new ColorRec()
   lineWidth : WidthRec = new WidthRec()
 
+  imgReader: any = null
+
   mounted() {
     this.container = document.getElementById('imageEditor')
     this.ctx = this.container.getContext('2d')
+    this.initImageReader()
 
     this.container.addEventListener('mousedown', this.mouseDownHandler, false)
     this.container.addEventListener('mousemove', this.mouseMoveHandler, false)
     this.container.addEventListener('mouseup', this.mouseUpHandler, false)
+    document.body.addEventListener('paste', this.pasteFromClipboard, false)
+  }
+
+  destroy() {
+    document.body.removeEventListener('paste', this.pasteFromClipboard)
   }
 
   colorSelector (type: string, color: string) {
@@ -400,6 +422,8 @@ export default class ImageEditor extends Vue {
           this.ctx.strokeStyle = obj.color;
           this.ctx.stroke()
           this.ctx.closePath()
+        } else if (obj instanceof Picture) {
+          this.ctx.drawImage(obj.data, obj.startPoint.x, obj.startPoint.y, obj.width, obj.height)
         }
       }
     });
@@ -530,15 +554,71 @@ export default class ImageEditor extends Vue {
     this.renderObj()
   }
 
-  drawImage () {
-    return true
+  addImage (img) {
+    // this.ctx.drawImage(img, 0, 0, 400, 300)
+    let picObj : Picture = new Picture({
+      startPoint: new Point(0, 0),
+      data: img,
+      width: this.container.width,
+      height: this.container.height
+    })
+    this.objQueue.push(picObj)
+    this.current_obj_idx++
+
+    this.clearCanvas()
+    this.renderObj()
+  }
+
+  initImageReader () {
+    this.imgReader = (item) => {
+      let blob : any = item.getAsFile()
+      let reader : FileReader = new FileReader()
+
+      reader.onload = (e) => {
+        let img : any = new Image()
+        img.onload = () => {
+          this.addImage(img)
+        }
+        img.src = e.target.result
+        // document.body.appendChild( img )
+      }
+      reader.readAsDataURL( blob );
+    };
+  }
+
+  pasteFromClipboard (e) {
+    let clipboardData : any = e.clipboardData
+    let i : number = 0
+    let items : any = null, item : any = null, types : any = null
+
+    if (clipboardData){
+      items = clipboardData.items;
+
+      if( !items ){
+        return;
+      }
+
+      item = items[0];
+      types = clipboardData.types || [];
+
+      for( ; i < types.length; i++ ){
+        if( types[i] === 'Files' ){
+          item = items[i];
+          break;
+        }
+      }
+
+      if( item && item.kind === 'file' && item.type.match(/^image\//i) ){
+          this.imgReader( item );
+      }
+    }
   }
 
   saveImage () {
     var image = new Image();
     image.src = this.container.toDataURL("image/png");
-    image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
-    console.log(image)
+    // image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
+    document.body.appendChild( image )
     return image;
   }
 }
