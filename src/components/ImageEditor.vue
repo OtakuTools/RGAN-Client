@@ -7,29 +7,145 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-btn depressed color="white" @click="handleMode('pen')" v-bind:class="{'v-btn--active': editMode === 'pen'}">
-          <v-icon>mdi-draw</v-icon>
-        </v-btn>
+        <v-menu
+          :v-model="picker.pen"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn depressed color="white" v-on="on" @click="handleMode('pen')" v-bind:class="{'v-btn--active': editMode === 'pen'}">
+              <v-icon>mdi-draw</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  {{'色彩'}}
+                  <v-btn v-for="(c, index) in colorOpt" :key="index" :color="c" dense depressed tile small icon @click="colorSelector('pen', c)">
+                    <v-icon v-if="color.pen !== c">mdi-checkbox-blank-circle</v-icon>
+                    <v-icon v-else>mdi-record-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  {{'粗细'}}
+                  <v-btn v-for="(width, index) in widthOpt" :key="index" :color="lineWidth.pen === width? 'primary' : 'black'" dense depressed tile small icon @click="widthSelector('pen', width)">
+                    <v-icon>{{`mdi-numeric-${width}-box-outline`}}</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
 
-        <v-btn depressed color="white" @click="handleMode('line')" v-bind:class="{'v-btn--active': editMode === 'line'}">
-          <v-icon>mdi-minus</v-icon>
-        </v-btn>
+        <v-menu
+          :v-model="picker.line"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn depressed color="white" v-on="on" @click="handleMode('line')" v-bind:class="{'v-btn--active': editMode === 'line'}">
+              <v-icon>mdi-minus</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  {{'色彩'}}
+                  <v-btn v-for="(c, index) in colorOpt" :key="index" :color="c" dense depressed tile small icon @click="colorSelector('line', c)">
+                    <v-icon v-if="color.line !== c">mdi-checkbox-blank-circle</v-icon>
+                    <v-icon v-else>mdi-record-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  {{'粗细'}}
+                  <v-btn v-for="(width, index) in widthOpt" :key="index" :color="lineWidth.line === width? 'primary' : 'black'" dense depressed tile small icon @click="widthSelector('line', width)">
+                    <v-icon>{{`mdi-numeric-${width}-box-outline`}}</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        
+        <v-menu
+          :v-model="picker.rectangle"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn depressed color="white" v-on="on" @click="handleMode('rectangle')" v-bind:class="{'v-btn--active': editMode === 'rectangle'}">
+              <v-icon>mdi-rectangle-outline</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  {{'色彩'}}
+                  <v-btn v-for="(c, index) in colorOpt" :key="index" :color="c" dense depressed tile small icon @click="colorSelector('rectangle', c)">
+                    <v-icon v-if="color.rectangle !== c">mdi-checkbox-blank-circle</v-icon>
+                    <v-icon v-else>mdi-record-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  {{'粗细'}}
+                  <v-btn v-for="(width, index) in widthOpt" :key="index" :color="lineWidth.rectangle === width? 'primary' : 'black'" dense depressed tile small icon @click="widthSelector('rectangle', width)">
+                    <v-icon>{{`mdi-numeric-${width}-box-outline`}}</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
 
-        <v-btn depressed color="white" @click="handleMode('rectangle')" v-bind:class="{'v-btn--active': editMode === 'rectangle'}">
-          <v-icon>mdi-rectangle-outline</v-icon>
-        </v-btn>
+        <v-menu
+          :v-model="picker.circle"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn depressed color="white" v-on="on" @click="handleMode('circle')" v-bind:class="{'v-btn--active': editMode === 'circle'}">
+              <v-icon>mdi-circle-outline</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  {{'色彩'}}
+                  <v-btn v-for="(c, index) in colorOpt" :key="index" :color="c" dense depressed tile small icon @click="colorSelector('circle', c)">
+                    <v-icon v-if="color.circle !== c">mdi-checkbox-blank-circle</v-icon>
+                    <v-icon v-else>mdi-record-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  {{'粗细'}}
+                  <v-btn v-for="(width, index) in widthOpt" :key="index" :color="lineWidth.circle === width? 'primary' : 'black'" dense depressed tile small icon @click="widthSelector('circle', width)">
+                    <v-icon>{{`mdi-numeric-${width}-box-outline`}}</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
 
-        <v-btn depressed color="white" @click="handleMode('circle')" v-bind:class="{'v-btn--active': editMode === 'circle'}">
-          <v-icon>mdi-circle-outline</v-icon>
-        </v-btn>
-
-        <!-- <v-btn depressed color="white" @click="handleMode('text')">
-          <v-icon>mdi-format-text</v-icon>
-        </v-btn> -->
-
-        <v-btn depressed color="white" @click="handleMode('colorpicker')">
+        <!-- <v-btn depressed color="white" @click="handleMode('colorpicker')">
           <v-icon>mdi-eyedropper-variant</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <v-btn depressed color="white" @click="handleMode('undo')" :disabled="current_obj_idx < 0">
           <v-icon>mdi-undo</v-icon>
@@ -52,18 +168,6 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-dialog v-model="openColorPicker" width="300">
-      <v-card>
-        <v-card-title>颜色选择</v-card-title>
-        <v-card-text>
-          <v-color-picker flat v-model="color"></v-color-picker>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue" text @click="colorPickerSubmit()">确定</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -84,14 +188,12 @@ class Point {
 }
 
 class Pen {
-  startPoint: Point
   pointList: Array<Point>
   lineWidth: string
   color: string
   show: boolean = true
   constructor(obj: any) {
-    this.startPoint = obj.startPoint
-    this.pointList = []
+    this.pointList = obj.pointList
     this.lineWidth = obj.lineWidth
     this.color = obj.color
   }
@@ -148,21 +250,46 @@ class Circle {
   }
 }
 
+class ColorRec {
+  pen: string = '#FF0000'
+  line: string = '#FF0000'
+  rectangle: string = '#FF0000'
+  circle: string = '#FF0000'
+}
+
+class WidthRec {
+  pen: number = 1
+  line: number = 1
+  rectangle: number = 1
+  circle: number = 1
+}
+
+class Picker {
+  pen: boolean = false
+  line: boolean = false
+  rectangle: boolean = false
+  circle: boolean = false
+}
+
 @Component
 export default class ImageEditor extends Vue {
   container : any = null
   ctx : any = null
 
-  editMode: any = "line"
-
-  openColorPicker : boolean = false
-  color : any = "#FF0000"
+  editMode: any = ''
 
   isDrawing : boolean = false
   startPosition: any = { x: 0, y: 0 }
 
   objQueue: Array<any> = []
   current_obj_idx: number = -1
+
+  colorOpt: Array<string> = ['#FF0000', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#673AB7', '#FF9800']
+  widthOpt: Array<number> = [1, 2, 4, 8]
+  
+  picker : Picker = new Picker()
+  color : ColorRec = new ColorRec()
+  lineWidth : WidthRec = new WidthRec()
 
   mounted() {
     this.container = document.getElementById('imageEditor')
@@ -173,14 +300,21 @@ export default class ImageEditor extends Vue {
     this.container.addEventListener('mouseup', this.mouseUpHandler, false)
   }
 
-  colorPickerSubmit () {
-    this.openColorPicker = false
+  colorSelector (type: string, color: string) {
+    this.color[type] = color
+  }
+
+  widthSelector (type: string, width: number) {
+    this.lineWidth[type] = width
+  }
+
+  updatePickerShow (type: string) {
+    this.picker = new Picker()
+    this.picker[type] = true
   }
 
   handleMode (val) {
-    if (val === 'colorpicker') {
-      this.openColorPicker = true
-    } else if (val === 'undo') {
+    if (val === 'undo') {
       if (this.current_obj_idx >= 0) {
         this.objQueue[this.current_obj_idx].show = false
         --this.current_obj_idx
@@ -200,10 +334,12 @@ export default class ImageEditor extends Vue {
 
     } else {
       this.editMode = val
+      this.updatePickerShow(val)
     }
   }
 
   handleMousePosition (e) {
+    e.preventDefault()
     return {
       x : e.offsetX,
       y : e.offsetY
@@ -218,14 +354,30 @@ export default class ImageEditor extends Vue {
     this.objQueue.forEach((obj : any )=> {
       if (obj.show) {
         if (obj instanceof Pen) {
+          let startPoint : Point = obj.pointList[0]
+          let endPoint : Point = obj.pointList[obj.pointList.length-1]
           this.ctx.beginPath()
-          this.ctx.moveTo(obj.startPoint.x, obj.startPoint.y)
-          obj.pointList.forEach(point => {
-            this.ctx.lineTo(point.x, point.y)
-          })
+          if (obj.pointList.length >= 4) {
+            for(let i = 3; i < obj.pointList.length; i+=2) {
+              let ctrlPoint1 : Point = obj.pointList[i-2]
+              let ctrlPoint2 : Point = obj.pointList[i-1]
+              let targ_x : number = (obj.pointList[i-1].x + obj.pointList[i].x) / 2
+              let targ_y : number = (obj.pointList[i-1].y + obj.pointList[i].y) / 2
+              this.ctx.moveTo(startPoint.x, startPoint.y)
+              this.ctx.bezierCurveTo(ctrlPoint1.x, ctrlPoint1.y, ctrlPoint2.x, ctrlPoint2.y, targ_x, targ_y)
+              startPoint = new Point(targ_x, targ_y)
+            }
+          } else if (obj.pointList.length == 3) {
+            let ctrlPoint : Point = obj.pointList[1]
+            this.ctx.moveTo(startPoint.x, startPoint.y)
+            this.ctx.quadraticCurveTo(ctrlPoint.x, ctrlPoint.y, endPoint.x, endPoint.y)
+          } else {
+            this.ctx.lineTo(startPoint.x, startPoint.y, endPoint.x, endPoint.y)
+          }
           this.ctx.lineWidth = obj.lineWidth;
           this.ctx.strokeStyle = obj.color;
           this.ctx.stroke()
+          this.ctx.closePath()
         } else if (obj instanceof Line) {
           this.ctx.beginPath()
           this.ctx.moveTo(obj.startPoint.x, obj.startPoint.y)
@@ -233,18 +385,21 @@ export default class ImageEditor extends Vue {
           this.ctx.lineWidth = obj.lineWidth;
           this.ctx.strokeStyle = obj.color;
           this.ctx.stroke()
+          this.ctx.closePath()
         } else if (obj instanceof Rectangle) {
           this.ctx.beginPath();
           this.ctx.rect(obj.startPoint.x, obj.startPoint.y, obj.width, obj.height)
           this.ctx.lineWidth = obj.lineWidth;
           this.ctx.strokeStyle = obj.color;
           this.ctx.stroke()
+          this.ctx.closePath()
         } else if (obj instanceof Circle) {
           this.ctx.beginPath();
           this.ctx.ellipse(obj.centerPoint.x, obj.centerPoint.y, obj.radiusX, obj.radiusY, obj.rotation, obj.startAngle, obj.endAngle)
           this.ctx.lineWidth = obj.lineWidth;
           this.ctx.strokeStyle = obj.color;
           this.ctx.stroke()
+          this.ctx.closePath()
         }
       }
     });
@@ -265,43 +420,46 @@ export default class ImageEditor extends Vue {
     switch(this.editMode) {
       case 'pen':
         let penObj : Pen = new Pen({
-          startPoint: new Point(position.x, position.y),
-          lineWidth: 1,
-          color: this.color
+          pointList: [new Point(position.x, position.y)],
+          lineWidth: this.lineWidth.pen,
+          color: this.color.pen
         })
         this.objQueue.push(penObj)
+        this.current_obj_idx++
         break
       case 'line':
         let lineObj : Line = new Line({
           startPoint: new Point(position.x, position.y),
           endPoint: new Point(position.x, position.y),
-          lineWidth: 1,
-          color: this.color
+          lineWidth: this.lineWidth.line,
+          color: this.color.line
         })
         this.objQueue.push(lineObj)
+        this.current_obj_idx++
         break
       case 'rectangle':
         let rectObj : Rectangle = new Rectangle({
           startPoint: new Point(position.x, position.y),
           width: 1,
           height: 1,
-          lineWidth: 1,
-          color: this.color
+          lineWidth: this.lineWidth.rectangle,
+          color: this.color.rectangle
         })
         this.objQueue.push(rectObj)
+        this.current_obj_idx++
         break
       case 'circle':
         let circObj : Circle = new Circle({
           startPoint: new Point(position.x, position.y),
           radiusX: 1,
           radiusY: 1,
-          lineWidth: 1,
-          color: this.color
+          lineWidth: this.lineWidth.circle,
+          color: this.color.circle
         })
         this.objQueue.push(circObj)
+        this.current_obj_idx++
         break
     }
-    this.current_obj_idx++
     this.clearCanvas()
     this.renderObj()
   }
@@ -328,9 +486,9 @@ export default class ImageEditor extends Vue {
         break
       case 'circle':
         let circObj : Circle = this.objQueue.pop()
-        circObj.radiusX = Math.floor(Math.abs(position.x - circObj.startPoint.x) / 2)
-        circObj.radiusY = Math.floor(Math.abs(position.y - circObj.startPoint.y) / 2)
-        circObj.centerPoint = new Point(Math.floor((position.x + circObj.startPoint.x) / 2), Math.floor((position.y + circObj.startPoint.y) / 2))
+        circObj.radiusX = Math.abs(position.x - circObj.startPoint.x) / 2
+        circObj.radiusY = Math.abs(position.y - circObj.startPoint.y) / 2
+        circObj.centerPoint = new Point((position.x + circObj.startPoint.x) / 2, (position.y + circObj.startPoint.y) / 2)
         this.objQueue.push(circObj)
         break
     }
@@ -362,9 +520,9 @@ export default class ImageEditor extends Vue {
         break
       case 'circle':
         let circObj : Circle = this.objQueue.pop()
-        circObj.radiusX = Math.floor(Math.abs(position.x - circObj.startPoint.x) / 2)
-        circObj.radiusY = Math.floor(Math.abs(position.y - circObj.startPoint.y) / 2)
-        circObj.centerPoint = new Point(Math.floor((position.x + circObj.startPoint.x) / 2), Math.floor((position.y + circObj.startPoint.y) / 2))
+        circObj.radiusX = Math.abs(position.x - circObj.startPoint.x) / 2
+        circObj.radiusY = Math.abs(position.y - circObj.startPoint.y) / 2
+        circObj.centerPoint = new Point((position.x + circObj.startPoint.x) / 2, (position.y + circObj.startPoint.y) / 2)
         this.objQueue.push(circObj)
         break
     }
