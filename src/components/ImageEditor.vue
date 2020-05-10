@@ -1,12 +1,12 @@
 <template>
-  <v-container>
+  <v-container id="ieContainer">
     <v-row>
-      <v-col cols="12">
-        <canvas id="imageEditor" style="border:1px solid black;" width="400" height="300"></canvas>
+      <v-col cols="12" style="text-align: center">
+        <canvas id="imageEditor" style="border:1px solid black;" width="800" height="600"></canvas>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" style="text-align: center">
         <v-menu
           :v-model="picker.pen"
           :close-on-content-click="false"
@@ -155,7 +155,7 @@
           <v-icon>mdi-redo</v-icon>
         </v-btn>
 
-        <v-btn depressed color="white" @click="handleMode('crop')">
+        <v-btn depressed color="white" @click="handleMode('crop')" v-bind:class="{'v-btn--active': editMode === 'crop'}">
           <v-icon>mdi-crop</v-icon>
         </v-btn>
 
@@ -172,11 +172,15 @@
 </template>
 
 <style lang="less" scoped>
-
+// #imageEditor {
+//   width: 100%;
+//   height: 600px;
+// }
 </style>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
+import elementResizeDetectorMaker from 'element-resize-detector'
 
 class Point {
   x: number
@@ -289,6 +293,7 @@ class Picker {
 export default class ImageEditor extends Vue {
   container : any = null
   ctx : any = null
+  cropper : any = null
 
   editMode: any = ''
 
@@ -307,15 +312,27 @@ export default class ImageEditor extends Vue {
 
   imgReader: any = null
 
+  erd:any = null
+
   mounted() {
     this.container = document.getElementById('imageEditor')
     this.ctx = this.container.getContext('2d')
+    this.ctx.imageSmoothingEnabled = false
     this.initImageReader()
 
     this.container.addEventListener('mousedown', this.mouseDownHandler, false)
     this.container.addEventListener('mousemove', this.mouseMoveHandler, false)
     this.container.addEventListener('mouseup', this.mouseUpHandler, false)
     document.body.addEventListener('paste', this.pasteFromClipboard, false)
+
+    // this.erd = elementResizeDetectorMaker()
+    // if (this.erd) {
+    //   this.erd.listenTo(document.getElementById('ieContainer'), () => {
+    //     this.container.width = document.getElementById('ieContainer').offsetWidth
+    //     this.container.height = document.getElementById('ieContainer').offsetHeight
+    //     this.renderObj()
+    //   })
+    // }
   }
 
   destroy() {
@@ -350,13 +367,24 @@ export default class ImageEditor extends Vue {
         this.clearCanvas()
         this.renderObj()
       }
+    } else if (val === 'crop') {
+      if (!this.cropper) {
+        this.cropper = new window.Cropper(this.container, {
+          viewMode: 2
+        })
+      }
+      this.editMode = val
     } else if (val === 'save') {
       this.saveImage()
     } else if (val === 'cancel') {
-
+      this.cancel()
     } else {
       this.editMode = val
       this.updatePickerShow(val)
+      if (this.cropper) {
+        this.cropper.destroy()
+      }
+      this.cropper = null
     }
   }
 
@@ -369,7 +397,7 @@ export default class ImageEditor extends Vue {
   }
 
   clearCanvas () {
-    this.ctx.clearRect(0, 0, this.container.width, this.container.height);  
+    this.ctx.clearRect(0, 0, this.container.width, this.container.height);
   }
 
   renderObj () {
@@ -555,12 +583,34 @@ export default class ImageEditor extends Vue {
   }
 
   addImage (img) {
-    // this.ctx.drawImage(img, 0, 0, 400, 300)
+    this.container.width = img.width
+    this.container.height = img.height
+    let scale_x : number = img.width / this.container.width
+    let scale_y : number = img.height / this.container.height
+    let w : number = 0
+    let h : number = 0
+    if (img.width > img.height) {
+      if (scale_x > 1) {
+        w = img.width / scale_x
+        h = img.height / scale_x
+      } else {
+        w = img.width
+        h = img.height
+      }
+    } else {
+      if (scale_y > 1) {
+        w = img.width / scale_y
+        h = img.height / scale_y
+      } else {
+        w = img.width
+        h = img.height
+      }
+    }
     let picObj : Picture = new Picture({
-      startPoint: new Point(0, 0),
+      startPoint: new Point((this.container.width - w) / 2, (this.container.height - h) / 2),
       data: img,
-      width: this.container.width,
-      height: this.container.height
+      width: w,
+      height: h
     })
     this.objQueue.push(picObj)
     this.current_obj_idx++
@@ -609,17 +659,30 @@ export default class ImageEditor extends Vue {
       }
 
       if( item && item.kind === 'file' && item.type.match(/^image\//i) ){
-          this.imgReader( item );
+        this.imgReader( item );
       }
     }
   }
 
   saveImage () {
     var image = new Image();
-    image.src = this.container.toDataURL("image/png");
+    if (this.editMode === 'crop') {
+      image.src = this.cropper.getCroppedCanvas().toDataURL("image/png")
+      this.cropper && this.cropper.destroy()
+    } else {
+      image.src = this.container.toDataURL("image/png");
+    }
+    this.container.width = 800
+    this.container.height = 600
+    this.$emit("getImage", { image })
     // image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
-    document.body.appendChild( image )
-    return image;
+    // document.body.appendChild( image )
+  }
+
+  cancel () {
+    this.container.width = 800
+    this.container.height = 600
+    this.$emit('cancel', { image : null })
   }
 }
 </script>

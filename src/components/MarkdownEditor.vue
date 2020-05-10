@@ -58,9 +58,27 @@
             <v-btn depressed tile icon @click="handleShortcut('link')">
               <v-icon>mdi-link</v-icon>
             </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('image')">
-              <v-icon>mdi-image-search-outline</v-icon>
-            </v-btn>
+            <v-menu
+              :close-on-content-click="true"
+              offset-y
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn depressed tile icon v-on="on">
+                  <v-icon>mdi-image-search-outline</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="handleShortcut('image')">
+                  <v-list-item-title>插入图片</v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title>上传图片</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="handleShortcut('image_from_clipboard')">
+                  <v-list-item-title>上传截图</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
             <v-btn depressed tile icon @click="handleShortcut('save')">
               <v-icon>mdi-content-save-outline</v-icon>
             </v-btn>
@@ -207,6 +225,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="imageEditorVisible"
+    >
+      <v-card>
+        <v-card-text>
+          <ImageEditor @getImage="getImageFromImageEditor" @cancel="closeImageEditor" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -217,11 +245,13 @@ import { BLOG_TYPE } from '@/libs/constant'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
+const ImageEditor = () => import('./ImageEditor.vue')
 
 @Component({
   components: {
     MonacoEditor,
-    MarkdownViewer
+    MarkdownViewer,
+    ImageEditor
   }
 })
 export default class MDEditor extends Vue {
@@ -234,6 +264,7 @@ export default class MDEditor extends Vue {
   }
   submitFormVisible : boolean = false
   submitSuccVisible : boolean = false
+  imageEditorVisible : boolean = false
   tagOptions : any = [
     '前端',
     '后端',
@@ -372,6 +403,15 @@ export default class MDEditor extends Vue {
     moEd.focus()
   }
 
+  getImageFromImageEditor(image) {
+    this.insertContentWithoutSelection(`![图片](${image.image.src})\n`, '')
+    this.imageEditorVisible = false
+  }
+
+  closeImageEditor() {
+    this.imageEditorVisible = false
+  }
+
   handleShortcut (mode: string) {
     switch (mode) {
       case 'bold':
@@ -404,6 +444,8 @@ export default class MDEditor extends Vue {
       case 'image':
         this.insertContentWithoutSelection(`![图片](图片URL)`, '图片URL')
         break
+      case 'image_from_clipboard':
+        this.imageEditorVisible = true
       case 'save':
       case 'derive':
       default:
@@ -414,6 +456,7 @@ export default class MDEditor extends Vue {
   created () {
 
   }
+
   mounted () {
     if (this.$route.query.hasOwnProperty("blog")) {
       let blogId : any = this.$route.query.blog

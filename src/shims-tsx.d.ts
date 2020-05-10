@@ -17,6 +17,7 @@ declare global {
     L2Dwidget: any,
     jQuery : any,
     qiniu: any,
-    showdown: any
+    showdown: any,
+    Cropper: any
   }
 }
