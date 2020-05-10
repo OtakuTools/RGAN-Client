@@ -674,6 +674,7 @@ export default class ImageEditor extends Vue {
     }
     this.container.width = 800
     this.container.height = 600
+    this.objQueue = []
     this.$emit("getImage", { image })
     // image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
     // document.body.appendChild( image )
@@ -682,6 +683,7 @@ export default class ImageEditor extends Vue {
   cancel () {
     this.container.width = 800
     this.container.height = 600
+    this.objQueue = []
     this.$emit('cancel', { image : null })
   }
 }
