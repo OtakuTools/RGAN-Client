@@ -228,6 +228,8 @@
 
     <v-dialog
       v-model="imageEditorVisible"
+      persistent
+      width="900"
     >
       <v-card>
         <v-card-text>
@@ -322,10 +324,6 @@ export default class MDEditor extends Vue {
     if (this.blogInfo.hasOwnProperty('id')) {
       modifyBlog(this.blogInfo.id, blog).then(res => {
         this.submitFormVisible = false
-        // this.$emit('alertMsg', {
-        //   message: '修改博客成功',
-        //   type: 'success'
-        // })
         this.submitSuccVisible = true
       }).catch(error => {
         this.$emit('alertMsg', {
@@ -336,10 +334,6 @@ export default class MDEditor extends Vue {
     } else {
       addBlog(blog).then(res => {
         this.submitFormVisible = false
-        // this.$emit('alertMsg', {
-        //   message: '提交博客成功',
-        //   type: 'success'
-        // })
         this.submitSuccVisible = true
       }).catch(error => {
         this.$emit('alertMsg', {
