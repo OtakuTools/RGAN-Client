@@ -35,6 +35,11 @@
                 <Following v-bind="$attrs" v-on="$listeners" />
               </v-card>
             </v-tab-item>
+            <v-tab-item>
+              <v-card flat>
+                <BlogListForUser :userInfo="{ username: $store.state.user.name, id: 0 }" v-bind="$attrs" v-on="$listeners" />
+              </v-card>
+            </v-tab-item>
           </v-tabs>
         </v-card>
       </v-col>
@@ -53,6 +58,7 @@ const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
+const BlogListForUser = () => import('@/components/BlogListForUser')
 
 import { isMobile } from '@/libs/util'
 
@@ -62,7 +68,8 @@ export default {
     UserInfoEditor,
     MenuHeader,
     Following,
-    KanBan
+    KanBan,
+    BlogListForUser
   },
   data () {
     return {
