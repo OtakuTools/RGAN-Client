@@ -85,12 +85,13 @@ import { getUserInfoByName } from '@/api/user'
 
 class UserInfo {
   username: string
-  id: number
+  id?: number
+  createdTime?: string
 }
 
 @Component
 export default class BlogListForUser extends Vue {
-  @Prop({ default: {}, type: UserInfo }) userInfo!: UserInfo;
+  @Prop({ default: {}, type: UserInfo }) userInfo : UserInfo;
   blogList : any = []
   currentPage : number = 1
   currentPageSize : number = 10
@@ -99,10 +100,12 @@ export default class BlogListForUser extends Vue {
   selected : any = null
 
   mounted() {
-    this.refreshBlogs()
+    if (this.userInfo.hasOwnProperty('username') && this.userInfo.username) {
+      this.refreshBlogs()
+    }
   }
 
-  refreshBlogs (page = 0, pageSize = 10) {
+  refreshBlogs (page = 0, pageSize = 10) : void {
     getBlogByAuthor(this.userInfo.username, page, pageSize).then(res => {
       let data = res.data.content
       this.totalPages = res.data.totalPages
@@ -124,6 +127,8 @@ export default class BlogListForUser extends Vue {
               id: tag[0],
               title: tag[1]
             }
+          } else {
+            return tag
           }
         })})
         return dataFormat
@@ -136,21 +141,27 @@ export default class BlogListForUser extends Vue {
     })
   }
 
-  handlePageChange (val) {
+  handlePageChange (val : any) : void {
     this.currentPage = val
     this.refreshBlogs(val - 1, this.currentPageSize)
   }
 
-  handlePrevPage () {
+  handlePrevPage () : void {
     this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
   }
 
-  handleNextPage () {
+  handleNextPage () : void {
     this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
   }
 
-  handleSelected (id) {
+  handleSelected (id : any) : void {
     this.$router.push({ name: 'blog', query: { id }})
+  }
+
+  @Watch('userInfo')
+  handleInfoChange(newVal : any) : void {
+    console.log(newVal)
+    this.refreshBlogs()
   }
 }
 </script>

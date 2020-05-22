@@ -151,7 +151,7 @@ export default class BlogComment extends Vue {
     this.getComments()
   }
 
-  getComments () {
+  getComments () : void {
     getBlogComments(this.blogId).then(res => {
       let data = res.data.content
       let commentIds = []
@@ -161,15 +161,23 @@ export default class BlogComment extends Vue {
         commentIds.push(item.id)
         this.commentVoteCount[item.id] = item.voteCount
       })
-      if (commentIds.length > 0) {
+      if (commentIds.length > 0 && this.$store.state.user.token) {
         getCommentStatus(commentIds).then(res => {
           res.data.forEach(item => {
             this.commentVote[item.entityId] = item.status
           })
+        }).catch(err => {
+          res.data.forEach(item => {
+            this.commentVote[item.entityId] = this.CANCEL_VOTE
+          })
+        }).finally(() => {
           this.commentTree = this.buildCommentTree(data)
-        }).catch(err => [
-          console.error(err)
-        ])
+        })
+      } else {
+        commentIds.forEach(item => {
+          this.commentVote[item] = this.CANCEL_VOTE
+        })
+        this.commentTree = this.buildCommentTree(data)
       }
     }).catch(err => {
       this.$emit('alertMsg', {
@@ -179,31 +187,33 @@ export default class BlogComment extends Vue {
     })
   }
 
-  voteComment (commentId : number) {
+  voteComment (commentId : number) : void {
     if (this.commentVote[commentId] === this.UP_VOTE) {
       voteComment(commentId, this.CANCEL_VOTE).then(res => {
         // this.getComments()
-        this.commentVote[commentId] -= this.UP_VOTE
+        this.commentVote[commentId] = this.CANCEL_VOTE
         this.commentVoteCount[commentId] -= this.UP_VOTE
+        this.$nextTick(() => {
+          this.forceRefresh = this.forceRefresh - 1
+        })
       }).catch(err => {
         console.error(err)
-      }).finally(() => {
-        this.forceRefresh -= 1
       })
     } else {
       voteComment(commentId, this.UP_VOTE).then(res => {
         // this.getComments()
-        this.commentVote[commentId] += this.UP_VOTE
+        this.commentVote[commentId] = this.UP_VOTE
         this.commentVoteCount[commentId] += this.UP_VOTE
+        this.$nextTick(() => {
+          this.forceRefresh = this.forceRefresh + 1
+        })
       }).catch(err => {
         console.error(err)
-      }).finally(() => {
-        this.forceRefresh += 1
       })
     }
   }
 
-  addComment (commentId: number = -1) {
+  addComment (commentId: number = -1) : void {
     if (this.commentContent === '') {
       this.$emit('alertMsg', {
         message: '评论不能为空',
@@ -228,7 +238,7 @@ export default class BlogComment extends Vue {
     })
   }
 
-  editComment (commentId: number) {
+  editComment (commentId: number) : void {
     editBlogComment(
       commentId,
       {
@@ -241,7 +251,7 @@ export default class BlogComment extends Vue {
     })
   }
 
-  deleteComment (commentId: number) {
+  deleteComment (commentId: number) : void {
     deleteBlogComment(
       commentId
     ).then(res => {
@@ -251,9 +261,9 @@ export default class BlogComment extends Vue {
     })
   }
 
-  buildCommentTree (commentList: Array<Comment>) {
+  buildCommentTree (commentList: Array<Comment>) : Array<any> {
     let tree : Object = {}
-    let commentTree : any = []
+    let commentTree : Array<any> = []
     this.commentLevelTree = {}
     for (let comment of commentList) {
       this.commentLevelTree[comment.id] = comment
@@ -292,7 +302,7 @@ export default class BlogComment extends Vue {
   }
 
   @Watch('blogId')
-  handleBlogIdChange (newVal: number) {
+  handleBlogIdChange (newVal: number) : void {
     this.getComments()
     this.forceRefresh = newVal
   }

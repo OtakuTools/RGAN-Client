@@ -286,11 +286,11 @@ export default class MDEditor extends Vue {
   viewMode : boolean = false
   fullScreen : boolean = false
 
-  handleCodeChange (val: string) {
+  handleCodeChange (val: string) : void {
     this.blogInfo.content = val
   }
 
-  handleCodeScroll (percentage: number) {
+  handleCodeScroll (percentage: number) : void {
     let mdViewer : any = this.$refs.markdownViewer
     if (mdViewer) {
       let viewer : any = mdViewer.$refs.display
@@ -298,7 +298,7 @@ export default class MDEditor extends Vue {
     }
   }
 
-  valid () {
+  valid () : string {
     let errMsg : Array<string> = []
     if (this.blogInfo.title === '') {
       errMsg.push('博客标题不能为空')
@@ -310,7 +310,7 @@ export default class MDEditor extends Vue {
     return errMsg.join('；')
   }
 
-  onSubmit () {
+  onSubmit () : void {
     let errMsg = this.valid()
     if (errMsg !== '') {
       this.$emit('alertMsg', {
@@ -344,7 +344,7 @@ export default class MDEditor extends Vue {
     }
   }
 
-  insertContentWithoutSelection (text: string, selectionPart? : string) {
+  insertContentWithoutSelection (text: string, selectionPart? : string) : void {
     let editor : any = this.$refs.monacoEditor
     if (!editor) {
       return
@@ -371,7 +371,7 @@ export default class MDEditor extends Vue {
     moEd.focus()
   }
 
-  insertContentWithSelection (textFront: string, textBack?: string) {
+  insertContentWithSelection (textFront: string, textBack?: string) : void {
     let editor : any = this.$refs.monacoEditor
     let moEd : any = editor.monacoEditor
     if (!moEd) {
@@ -397,16 +397,16 @@ export default class MDEditor extends Vue {
     moEd.focus()
   }
 
-  getImageFromImageEditor(image) {
+  getImageFromImageEditor(image) : void {
     this.insertContentWithoutSelection(`![图片](${image.image.src})\n`, '')
     this.imageEditorVisible = false
   }
 
-  closeImageEditor() {
+  closeImageEditor() : void {
     this.imageEditorVisible = false
   }
 
-  handleShortcut (mode: string) {
+  handleShortcut (mode: string) : void {
     switch (mode) {
       case 'bold':
         this.insertContentWithSelection('**')

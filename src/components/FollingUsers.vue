@@ -90,7 +90,7 @@ export default class FollowingUser extends Vue {
     this.getFollowers()
   }
 
-  getFollowers () {
+  getFollowers () : void {
     getFollowers(this.$store.state.user.id, this.f_er_page - 1, this.pageSize).then(res => {
       this.followers = res.data.content
       this.f_er_totalPages = res.data.totalPages
@@ -99,7 +99,7 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  getFollowings () {
+  getFollowings () : void {
     getFollowings(this.$store.state.user.id, this.f_ing_page - 1, this.pageSize).then(res => {
       this.followings = res.data.content
       this.f_ing_totalPages = res.data.totalPages
@@ -108,7 +108,7 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  followUser(id : number) {
+  followUser(id : number) : void {
     followUser(id).then(res => {
       this.getFollowings()
       this.$emit('alertMsg', {
@@ -123,7 +123,7 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  unfollowUser(id : number) {
+  unfollowUser(id : number) : void {
     unfollowUser(id).then(res => {
       this.getFollowings()
       this.$emit('alertMsg', {
@@ -138,29 +138,29 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  handlePageChange_ing (val) {
+  handlePageChange_ing (val) : void {
     this.f_ing_page = val
     this.getFollowings()
   }
 
-  handlePrevPage_ing () {
+  handlePrevPage_ing () : void {
     this.getFollowings()
   }
 
-  handleNextPage_ing () {
+  handleNextPage_ing () : void {
     this.getFollowings()
   }
 
-  handlePageChange_er (val) {
+  handlePageChange_er (val) : void {
     this.f_er_page = val
     this.getFollowers()
   }
 
-  handlePrevPage_er () {
+  handlePrevPage_er () : void {
     this.getFollowers()
   }
 
-  handleNextPage_er () {
+  handleNextPage_er () : void {
     this.getFollowers()
   }
 }

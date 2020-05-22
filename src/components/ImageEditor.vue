@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" style="text-align: center; padding: 5px 0 0 0">
         <img v-show="editMode === 'crop'" id="imageCrop" :src="cropImage" width="800" height="600" />
-        <canvas v-show="editMode !== 'crop'" id="imageEditor" style="border:1px solid black; max-width: 800px; max-height: 600px;" width="800" height="600"></canvas>
+        <canvas v-show="editMode !== 'crop'" id="imageEditor" style="background-color: #ddd; max-width: 800px; max-height: 600px;" width="800" height="600"></canvas>
       </v-col>
     </v-row>
     <v-row>
@@ -345,7 +345,7 @@ export default class ImageEditor extends Vue {
     document.body.addEventListener('paste', this.pasteFromClipboard, false)
   }
 
-  reset() {
+  reset() : void {
     this.moveDistance = new Point(0,0)
     this.editMode = ''
     this.isDrawing = false
@@ -374,20 +374,20 @@ export default class ImageEditor extends Vue {
     document.body.removeEventListener('paste', this.pasteFromClipboard)
   }
 
-  colorSelector (type: string, color: string) {
+  colorSelector (type: string, color: string) : void {
     this.color[type] = color
   }
 
-  widthSelector (type: string, width: number) {
+  widthSelector (type: string, width: number) : void {
     this.lineWidth[type] = width
   }
 
-  updatePickerShow (type: string) {
+  updatePickerShow (type: string) : void {
     this.picker = new Picker()
     this.picker[type] = true
   }
 
-  handleMode (val) {
+  handleMode (val) : void {
     if (val === 'undo') {
       if (this.current_obj_idx >= 0) {
         this.objQueue[this.current_obj_idx].show = false
@@ -432,7 +432,7 @@ export default class ImageEditor extends Vue {
     }
   }
 
-  handleMousePosition (e) {
+  handleMousePosition (e) : Object {
     e.preventDefault()
     return {
       x : e.offsetX,
@@ -440,7 +440,7 @@ export default class ImageEditor extends Vue {
     }
   }
 
-  coordinateTrans (mode: string, pos: number) {
+  coordinateTrans (mode: string, pos: number) : number {
     if (mode === 'x') {
       return (pos + this.moveDistance.x)
     } else {
@@ -448,7 +448,7 @@ export default class ImageEditor extends Vue {
     }
   }
 
-  getAbsolutePos (mode: string, pos: number) {
+  getAbsolutePos (mode: string, pos: number) : number {
     if (mode === 'x') {
       return (pos + this.viewPortOffsetX) 
     } else {
@@ -456,12 +456,12 @@ export default class ImageEditor extends Vue {
     }
   }
 
-  clearCanvas () {
+  clearCanvas () : void {
     this.container.width = this.container.width
     // this.ctx.clearRect(0, 0, this.container.width, this.container.height);
   }
 
-  renderObj () {
+  renderObj () : void {
     this.imageScale = this.viewPortHeight / this.container.height
     this.ctx.scale(this.imageScale, this.imageScale)
     this.objQueue.forEach((obj : any )=> {
@@ -556,13 +556,13 @@ export default class ImageEditor extends Vue {
     });
   }
 
-  removeUnvisibleObj () {
+  removeUnvisibleObj () : void {
     while(this.objQueue.length > this.current_obj_idx + 1) {
       this.objQueue.pop()
     }
   }
 
-  mouseDownHandler (e) {
+  mouseDownHandler (e) : void {
     if (this.isDrawing) return
     this.isDrawing = true
 
@@ -623,7 +623,7 @@ export default class ImageEditor extends Vue {
     this.renderObj()
   }
 
-  mouseMoveHandler (e) {
+  mouseMoveHandler (e) : void {
     if (!this.isDrawing) return
     let position : any = this.handleMousePosition(e)
     switch(this.editMode) {
@@ -665,12 +665,12 @@ export default class ImageEditor extends Vue {
         this.viewPortOffsetY = -this.moveDistance.y
         break
     }
-    console.log(this.viewPortOffsetX, this.viewPortOffsetY)
+    // console.log(this.viewPortOffsetX, this.viewPortOffsetY)
     this.clearCanvas()
     this.renderObj()
   }
 
-  mouseUpHandler (e) {
+  mouseUpHandler (e) : void {
     if (!this.isDrawing) return
     this.isDrawing = false
     let position : any = this.handleMousePosition(e)
@@ -717,7 +717,7 @@ export default class ImageEditor extends Vue {
     this.renderObj()
   }
 
-  mouseScrollHandler (e) {
+  mouseScrollHandler (e) : void {
     // let scale : number = 1
     // if (e.deltaY > 0) {
     //   // 向下滚动
@@ -735,9 +735,9 @@ export default class ImageEditor extends Vue {
     // this.renderObj()
   }
 
-  addImage (img) {
-    this.container.width = img.width
-    this.container.height = img.height
+  addImage (img) : void {
+    // this.container.width = img.width
+    // this.container.height = img.height
 
     this.originImageWidth = img.width
     this.originImageHeight = img.height
@@ -761,7 +761,7 @@ export default class ImageEditor extends Vue {
     this.renderObj()
   }
 
-  initImageReader () {
+  initImageReader () : void {
     this.imgReader = (item) => {
       let blob : any = item.getAsFile()
       let reader : FileReader = new FileReader()
@@ -777,7 +777,7 @@ export default class ImageEditor extends Vue {
     };
   }
 
-  pasteFromClipboard (e) {
+  pasteFromClipboard (e) : void {
     let clipboardData : any = e.clipboardData
     let i : number = 0
     let items : any = null, item : any = null, types : any = null
@@ -805,7 +805,7 @@ export default class ImageEditor extends Vue {
     }
   }
 
-  saveImage () {
+  saveImage () : void {
     var image = new Image();
     if (this.editMode === 'crop') {
       image.src = this.cropper.getCroppedCanvas({imageSmoothingEnabled: false}).toDataURL("image/png")
@@ -821,7 +821,7 @@ export default class ImageEditor extends Vue {
     // document.body.appendChild( image )
   }
 
-  cancel () {
+  cancel () : void {
     this.reset()
     this.$emit('cancel', { image : null })
   }
