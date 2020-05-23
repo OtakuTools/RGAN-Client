@@ -1,7 +1,7 @@
 import { axios } from './request'
 import { getToken } from '@/libs/util'
 
-export const getBlogList = (pages: number = 0, pageSize : number = 10) => {
+export const getBlogList = (pages: number = 0, pageSize : number = 10) : Promise<any> => {
   return axios.request({
     url: `/api/blogs`,
     method: 'get',
@@ -12,7 +12,7 @@ export const getBlogList = (pages: number = 0, pageSize : number = 10) => {
   })
 }
 
-export const addBlog = (data: Object) => {
+export const addBlog = (data: Object) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -23,7 +23,7 @@ export const addBlog = (data: Object) => {
   })
 }
 
-export const modifyBlog = (id : number, data : Object) => {
+export const modifyBlog = (id : number, data : Object) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -34,14 +34,14 @@ export const modifyBlog = (id : number, data : Object) => {
   })
 }
 
-export const getBlogById = (id: number) => {
+export const getBlogById = (id: number) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/${id}`,
     method: 'get'
   })
 }
 
-export const searchBlog = (keywords: string, pages: number = 0, pageSize : number = 10) => {
+export const searchBlog = (keywords: string, pages: number = 0, pageSize : number = 10) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/search`,
     method: 'get',
@@ -53,7 +53,7 @@ export const searchBlog = (keywords: string, pages: number = 0, pageSize : numbe
   })
 }
 
-export const getBlogByAuthor = (name: string, pages: number = 0, pageSize : number = 10) => {
+export const getBlogByAuthor = (name: string, pages: number = 0, pageSize : number = 10) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/user`,
     method: 'get',
@@ -65,14 +65,14 @@ export const getBlogByAuthor = (name: string, pages: number = 0, pageSize : numb
   })
 }
 
-export const getBlogComments = (blogId: number) => {
+export const getBlogComments = (blogId: number) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/${blogId}/comments`,
     method: 'get'
   })
 }
 
-export const addBlogComment = (blogId: number, data: Object) => {
+export const addBlogComment = (blogId: number, data: Object) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -83,7 +83,7 @@ export const addBlogComment = (blogId: number, data: Object) => {
   })
 }
 
-export const editBlogComment = (commentId: number, data: Object) => {
+export const editBlogComment = (commentId: number, data: Object) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -94,7 +94,7 @@ export const editBlogComment = (commentId: number, data: Object) => {
   })
 }
 
-export const deleteBlogComment = (commentId: number) => {
+export const deleteBlogComment = (commentId: number) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }

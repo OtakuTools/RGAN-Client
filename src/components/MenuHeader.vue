@@ -1,15 +1,17 @@
 <template>
   <v-app-bar
     absolute
-    color="white"
+    color="primary"
     hide-on-scroll
+    flat
   >
-    <v-toolbar-title style="min-width: 100px; cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
+    <v-toolbar-title style="color: white; min-width: 100px; cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
     <v-text-field
       label="搜索..."
+      dark
       clearable
       single-line
       v-model="searchValue"
@@ -18,7 +20,7 @@
       @click:append="search"
     ></v-text-field>
 
-    <v-btn icon @click="detail">
+    <v-btn icon @click="detail" dark>
       <v-icon>mdi-feather</v-icon>
     </v-btn>
 
@@ -29,7 +31,7 @@
       close-delay="100"
       v-if="$store.state.user.token && $store.state.user.token !== ''">
       <template v-slot:activator="{ on }">
-        <v-btn icon>
+        <v-btn icon dark>
           <v-avatar size="38" v-on="on">
             <img
               src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -48,7 +50,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn icon v-else @click="login">
+    <v-btn icon v-else @click="login" dark>
       <v-icon>mdi-account-circle</v-icon>
     </v-btn>
   </v-app-bar>

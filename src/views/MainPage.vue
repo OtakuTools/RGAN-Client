@@ -14,7 +14,7 @@
             <template v-for="(blog, index) in blogList">
               <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
                 <template>
-                  <v-list-item-content>
+                  <v-list-item-content style="padding-bottom: 0">
                     <v-list-item-title v-text="blog.title"></v-list-item-title>
                     <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
                     <v-list-item-subtitle>
@@ -31,18 +31,17 @@
                         column
                         disabled
                       >
-                        <v-chip tile outlined small label>
-                          <v-icon left small>mdi-account</v-icon>
-                          {{blog.authorName}}
-                        </v-chip>
-                        <v-chip outlined small label>
+                        <v-chip style="border: none" outlined small label>
                           <v-icon left small>mdi-calendar</v-icon>
                           {{blog.createdTime.replace("T", " ")}}
                         </v-chip>
-
-                        <v-chip outlined small label>
-                          <v-icon left small>mdi-thumb-up</v-icon>
+                        <v-chip style="border: none" outlined small label>
+                          <v-icon left small>mdi-thumb-up-outline</v-icon>
                           {{blog.voteCount}}
+                        </v-chip>
+                        <v-chip style="border: none" outlined small label>
+                          <v-icon left small>mdi-account</v-icon>
+                          {{blog.authorName}}
                         </v-chip>
 
                         <!-- <v-chip outlined small label>
@@ -58,6 +57,7 @@
               <v-divider
                 v-if="index + 1 < blogList.length"
                 :key="blog.id"
+                style="margin-top: 0"
               ></v-divider>
             </template>
           </v-list-item-group>

@@ -1,7 +1,7 @@
 import { axios } from './request'
 import { getToken } from '@/libs/util'
 
-export const getStorageToken = () => {
+export const getStorageToken = () : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }

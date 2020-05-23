@@ -180,14 +180,14 @@
           </v-btn>
           <v-btn
             text
-            @click="submitFormVisible = false"
+            @click="onSubmit('draft')"
           >
             保存为草稿
           </v-btn>
           <v-btn
             color="info"
             text
-            @click="onSubmit"
+            @click="onSubmit('publish')"
           >
             提交
           </v-btn>
@@ -243,7 +243,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog, modifyBlog, getBlogById } from '@/api/data'
-import { BLOG_TYPE } from '@/libs/constant'
+import { BLOG_TYPE, BLOG_STATUS } from '@/libs/constant'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -262,7 +262,8 @@ export default class MDEditor extends Vue {
     content: '',
     tags: [],
     type: '原创',
-    summary: ''
+    summary: '',
+    status: BLOG_STATUS.DRAFT
   }
   submitFormVisible : boolean = false
   submitSuccVisible : boolean = false
@@ -310,7 +311,7 @@ export default class MDEditor extends Vue {
     return errMsg.join('；')
   }
 
-  onSubmit () : void {
+  onSubmit (mode: string) : void {
     let errMsg = this.valid()
     if (errMsg !== '') {
       this.$emit('alertMsg', {
@@ -320,7 +321,7 @@ export default class MDEditor extends Vue {
       return
     }
     let blog = {}
-    Object.assign(blog, this.blogInfo, { type: BLOG_TYPE[this.blogInfo.type] })
+    Object.assign(blog, this.blogInfo, { type: parseInt(BLOG_TYPE[this.blogInfo.type]), status: mode === 'publish' ? BLOG_STATUS.PUBLISHED : BLOG_STATUS.DRAFT })
     if (this.blogInfo.hasOwnProperty('id')) {
       modifyBlog(this.blogInfo.id, blog).then(res => {
         this.submitFormVisible = false

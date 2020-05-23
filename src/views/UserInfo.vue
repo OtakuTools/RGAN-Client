@@ -7,7 +7,7 @@
     </v-row>
     <v-row style="margin-top: 20px;">
       <v-col cols="12">
-        <v-card>
+        <v-card flat outlined>
           <v-tabs vertical>
             <v-tab>
               <v-icon :left="!mobileMode">mdi-account-outline</v-icon>
@@ -16,6 +16,10 @@
             <v-tab>
               <v-icon :left="!mobileMode">mdi-account-group-outline</v-icon>
               {{ mobileMode? '' : '关注/粉丝'}}
+            </v-tab>
+            <v-tab>
+              <v-icon :left="!mobileMode">mdi-bell-outline</v-icon>
+              {{ mobileMode? '' : '关注动态'}}
             </v-tab>
             <v-tab>
               <v-icon :left="!mobileMode">mdi-text</v-icon>
@@ -33,6 +37,11 @@
             <v-tab-item>
               <v-card flat>
                 <Following v-bind="$attrs" v-on="$listeners" />
+              </v-card>
+            </v-tab-item>
+            <v-tab-item>
+              <v-card flat>
+                <TimelineForBlog v-bind="$attrs" v-on="$listeners" />
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -59,6 +68,7 @@ const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
 const BlogListForUser = () => import('@/components/BlogListForUser')
+const TimelineForBlog = () => import('@/components/TimelineForBlog')
 
 import { isMobile } from '@/libs/util'
 
@@ -69,7 +79,8 @@ export default {
     MenuHeader,
     Following,
     KanBan,
-    BlogListForUser
+    BlogListForUser,
+    TimelineForBlog
   },
   data () {
     return {

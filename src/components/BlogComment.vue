@@ -18,47 +18,50 @@
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <v-list flat three-line>
+      <v-list flat three-line dense>
         <v-list-item
           v-for="comment in commentTree"
           :key="comment.id"
         >
-          <v-list-item-avatar size="36">
+          <v-list-item-avatar size="30">
             <img
               src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
               alt="user"
             >
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="text--secondary" v-text="comment.authorName" style="font-size: 14px;"></v-list-item-title>
+            <v-list-item-title>
+              <span class="text--secondary" style="font-size: 14px;">{{comment.authorName}}</span>
+              <div class="text--secondary" style="float:right">
+                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
+                  删除
+                </v-btn>
+                <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
+                  回复
+                </v-btn>
+                <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{comment.createdTime.replace("T", " ")}}</div>
+                <v-btn
+                  x-small
+                  text
+                  :key="forceRefresh"
+                  :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                  @click="voteComment(comment.id)"
+                >
+                  <v-icon small left>mdi-thumb-up-outline</v-icon>
+                  <!-- {{comment.voteCount}} -->
+                  {{commentVoteCount[comment.id]}}
+                </v-btn>
+              </div>
+            </v-list-item-title>
             <v-list-item-subtitle class="text--primary" v-text="comment.content" style="margin: 5px 0; font-size: 16px"></v-list-item-subtitle>
-            <v-list-item-subtitle>
-              <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{comment.createdTime.replace("T", " ")}}</div>
-              <v-btn
-                x-small
-                text
-                :key="forceRefresh"
-                :color="commentVote.hasOwnProperty(comment.id) && commentVote[comment.id]? 'red' : 'rgba(0,0,0,.6)'"
-                @click="voteComment(comment.id)"
-              >
-                <v-icon small left>mdi-thumb-up-outline</v-icon>
-                <!-- {{comment.voteCount}} -->
-                {{commentVoteCount[comment.id]}}
-              </v-btn>
-              <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
-                回复
-              </v-btn>
-              <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
-                删除
-              </v-btn>
-            </v-list-item-subtitle>
             <v-list-item-subtitle>
               <v-list flat three-line>
                 <v-list-item
                   v-for="subComment in comment.comments"
                   :key="subComment.id"
+                  style="padding-right: 0"
                 >
-                  <v-list-item-avatar size="26">
+                  <v-list-item-avatar size="30">
                     <img
                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                       alt="user"
@@ -69,28 +72,28 @@
                       <span>{{subComment.authorName}}</span>
                       <span class="text--primary" v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">&nbsp;回复&nbsp;</span>
                       <span v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">{{commentLevelTree[subComment.replyTo].authorName}}</span>
+                      <div style="float: right">
+                        <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
+                          删除
+                        </v-btn>
+                        <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
+                          回复
+                        </v-btn>
+                        <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{subComment.createdTime.replace("T", " ")}}</div>
+                        <v-btn
+                          x-small
+                          text
+                          :key="forceRefresh"
+                          :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
+                          @click="voteComment(subComment.id)"
+                        >
+                          <v-icon small left>mdi-thumb-up-outline</v-icon>
+                          <!-- {{subComment.voteCount}} -->
+                          {{commentVoteCount[subComment.id]}}
+                        </v-btn>
+                      </div>
                     </v-list-item-title>
-                    <v-list-item-subtitle class="text--primary" v-text="subComment.content" style="margin: 5px 0; font-size: 16px"></v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{subComment.createdTime.replace("T", " ")}}</div>
-                      <v-btn
-                        x-small
-                        text
-                        :key="forceRefresh"
-                        :color="commentVote.hasOwnProperty(subComment.id) && commentVote[subComment.id]? 'red' : 'rgba(0,0,0,.6)'"
-                        @click="voteComment(subComment.id)"
-                      >
-                        <v-icon small left>mdi-thumb-up-outline</v-icon>
-                        <!-- {{subComment.voteCount}} -->
-                        {{commentVoteCount[subComment.id]}}
-                      </v-btn>
-                      <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
-                        回复
-                      </v-btn>
-                      <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
-                        删除
-                      </v-btn>
-                    </v-list-item-subtitle>
+                    <v-list-item-subtitle class="text--primary" v-text="subComment.content" style=" font-size: 16px"></v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -180,10 +183,7 @@ export default class BlogComment extends Vue {
         this.commentTree = this.buildCommentTree(data)
       }
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
   }
 
@@ -197,7 +197,7 @@ export default class BlogComment extends Vue {
           this.forceRefresh = this.forceRefresh - 1
         })
       }).catch(err => {
-        console.error(err)
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     } else {
       voteComment(commentId, this.UP_VOTE).then(res => {
@@ -208,7 +208,7 @@ export default class BlogComment extends Vue {
           this.forceRefresh = this.forceRefresh + 1
         })
       }).catch(err => {
-        console.error(err)
+        this.$emit('alertMsg', formatErrorMsg(err))
       })
     }
   }

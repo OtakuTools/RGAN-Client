@@ -26,24 +26,15 @@
                         column
                         disabled
                       >
-                        <!-- <v-chip tile outlined small label>
-                          <v-icon left small>mdi-account</v-icon>
-                          {{blog.authorName}}
-                        </v-chip> -->
-                        <v-chip outlined small label>
+                        <v-chip style="border: none" outlined small label>
                           <v-icon left small>mdi-calendar</v-icon>
                           {{blog.createdTime.replace("T", " ")}}
                         </v-chip>
 
-                        <v-chip outlined small label>
-                          <v-icon left small>mdi-thumb-up</v-icon>
+                        <v-chip style="border: none" outlined small label>
+                          <v-icon left small>mdi-thumb-up-outline</v-icon>
                           {{blog.voteCount}}
                         </v-chip>
-
-                        <!-- <v-chip outlined small label>
-                          <v-icon left small>mdi-eye</v-icon>
-                          {{blog.visitorCount}}
-                        </v-chip> -->
                       </v-chip-group>
                     </v-list-item-subtitle>
                   </v-list-item-content>

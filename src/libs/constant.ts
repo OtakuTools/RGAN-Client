@@ -15,3 +15,9 @@ export const BLOG_TYPE = {
   '1' : '转载',
   '2' : '翻译'
 }
+
+export const BLOG_STATUS = {
+  PUBLISHED : 0,
+  DRAFT : 1,
+  DELETED : 2
+}

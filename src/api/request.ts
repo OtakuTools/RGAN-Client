@@ -7,7 +7,7 @@ axiosRetry(axios, {
   retries: 3,
   // 自动发送请求
   retryCondition: (error) => {
-    return true
+    return error.response.status < 400
   },
   // 重传间隔
   retryDelay: (retryCount) => {

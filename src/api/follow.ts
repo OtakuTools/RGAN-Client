@@ -1,7 +1,7 @@
 import { axios } from './request'
 import { getToken } from '@/libs/util'
 
-export const checkIsFollowing = (userid : number) => {
+export const checkIsFollowing = (userid : number) : Promise<any> => {
   return axios.request({
     url: `/api/follow/user`,
     method: 'get',
@@ -11,7 +11,7 @@ export const checkIsFollowing = (userid : number) => {
   })
 }
 
-export const followUser = (userid : number) => {
+export const followUser = (userid : number) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -24,7 +24,7 @@ export const followUser = (userid : number) => {
   })
 }
 
-export const unfollowUser = (userid : number) => {
+export const unfollowUser = (userid : number) : Promise<any> => {
   if (!(!!getToken())) {
     return Promise.reject('请先登录')
   }
@@ -37,24 +37,24 @@ export const unfollowUser = (userid : number) => {
   })
 }
 
-export const getFollowers = (userid: number, pages: number = 0, pageSize : number = 10) => {
+export const getFollowers = (userid: number, page: number = 0, size : number = 10) : Promise<any> => {
   return axios.request({
     url: `/api/users/${userid}/followers`,
     method: 'get',
     params: {
-      page: pages,
-      size: pageSize
+      page,
+      size
     }
   })
 }
 
-export const getFollowings = (userid: number, pages: number = 0, pageSize : number = 10) => {
+export const getFollowings = (userid: number, page: number = 0, size : number = 10) : Promise<any> => {
   return axios.request({
     url: `/api/users/${userid}/following`,
     method: 'get',
     params: {
-      page: pages,
-      size: pageSize
+      page,
+      size
     }
   })
 }

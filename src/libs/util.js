@@ -17,7 +17,7 @@ export const getToken = () => {
 
 export const formatErrorMsg = (err) => {
   return {
-    message: err.response ? err.response.data.message : err,
+    message: err.response ? (err.response.data.message || err.response.data) : err,
     type: 'error'
   }
 }

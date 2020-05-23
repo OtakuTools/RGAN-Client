@@ -1,6 +1,6 @@
 import { axios } from './request'
 
-export const login = (data : Object) => {
+export const login = (data : Object) : Promise<any> => {
   return axios.request({
     url: '/api/login',
     method: 'post',
@@ -8,7 +8,7 @@ export const login = (data : Object) => {
   })
 }
 
-export const regist = (data: Object) => {
+export const regist = (data: Object) : Promise<any> => {
   return axios.request({
     url: '/api/register',
     method: 'post',
@@ -16,7 +16,7 @@ export const regist = (data: Object) => {
   })
 }
 
-export const logout = (token: string) => {
+export const logout = (token: string) : Promise<any> => {
   return axios.request({
     url: '/api/logout',
     method: 'post',
@@ -26,22 +26,22 @@ export const logout = (token: string) => {
   })
 }
 
-export const getUserInfo = (id: string) => {
+export const getUserInfo = (id: string) : Promise<any> => {
   return axios.request({
     url: `/api/users`,
     method: 'get',
     params: {
-      id: id
+      id
     }
   })
 }
 
-export const getUserInfoByName = (name: string) => {
+export const getUserInfoByName = (name: string) : Promise<any> => {
   return axios.request({
     url: `/api/users`,
     method: 'get',
     params: {
-      name: name
+      name
     }
   })
 }

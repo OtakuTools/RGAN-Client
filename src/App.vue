@@ -5,16 +5,17 @@
   <div id="app">
     <v-app>
       <Alert :type="alertType" :message="alertMsg" :msgId="alertId"/>
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive">
+      <router-view @alertMsg="handleAlertMsg"></router-view>
+      <!-- <keep-alive> -->
+        <!-- <router-view v-if="$route.meta.keepAlive"> -->
           <!-- 这里是会被缓存的视图组件，比如 Home！ -->
-          <router-view @alertMsg="handleAlertMsg"></router-view>
-        </router-view>
-      </keep-alive>
-      <router-view v-if="!$route.meta.keepAlive">
+          <!-- <router-view @alertMsg="handleAlertMsg"></router-view> -->
+        <!-- </router-view> -->
+      <!-- </keep-alive> -->
+      <!-- <router-view v-if="!$route.meta.keepAlive"> -->
         <!-- 这里是不被缓存的视图组件，比如 Edit！ -->
-        <router-view @alertMsg="handleAlertMsg"></router-view>
-      </router-view>
+        <!-- <router-view @alertMsg="handleAlertMsg"></router-view> -->
+      <!-- </router-view> -->
     </v-app>
   </div>
 </template>
