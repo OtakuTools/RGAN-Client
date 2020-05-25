@@ -1,5 +1,5 @@
 <template>
-  <MDEditor v-bind="$attrs" v-on="$listeners"/>
+  <MDEditor v-bind="$attrs" v-on="$listeners" style="background-color:white"/>
 </template>
 
 <script>
