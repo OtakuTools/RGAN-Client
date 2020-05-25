@@ -111,7 +111,7 @@
       </v-col>
       <v-col v-if="!fullScreen" :cols="viewMode? 12 : 6" style="padding: 0">
         <v-card outlined style="height: calc(100vh - 120px); padding-left: 10px">
-          <MarkdownViewer 
+          <MarkdownViewer
             ref="markdownViewer"
             :inputText="blogInfo.content"
             style="height: 100%; max-height: calc(100vh - 120px); overflow-y: scroll;"
@@ -304,7 +304,7 @@ export default class MDEditor extends Vue {
     if (this.blogInfo.title === '') {
       errMsg.push('博客标题不能为空')
     }
-    if(this.blogInfo.content === '') {
+    if (this.blogInfo.content === '') {
       errMsg.push('博客内容不能为空')
     }
 
@@ -398,12 +398,12 @@ export default class MDEditor extends Vue {
     moEd.focus()
   }
 
-  getImageFromImageEditor(image) : void {
+  getImageFromImageEditor (image) : void {
     this.insertContentWithoutSelection(`![图片](${image.image.src})\n`, '')
     this.imageEditorVisible = false
   }
 
-  closeImageEditor() : void {
+  closeImageEditor () : void {
     this.imageEditorVisible = false
   }
 
@@ -453,9 +453,9 @@ export default class MDEditor extends Vue {
   }
 
   mounted () {
-    if (this.$route.query.hasOwnProperty("blog")) {
+    if (this.$route.query.hasOwnProperty('blog')) {
       let blogId : any = this.$route.query.blog
-      getBlogById (parseInt(blogId)).then(res => {
+      getBlogById(parseInt(blogId)).then(res => {
         let data = res.data
         data.tags = data.tags.map(item => item.title)
         data.type = BLOG_TYPE[data.type]

@@ -84,7 +84,7 @@ export default class FollowingUser extends Vue {
   f_er_page: number = 1
   f_er_totalPages: number = 1
   pageSize : number = 10
-  
+
   mounted () {
     this.getFollowings()
     this.getFollowers()
@@ -108,7 +108,7 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  followUser(id : number) : void {
+  followUser (id : number) : void {
     followUser(id).then(res => {
       this.getFollowings()
       this.$emit('alertMsg', {
@@ -123,7 +123,7 @@ export default class FollowingUser extends Vue {
     })
   }
 
-  unfollowUser(id : number) : void {
+  unfollowUser (id : number) : void {
     unfollowUser(id).then(res => {
       this.getFollowings()
       this.$emit('alertMsg', {

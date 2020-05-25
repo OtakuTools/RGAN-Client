@@ -61,14 +61,14 @@
 
 <script>
 // @ is an alias to /src
+import { isMobile } from '@/libs/util'
+
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
 const BlogListForUser = () => import('@/components/BlogListForUser')
 const TimelineForBlog = () => import('@/components/TimelineForBlog')
-
-import { isMobile } from '@/libs/util'
 
 export default {
   name: 'UserInfoPage',
@@ -92,7 +92,7 @@ export default {
   },
 
   methods: {
-    
+
   }
 }
 </script>

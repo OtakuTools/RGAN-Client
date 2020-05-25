@@ -5,7 +5,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 // import * as MarkdownIt from 'markdown-it'
-/ tslint:disable /
 
 @Component
 export default class MarkdownViewer extends Vue {
@@ -22,7 +21,7 @@ export default class MarkdownViewer extends Vue {
     noHeaderId: false,
     // Use text in curly braces as header id
     customizedHeaderId: false,
-    // Generate header ids compatible with github style 
+    // Generate header ids compatible with github style
     ghCompatibleHeaderId: false,
     // Setting this option to true will prevent showdown from modifying the prefix
     rawPrefixHeaderId: false,
@@ -118,7 +117,7 @@ th {
 }
 
 #display > p,
-#display > h1, 
+#display > h1,
 #display > h2,
 #display > h3,
 #display > h4,

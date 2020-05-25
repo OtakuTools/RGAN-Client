@@ -31,7 +31,7 @@ export default class App extends Vue {
   alertMsg : string = ''
   alertId : number = 0
 
-  handleAlertMsg ( data: any ) {
+  handleAlertMsg (data: any) {
     this.alertMsg = data.message
     this.alertType = data.type
     this.alertId++

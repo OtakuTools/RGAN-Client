@@ -2,7 +2,7 @@ import { axios } from './request'
 import { getToken } from '@/libs/util'
 
 export const voteBlog = (id : number, status: number) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -15,7 +15,7 @@ export const voteBlog = (id : number, status: number) : Promise<any> => {
 }
 
 export const voteComment = (id : number, status: number) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({

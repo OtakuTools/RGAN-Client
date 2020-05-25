@@ -118,7 +118,6 @@ import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
 import { getUserInfo } from '@/api/user'
 import { getStorageToken } from '@/api/storage'
-/ tslint:disable /
 
 @Component
 export default class UserInfoEditor extends Vue {
@@ -170,7 +169,7 @@ export default class UserInfoEditor extends Vue {
   }
 
   chooseAvatar () {
-    console.log("a")
+    console.log('a')
   }
 
   onSubmit () {
@@ -179,19 +178,19 @@ export default class UserInfoEditor extends Vue {
 
   onSubmitAvatar () {
     var putExtra = {
-      fname: "test",
+      fname: 'test',
       params: {},
       mimeType: null
-    };
+    }
     var observer = {
-      next(res){
-        console.log("next", res)
+      next (res) {
+        console.log('next', res)
       },
-      error(err){
-        console.log("err",err)
-      }, 
-      complete(res){
-        console.log("complete", res)
+      error (err) {
+        console.log('err', err)
+      },
+      complete (res) {
+        console.log('complete', res)
       }
     }
     let compressOptions = {
@@ -207,8 +206,7 @@ export default class UserInfoEditor extends Vue {
         let subscription = observable.subscribe(observer) // 上传开始
         // subscription.unsubscribe()
       })
-      
-    }).catch( err => {
+    }).catch(err => {
       console.log(err)
     })
   }

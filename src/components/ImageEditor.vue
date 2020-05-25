@@ -75,7 +75,7 @@
             </v-card-text>
           </v-card>
         </v-menu>
-        
+
         <v-menu
           :v-model="picker.rectangle"
           :close-on-content-click="false"
@@ -190,7 +190,7 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 class Point {
   x: number
   y: number
-  constructor(x: number, y: number) {
+  constructor (x: number, y: number) {
     this.x = x
     this.y = y
   }
@@ -201,7 +201,7 @@ class Pen {
   lineWidth: string
   color: string
   show: boolean = true
-  constructor(obj: any) {
+  constructor (obj: any) {
     this.pointList = obj.pointList
     this.lineWidth = obj.lineWidth
     this.color = obj.color
@@ -214,7 +214,7 @@ class Line {
   lineWidth: string
   color: string
   show: boolean = true
-  constructor(obj: any) {
+  constructor (obj: any) {
     this.startPoint = obj.startPoint
     this.endPoint = obj.endPoint
     this.lineWidth = obj.lineWidth
@@ -229,7 +229,7 @@ class Rectangle {
   lineWidth: string
   color: string
   show: boolean = true
-  constructor(obj: any) {
+  constructor (obj: any) {
     this.startPoint = obj.startPoint
     this.width = obj.width
     this.height = obj.height
@@ -249,7 +249,7 @@ class Circle {
   lineWidth: string
   color: string
   show: boolean = true
-  constructor(obj: any) {
+  constructor (obj: any) {
     this.startPoint = obj.startPoint
     this.centerPoint = obj.startPoint
     this.radiusX = obj.radiusX
@@ -265,7 +265,7 @@ class Picture {
   width: number
   height: number
   show: boolean = true
-  constructor(obj: any) {
+  constructor (obj: any) {
     this.data = obj.data
     this.startPoint = obj.startPoint
     this.width = obj.width
@@ -310,7 +310,7 @@ export default class ImageEditor extends Vue {
 
   colorOpt: Array<string> = ['#FF0000', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#673AB7', '#FF9800']
   widthOpt: Array<number> = [1, 2, 3, 4, 5, 6, 7]
-  
+
   picker : Picker = new Picker()
   color : ColorRec = new ColorRec()
   lineWidth : WidthRec = new WidthRec()
@@ -329,10 +329,10 @@ export default class ImageEditor extends Vue {
   viewPortOffsetX : number = 0
   viewPortOffsetY : number = 0
 
-  moveDistance : any = new Point(0,0)
-  lastMovePosition : any = new Point(0,0)
+  moveDistance : any = new Point(0, 0)
+  lastMovePosition : any = new Point(0, 0)
 
-  mounted() {
+  mounted () {
     this.container = document.getElementById('imageEditor')
     this.ctx = this.container.getContext('2d')
     this.ctx.imageSmoothingEnabled = false
@@ -345,8 +345,8 @@ export default class ImageEditor extends Vue {
     document.body.addEventListener('paste', this.pasteFromClipboard, false)
   }
 
-  reset() : void {
-    this.moveDistance = new Point(0,0)
+  reset () : void {
+    this.moveDistance = new Point(0, 0)
     this.editMode = ''
     this.isDrawing = false
 
@@ -369,7 +369,7 @@ export default class ImageEditor extends Vue {
     this.viewPortOffsetY = 0
   }
 
-  destroy() {
+  destroy () {
     // console.log("destroy")
     document.body.removeEventListener('paste', this.pasteFromClipboard)
   }
@@ -435,8 +435,8 @@ export default class ImageEditor extends Vue {
   handleMousePosition (e) : Object {
     e.preventDefault()
     return {
-      x : e.offsetX,
-      y : e.offsetY
+      x: e.offsetX,
+      y: e.offsetY
     }
   }
 
@@ -450,7 +450,7 @@ export default class ImageEditor extends Vue {
 
   getAbsolutePos (mode: string, pos: number) : number {
     if (mode === 'x') {
-      return (pos + this.viewPortOffsetX) 
+      return (pos + this.viewPortOffsetX)
     } else {
       return (pos + this.viewPortOffsetY)
     }
@@ -464,18 +464,18 @@ export default class ImageEditor extends Vue {
   renderObj () : void {
     this.imageScale = this.viewPortHeight / this.container.height
     this.ctx.scale(this.imageScale, this.imageScale)
-    this.objQueue.forEach((obj : any )=> {
+    this.objQueue.forEach((obj : any) => {
       if (obj.show) {
         if (obj instanceof Pen) {
           let startPoint : Point = obj.pointList[0]
-          let endPoint : Point = obj.pointList[obj.pointList.length-1]
+          let endPoint : Point = obj.pointList[obj.pointList.length - 1]
           this.ctx.beginPath()
           if (obj.pointList.length >= 4) {
-            for(let i = 3; i < obj.pointList.length; i+=2) {
-              let ctrlPoint1 : Point = obj.pointList[i-2]
-              let ctrlPoint2 : Point = obj.pointList[i-1]
-              let targ_x : number = (obj.pointList[i-1].x + obj.pointList[i].x) / 2
-              let targ_y : number = (obj.pointList[i-1].y + obj.pointList[i].y) / 2
+            for (let i = 3; i < obj.pointList.length; i += 2) {
+              let ctrlPoint1 : Point = obj.pointList[i - 2]
+              let ctrlPoint2 : Point = obj.pointList[i - 1]
+              let targ_x : number = (obj.pointList[i - 1].x + obj.pointList[i].x) / 2
+              let targ_y : number = (obj.pointList[i - 1].y + obj.pointList[i].y) / 2
               this.ctx.moveTo(this.coordinateTrans('x', startPoint.x), this.coordinateTrans('y', startPoint.y))
               this.ctx.bezierCurveTo(
                 this.coordinateTrans('x', ctrlPoint1.x),
@@ -504,8 +504,8 @@ export default class ImageEditor extends Vue {
               this.coordinateTrans('y', endPoint.y)
             )
           }
-          this.ctx.lineWidth = obj.lineWidth;
-          this.ctx.strokeStyle = obj.color;
+          this.ctx.lineWidth = obj.lineWidth
+          this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
           this.ctx.closePath()
         } else if (obj instanceof Line) {
@@ -518,30 +518,30 @@ export default class ImageEditor extends Vue {
             this.coordinateTrans('x', obj.endPoint.x),
             this.coordinateTrans('y', obj.endPoint.y)
           )
-          this.ctx.lineWidth = obj.lineWidth;
-          this.ctx.strokeStyle = obj.color;
+          this.ctx.lineWidth = obj.lineWidth
+          this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
           this.ctx.closePath()
         } else if (obj instanceof Rectangle) {
-          this.ctx.beginPath();
+          this.ctx.beginPath()
           this.ctx.rect(
             this.coordinateTrans('x', obj.startPoint.x),
             this.coordinateTrans('y', obj.startPoint.y),
             obj.width, obj.height
           )
-          this.ctx.lineWidth = obj.lineWidth;
-          this.ctx.strokeStyle = obj.color;
+          this.ctx.lineWidth = obj.lineWidth
+          this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
           this.ctx.closePath()
         } else if (obj instanceof Circle) {
-          this.ctx.beginPath();
+          this.ctx.beginPath()
           this.ctx.ellipse(
             this.coordinateTrans('x', obj.centerPoint.x),
             this.coordinateTrans('y', obj.centerPoint.y),
             obj.radiusX, obj.radiusY, obj.rotation, obj.startAngle, obj.endAngle
           )
-          this.ctx.lineWidth = obj.lineWidth;
-          this.ctx.strokeStyle = obj.color;
+          this.ctx.lineWidth = obj.lineWidth
+          this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
           this.ctx.closePath()
         } else if (obj instanceof Picture) {
@@ -553,11 +553,11 @@ export default class ImageEditor extends Vue {
           )
         }
       }
-    });
+    })
   }
 
   removeUnvisibleObj () : void {
-    while(this.objQueue.length > this.current_obj_idx + 1) {
+    while (this.objQueue.length > this.current_obj_idx + 1) {
       this.objQueue.pop()
     }
   }
@@ -568,7 +568,7 @@ export default class ImageEditor extends Vue {
 
     let position : any = this.handleMousePosition(e)
     this.removeUnvisibleObj()
-    switch(this.editMode) {
+    switch (this.editMode) {
       case 'pen':
         let penObj : Pen = new Pen({
           // pointList: [new Point(position.x, position.y)],
@@ -626,7 +626,7 @@ export default class ImageEditor extends Vue {
   mouseMoveHandler (e) : void {
     if (!this.isDrawing) return
     let position : any = this.handleMousePosition(e)
-    switch(this.editMode) {
+    switch (this.editMode) {
       case 'pen':
         let penObj: Pen = this.objQueue.pop()
         // penObj.pointList.push(new Point(position.x, position.y))
@@ -674,14 +674,14 @@ export default class ImageEditor extends Vue {
     if (!this.isDrawing) return
     this.isDrawing = false
     let position : any = this.handleMousePosition(e)
-    switch(this.editMode) {
+    switch (this.editMode) {
       case 'pen':
         let penObj: Pen = this.objQueue.pop()
         // penObj.pointList.push(new Point(position.x, position.y))
         penObj.pointList.push(new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)))
         this.objQueue.push(penObj)
         break
-      case "line":
+      case 'line':
         let lineObj: Line = this.objQueue.pop()
         // lineObj.endPoint = new Point(position.x, position.y)
         lineObj.endPoint = new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y))
@@ -727,7 +727,7 @@ export default class ImageEditor extends Vue {
     // }
     // this.container.width = Math.max(Math.min(this.container.width * scale, this.originImageWidth), this.maxViewPortWidth)
     // this.container.height = Math.max(Math.min(this.container.height * scale, this.originImageHeight), this.maxViewPortHeight)
-    
+
     // this.viewPortWidth = this.container.offsetWidth
     // this.viewPortHeight = this.container.offsetHeight
     // console.log(this.container.width, this.container.height)
@@ -773,57 +773,57 @@ export default class ImageEditor extends Vue {
         }
         img.src = e.target.result
       }
-      reader.readAsDataURL( blob );
-    };
+      reader.readAsDataURL(blob)
+    }
   }
 
   pasteFromClipboard (e) : void {
     let clipboardData : any = e.clipboardData
     let i : number = 0
-    let items : any = null, item : any = null, types : any = null
+    let items : any = null; let item : any = null; let types : any = null
     this.reset()
-    if (clipboardData){
-      items = clipboardData.items;
+    if (clipboardData) {
+      items = clipboardData.items
 
-      if( !items ){
-        return;
+      if (!items) {
+        return
       }
 
-      item = items[0];
-      types = clipboardData.types || [];
+      item = items[0]
+      types = clipboardData.types || []
 
-      for( ; i < types.length; i++ ){
-        if( types[i] === 'Files' ){
-          item = items[i];
-          break;
+      for (; i < types.length; i++) {
+        if (types[i] === 'Files') {
+          item = items[i]
+          break
         }
       }
 
-      if( item && item.kind === 'file' && item.type.match(/^image\//i) ){
-        this.imgReader( item );
+      if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
+        this.imgReader(item)
       }
     }
   }
 
   saveImage () : void {
-    var image = new Image();
+    var image = new Image()
     if (this.editMode === 'crop') {
-      image.src = this.cropper.getCroppedCanvas({imageSmoothingEnabled: false}).toDataURL("image/png")
+      image.src = this.cropper.getCroppedCanvas({ imageSmoothingEnabled: false }).toDataURL('image/png')
       this.cropper && this.cropper.destroy()
     } else {
-      this.moveDistance = new Point(0,0)
+      this.moveDistance = new Point(0, 0)
       this.renderObj()
-      image.src = this.container.toDataURL("image/png");
+      image.src = this.container.toDataURL('image/png')
     }
     this.reset()
-    this.$emit("getImage", { image })
+    this.$emit('getImage', { image })
     // image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
     // document.body.appendChild( image )
   }
 
   cancel () : void {
     this.reset()
-    this.$emit('cancel', { image : null })
+    this.$emit('cancel', { image: null })
   }
 }
 </script>

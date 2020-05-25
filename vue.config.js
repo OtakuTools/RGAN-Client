@@ -5,15 +5,15 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   lintOnSave: true,
   configureWebpack: {
-    devtool     : 'none',     // webpack内关闭sourceMap
-    optimization: {   // 优化配置                           
+    devtool: 'none', // webpack内关闭sourceMap
+    optimization: { // 优化配置
       splitChunks: {
-        chunks     : 'all',
+        chunks: 'all',
         cacheGroups: {
           // 拆分Vue
           vue: {
             test: /[\\/]node_modules[\\/]vue[\\/]/,
-            name: 'chunk-vue'  
+            name: 'chunk-vue'
           },
           // 拆分Element
           element: {
@@ -46,7 +46,7 @@ module.exports = {
         test: /\.js$|\.html$|\.css$/,
         threshold: 10240,
         deleteOriginalAssets: false
-      }),
+      })
 
       // new VuetifyLoaderPlugin()
     ],
@@ -56,7 +56,6 @@ module.exports = {
       'vue-router': 'VueRouter',
       'vuex': 'Vuex',
       'axios': 'axios',
-      'element-ui': 'ELEMENT',
       'markdown-it': 'markdownit',
       'monaco-editor': 'monaco',
       'vuetify': 'Vuetify',

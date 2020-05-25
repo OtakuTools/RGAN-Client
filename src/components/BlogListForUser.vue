@@ -82,7 +82,7 @@ export default class BlogListForUser extends Vue {
   totalElements : number = 0
   selected : any = null
 
-  mounted() {
+  mounted () {
     if (this.userInfo.hasOwnProperty('username') && this.userInfo.username) {
       this.refreshBlogs()
     }
@@ -113,7 +113,7 @@ export default class BlogListForUser extends Vue {
           } else {
             return tag
           }
-        })})
+        }) })
         return dataFormat
       })
     }).catch(err => {
@@ -138,11 +138,11 @@ export default class BlogListForUser extends Vue {
   }
 
   handleSelected (id : any) : void {
-    this.$router.push({ name: 'blog', query: { id }})
+    this.$router.push({ name: 'blog', query: { id } })
   }
 
   @Watch('userInfo')
-  handleInfoChange(newVal : any) : void {
+  handleInfoChange (newVal : any) : void {
     console.log(newVal)
     this.refreshBlogs()
   }

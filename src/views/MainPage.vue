@@ -101,7 +101,7 @@ export default {
       totalElements: 0,
       selected: null,
 
-      searchVal : ''
+      searchVal: ''
     }
   },
   mounted () {
@@ -128,7 +128,6 @@ export default {
           })
         })
       }
-      
     },
     updateData (res) {
       this.totalPages = res.data.totalPages
@@ -153,7 +152,7 @@ export default {
           } else {
             return tag
           }
-        })})
+        }) })
         return dataFormat
       })
     },
@@ -169,7 +168,7 @@ export default {
       this.refreshBlogs(this.currentPage - 1, this.currentPageSize)
     },
     handleSelected (id) {
-      this.$router.push({ name: 'blog', query: { id }})
+      this.$router.push({ name: 'blog', query: { id } })
     },
     handleSearch (val) {
       this.searchVal = val

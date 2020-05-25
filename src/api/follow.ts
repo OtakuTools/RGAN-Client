@@ -12,7 +12,7 @@ export const checkIsFollowing = (userid : number) : Promise<any> => {
 }
 
 export const followUser = (userid : number) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -25,7 +25,7 @@ export const followUser = (userid : number) : Promise<any> => {
 }
 
 export const unfollowUser = (userid : number) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -58,4 +58,3 @@ export const getFollowings = (userid: number, page: number = 0, size : number = 
     }
   })
 }
-

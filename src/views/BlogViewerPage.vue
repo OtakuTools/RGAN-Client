@@ -65,7 +65,7 @@
 <script>
 // @ is an alias to /src
 import { getBlogById } from '@/api/data'
-import { voteBlog, getBlogStatus} from '@/api/vote'
+import { voteBlog, getBlogStatus } from '@/api/vote'
 import { formatErrorMsg } from '@/libs/util'
 import { BLOG_TYPE } from '@/libs/constant'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
@@ -106,7 +106,7 @@ export default {
     getVoteStatus () {
       if (!this.$route.query.hasOwnProperty('id') || !this.$store.state.user.token) return
       getBlogStatus([this.$route.query.id]).then(res => {
-        this.voteStatus = res.data.length? res.data[0].status : 0
+        this.voteStatus = res.data.length ? res.data[0].status : 0
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
@@ -137,7 +137,7 @@ export default {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
-    voteBlog(mode) {
+    voteBlog (mode) {
       if (this.voteStatus === mode) {
         this.cancelVote()
       } else if (mode === this.UP_VOTE) {

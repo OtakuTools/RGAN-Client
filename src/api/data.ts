@@ -13,7 +13,7 @@ export const getBlogList = (pages: number = 0, pageSize : number = 10) : Promise
 }
 
 export const addBlog = (data: Object) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -24,7 +24,7 @@ export const addBlog = (data: Object) : Promise<any> => {
 }
 
 export const modifyBlog = (id : number, data : Object) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -73,7 +73,7 @@ export const getBlogComments = (blogId: number) : Promise<any> => {
 }
 
 export const addBlogComment = (blogId: number, data: Object) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -84,7 +84,7 @@ export const addBlogComment = (blogId: number, data: Object) : Promise<any> => {
 }
 
 export const editBlogComment = (commentId: number, data: Object) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({
@@ -95,7 +95,7 @@ export const editBlogComment = (commentId: number, data: Object) : Promise<any> 
 }
 
 export const deleteBlogComment = (commentId: number) : Promise<any> => {
-  if (!(!!getToken())) {
+  if (!getToken()) {
     return Promise.reject('请先登录')
   }
   return axios.request({

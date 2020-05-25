@@ -29,7 +29,7 @@ export default class Alert extends Vue {
   @Prop({ default: '', type: String }) type!: string;
   @Prop({ default: '', type: String }) message!: string;
   @Prop({ default: 3000, type: Number }) delay!: number;
-  @Prop({ default: 0, type: Number}) msgId!: number;
+  @Prop({ default: 0, type: Number }) msgId!: number;
 
   showAlert : boolean = false
 

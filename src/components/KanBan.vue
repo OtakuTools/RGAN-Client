@@ -66,7 +66,7 @@ export default class KanBan extends Vue {
     }
   }
 
-  mounted() {
+  mounted () {
     // L2Dwidget.init({
     //   pluginRootPath: "live2dw/",//资源root路径
     //   pluginJsPath: "lib/",//js相对root的路径
@@ -91,24 +91,23 @@ export default class KanBan extends Vue {
     // })
     let $ = window.jQuery
     window.L2Dwidget.init({
-      "display": {
-        "superSample": 2,
-        "width": 100,
-        "height": 150,
-        "position": "right",
-        "hOffset": 0,
-        "vOffset": 0
+      'display': {
+        'superSample': 2,
+        'width': 100,
+        'height': 150,
+        'position': 'right',
+        'hOffset': 0,
+        'vOffset': 0
       },
-      "mobile": {
-        "show": false
+      'mobile': {
+        'show': false
       }
-    });
+    })
     $(document).ready(() => {
-      $('#live2d-widget').appendTo($('#kanban')); 
+      $('#live2d-widget').appendTo($('#kanban'))
       $('#live2dcanvas').on('click', () => {})
       this.currentPath = this.$route.path
     })
-    
   }
 }
 </script>

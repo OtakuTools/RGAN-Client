@@ -21,7 +21,7 @@
               <v-card-text>
                 <a class="black--text" style="font-size: 14pt" @click="$router.push({ name: 'blog', query: { id: info.id }})"><strong>{{info.title}}</strong></a>
                 <v-spacer></v-spacer>
-                
+
               </v-card-text>
             </v-card>
           </v-timeline-item>
@@ -60,7 +60,7 @@ export default class UserInfoEditor extends Vue {
     this.refreshInfo()
   }
 
-  refreshInfo(page: number = 0, size: number = 0) {
+  refreshInfo (page: number = 0, size: number = 0) {
     getTimelineForBlog(page, size).then(res => {
       this.infoList = res.data.content
       this.totalPages = res.data.totalPages

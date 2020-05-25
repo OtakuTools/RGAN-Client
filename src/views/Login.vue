@@ -113,11 +113,11 @@ export default {
       showPsw: false,
       valid: false,
       usrRules: [
-        v => !!v || 'Name is required',
+        v => !!v || 'Name is required'
       ],
       pswRules: [
-        v => !!v || 'Password is required',
-      ],
+        v => !!v || 'Password is required'
+      ]
     }
   },
   methods: {

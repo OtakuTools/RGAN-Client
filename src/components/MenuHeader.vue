@@ -25,7 +25,7 @@
       <v-icon>mdi-feather</v-icon>
     </v-btn>
 
-    <v-menu 
+    <v-menu
       open-on-hover
       offset-y
       transition="slide-y-transition"
@@ -69,20 +69,19 @@ import { formatErrorMsg } from '@/libs/util'
 
 @Component
 export default class MenuHeader extends Vue {
-
   searchValue : string = ''
   menuOptions : Array<any> = []
 
-  mounted() {
+  mounted () {
     this.menuOptions = [
       {
-        title: "个人信息",
+        title: '个人信息',
         handler: () => {
           this.$router.push('/userinfo')
         }
       },
       {
-        title: "退出登录",
+        title: '退出登录',
         handler: () => {
           this.$store.dispatch('handleLogOut').then(res => {
             this.$router.push('/')
@@ -99,7 +98,7 @@ export default class MenuHeader extends Vue {
   }
 
   detail () {
-    this.$router.push('/editor');
+    this.$router.push('/editor')
   }
 
   search () {

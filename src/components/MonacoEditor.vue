@@ -11,7 +11,6 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 // import * as monaco from 'monaco-editor'
 import elementResizeDetectorMaker from 'element-resize-detector'
-/ tslint:disable /
 
 @Component
 export default class MonacoEditor extends Vue {

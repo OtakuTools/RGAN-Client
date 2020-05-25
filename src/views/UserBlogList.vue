@@ -53,7 +53,7 @@
 // @ is an alias to /src
 import { getBlogByAuthor, searchBlog } from '@/api/data'
 import { getUserInfoByName } from '@/api/user'
-import { followUser, unfollowUser, checkIsFollowing} from '@/api/follow'
+import { followUser, unfollowUser, checkIsFollowing } from '@/api/follow'
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const BlogListForUser = () => import('@/components/BlogListForUser')

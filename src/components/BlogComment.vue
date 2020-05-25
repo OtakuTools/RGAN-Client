@@ -123,7 +123,6 @@ import {
 } from '@/api/data'
 import { getCommentStatus, voteComment } from '@/api/vote'
 import { formatErrorMsg } from '@/libs/util'
-/ tslint:disable /
 
 class Comment {
   id : number
@@ -143,7 +142,7 @@ export default class BlogComment extends Vue {
 
   commentTree : Array<any> = []
 
-  commentContent: string = ""
+  commentContent: string = ''
 
   commentVote: any = {}
   commentVoteCount: any = {}
@@ -236,7 +235,7 @@ export default class BlogComment extends Vue {
       data
     ).then(res => {
       this.replyTo = -1
-      this.commentContent = ""
+      this.commentContent = ''
       this.getComments()
     }).catch(err => {
       this.$emit('alertMsg', formatErrorMsg(err))
