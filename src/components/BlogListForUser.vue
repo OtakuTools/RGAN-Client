@@ -1,68 +1,60 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-list two-line flat>
-          <v-list-item-group
-            multiple
-          >
-            <template v-for="(blog, index) in blogList">
-              <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
-                <template>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="blog.title"></v-list-item-title>
-                    <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <v-chip-group
-                        column
-                      >
-                        <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
-                          {{ tag.title }}
-                        </v-chip>
-                      </v-chip-group>
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <v-chip-group
-                        column
-                        disabled
-                      >
-                        <v-chip style="border: none" outlined small label>
-                          <v-icon left small>mdi-calendar</v-icon>
-                          {{blog.createdTime.replace("T", " ")}}
-                        </v-chip>
+  <div>
+    <v-list two-line flat>
+      <v-list-item-group
+        multiple
+      >
+        <template v-for="(blog, index) in blogList">
+          <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
+            <template>
+              <v-list-item-content>
+                <v-list-item-title v-text="blog.title"></v-list-item-title>
+                <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  <v-chip-group
+                    column
+                  >
+                    <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
+                      {{ tag.title }}
+                    </v-chip>
+                  </v-chip-group>
+                </v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  <v-chip-group
+                    column
+                    disabled
+                  >
+                    <v-chip style="border: none" outlined small label>
+                      <v-icon left small>mdi-calendar</v-icon>
+                      {{blog.createdTime.replace("T", " ")}}
+                    </v-chip>
 
-                        <v-chip style="border: none" outlined small label>
-                          <v-icon left small>mdi-thumb-up-outline</v-icon>
-                          {{blog.voteCount}}
-                        </v-chip>
-                      </v-chip-group>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
-              </v-list-item>
-
-              <v-divider
-                v-if="index + 1 < blogList.length"
-                :key="blog.id"
-              ></v-divider>
+                    <v-chip style="border: none" outlined small label>
+                      <v-icon left small>mdi-thumb-up-outline</v-icon>
+                      {{blog.voteCount}}
+                    </v-chip>
+                  </v-chip-group>
+                </v-list-item-subtitle>
+              </v-list-item-content>
             </template>
-          </v-list-item-group>
-        </v-list>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          :total-visible="7"
-          @input="handlePageChange"
-          @next="handleNextPage"
-          @previous="handlePrevPage"
-        ></v-pagination>
-      </v-col>
-    </v-row>
-  </v-container>
+          </v-list-item>
+
+          <v-divider
+            v-if="index + 1 < blogList.length"
+            :key="blog.id"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
+    <v-pagination
+      v-model="currentPage"
+      :length="totalPages"
+      :total-visible="7"
+      @input="handlePageChange"
+      @next="handleNextPage"
+      @previous="handlePrevPage"
+    ></v-pagination>
+  </div>
 </template>
 
 <style lang="less" scoped>
@@ -96,7 +88,7 @@ export default class BlogListForUser extends Vue {
     }
   }
 
-  refreshBlogs (page = 0, pageSize = 10) : void {
+  refreshBlogs (page : number = 0, pageSize : number = 10) : void {
     getBlogByAuthor(this.userInfo.username, page, pageSize).then(res => {
       let data = res.data.content
       this.totalPages = res.data.totalPages

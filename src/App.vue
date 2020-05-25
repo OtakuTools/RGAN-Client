@@ -1,9 +1,6 @@
 <template>
-  <!-- <div id="app">
-    <router-view></router-view>
-  </div> -->
   <div id="app">
-    <v-app>
+    <v-app class="bg-color">
       <Alert :type="alertType" :message="alertMsg" :msgId="alertId"/>
       <router-view @alertMsg="handleAlertMsg"></router-view>
       <!-- <keep-alive> -->
@@ -48,5 +45,9 @@ export default class App extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+
+.bg-color {
+  background-color: #F7F8FA !important;
 }
 </style>

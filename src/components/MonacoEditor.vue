@@ -51,8 +51,8 @@ export default class MonacoEditor extends Vue {
       this.monacoEditor.onDidChangeModelContent((event : any) => {
         const value = this.monacoEditor.getValue()
         this.code = value
-        const count = this.monacoEditor.getModel().getLineCount() || 0
-        this.monacoEditor.revealLine(count, 0)
+        // const count = this.monacoEditor.getModel().getLineCount() || 0
+        // this.monacoEditor.revealLine(count, 0)
         this.$emit('on-content-change', this.code)
       })
 

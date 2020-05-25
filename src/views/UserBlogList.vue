@@ -1,40 +1,48 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="3" style="text-align: center; margin-top: 20px;">
-        <v-avatar
-          class="profile"
-          size="100"
-        >
-          <v-img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></v-img>
-        </v-avatar>
-        <v-list-item
-          color="rgba(0, 0, 0, .4)"
-          style="padding: 0"
-        >
-          <v-list-item-content>
-            <v-list-item-title class="title">{{userInfo.username}}</v-list-item-title>
-            <v-list-item-subtitle>
-              <v-btn block :color="isFollowing ? 'error' : 'primary'" @click="handleFollow()">
-                <v-icon left v-if="isFollowing">mdi-minus</v-icon>
-                <v-icon left v-else>mdi-plus</v-icon>
-                {{isFollowing ? "取 关": "关 注"}}
-              </v-btn>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-col>
-      <v-col cols="9">
-        <BlogListForUser :userInfo="userInfo"/>
-      </v-col>
-    </v-row>
+  <div>
+    <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
+    <v-content>
+      <v-container>
+        <v-row>
+          <v-col cols="3" style="text-align: center;">
+            <v-card>
+              <v-card-text>
+                <v-avatar
+                  class="profile"
+                  size="100"
+                >
+                  <v-img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></v-img>
+                </v-avatar>
+                <v-list-item
+                  color="rgba(0, 0, 0, .4)"
+                  style="padding: 0"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title class="title">{{userInfo.username}}</v-list-item-title>
+                    <v-list-item-subtitle style="margin-top: 10px">
+                      <v-btn block :color="isFollowing ? 'error' : 'primary'" @click="handleFollow()">
+                        <v-icon left v-if="isFollowing">mdi-minus</v-icon>
+                        <v-icon left v-else>mdi-plus</v-icon>
+                        {{isFollowing ? "取 关": "关 注"}}
+                      </v-btn>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="9">
+            <v-card>
+              <v-card-text style="padding-top: 0">
+                <BlogListForUser :userInfo="userInfo"/>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
     <KanBan />
-  </v-container>
+  </div>
 </template>
 
 <style scoped>

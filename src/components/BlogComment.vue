@@ -39,7 +39,9 @@
                 <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
                   回复
                 </v-btn>
-                <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{comment.createdTime.replace("T", " ")}}</div>
+                <v-chip style="color: inherit; border: none" outlined small label>
+                  {{comment.createdTime.replace("T", " ")}}
+                </v-chip>
                 <v-btn
                   x-small
                   text
@@ -79,7 +81,10 @@
                         <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
                           回复
                         </v-btn>
-                        <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{subComment.createdTime.replace("T", " ")}}</div>
+                        <!-- <div style="font-size: 12px; vertical-align: baseline; display: inline; margin-right: 5px;">{{subComment.createdTime.replace("T", " ")}}</div> -->
+                        <v-chip style="color: inherit; border: none" outlined small label>
+                          {{subComment.createdTime.replace("T", " ")}}
+                        </v-chip>
                         <v-btn
                           x-small
                           text

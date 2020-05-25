@@ -1,5 +1,5 @@
 <template>
-  <div ref="display" v-html="blogMdText" v-highlight></div>
+  <div id="display" ref="display" v-html="blogMdText" v-highlight></div>
 </template>
 
 <script lang="ts">
@@ -110,6 +110,21 @@ th {
   font-weight: bold;
   text-align: -internal-center;
 }
+
+#display {
+  text-size-adjust: none;
+  font-size: 15px;
+  color: #333;
+}
+
+#display > p,
+#display > h1, 
+#display > h2,
+#display > h3,
+#display > h4,
+#display > h5 {
+  line-height: 2;
+}
+
 </style>
 <style src="./../assets/editor-styles/highlight/styles/atom-one-light.css"></style>
-<!-- <style src="@/assets/editor-styles/style-vue/vue.css" scoped></style> -->

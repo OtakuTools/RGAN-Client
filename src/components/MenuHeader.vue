@@ -4,6 +4,7 @@
     color="primary"
     hide-on-scroll
     flat
+    app
   >
     <v-toolbar-title style="color: white; min-width: 100px; cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
 
