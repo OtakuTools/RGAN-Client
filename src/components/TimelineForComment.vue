@@ -45,10 +45,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getTimelineForBlog } from '@/api/timeline'
+import { getTimelineForComment } from '@/api/timeline'
 
 @Component
-export default class TimelineForBlog extends Vue {
+export default class TimelineForComment extends Vue {
   infoList : Array<any> = []
   currentPage : number = 1
   currentPageSize : number = 10
@@ -60,7 +60,8 @@ export default class TimelineForBlog extends Vue {
   }
 
   refreshInfo (page: number = 0, size: number = 0) {
-    getTimelineForBlog(page, size).then(res => {
+    getTimelineForComment(page, size).then(res => {
+      console.log(res.data)
       this.infoList = res.data.content
       this.totalPages = res.data.totalPages
     }).catch(err => {

@@ -30,7 +30,7 @@
       offset-y
       transition="slide-y-transition"
       close-delay="100"
-      v-if="$store.state.user.token && $store.state.user.token !== ''">
+      v-if="$store.state.user.hasGetInfo && $store.state.user.token && $store.state.user.token !== ''">
       <template v-slot:activator="{ on }">
         <v-btn icon dark>
           <v-avatar size="38" v-on="on">

@@ -34,7 +34,7 @@
           <v-col cols="9">
             <v-card>
               <v-card-text style="padding-top: 0">
-                <BlogListForUser :userInfo="userInfo"/>
+                <BlogListForUser :userInfo="userInfo" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
           </v-col>

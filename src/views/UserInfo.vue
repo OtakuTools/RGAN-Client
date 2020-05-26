@@ -37,13 +37,28 @@
                 </v-card>
               </v-tab-item>
               <v-tab-item>
-                <v-card flat>
-                  <TimelineForBlog v-bind="$attrs" v-on="$listeners" />
-                </v-card>
+                <v-tabs right>
+                  <v-tab>
+                    博客
+                  </v-tab>
+                  <v-tab>
+                    评论
+                  </v-tab>
+                  <v-tab-item>
+                    <v-card flat>
+                      <TimelineForBlog v-bind="$attrs" v-on="$listeners" />
+                    </v-card>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-card flat>
+                      <TimelineForComment v-bind="$attrs" v-on="$listeners" />
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="{ username: $store.state.user.name, id: 0 }" v-bind="$attrs" v-on="$listeners" />
+                  <BlogListForUser :userInfo="userInfo" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
             </v-tabs>
@@ -69,6 +84,7 @@ const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
 const BlogListForUser = () => import('@/components/BlogListForUser')
 const TimelineForBlog = () => import('@/components/TimelineForBlog')
+const TimelineForComment = () => import('@/components/TimelineForComment')
 
 export default {
   name: 'UserInfoPage',
@@ -78,17 +94,23 @@ export default {
     Following,
     KanBan,
     BlogListForUser,
-    TimelineForBlog
+    TimelineForBlog,
+    TimelineForComment
   },
   data () {
     return {
       activateTab: 'first',
-      mobileMode: false
+      mobileMode: false,
+      userInfo: {}
     }
   },
 
   mounted () {
     this.mobileMode = isMobile()
+    this.userInfo = {
+      username: this.$store.state.user.name,
+      id: this.$store.state.user.id
+    }
   },
 
   methods: {

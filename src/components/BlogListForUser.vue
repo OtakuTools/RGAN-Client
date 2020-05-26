@@ -143,7 +143,6 @@ export default class BlogListForUser extends Vue {
 
   @Watch('userInfo')
   handleInfoChange (newVal : any) : void {
-    console.log(newVal)
     this.refreshBlogs()
   }
 }
