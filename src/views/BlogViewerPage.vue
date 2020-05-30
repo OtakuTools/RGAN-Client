@@ -40,7 +40,7 @@
                 <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
                 <v-btn outlined color="orange" style="margin-right: 10px">
                   <v-icon left>mdi-star-outline</v-icon>
-                  {{blogInfo.upvoteCount}}
+                  {{blogInfo.voteCount}}
                 </v-btn>
                 <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" style="margin-right: 10px">
                   <v-icon left>mdi-thumb-up-outline</v-icon>

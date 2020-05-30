@@ -148,20 +148,20 @@
           <v-icon>mdi-eyedropper-variant</v-icon>
         </v-btn> -->
 
-        <v-btn depressed color="white" @click="handleMode('undo')" :disabled="current_obj_idx < 0">
-          <v-icon>mdi-undo</v-icon>
-        </v-btn>
-
-        <v-btn depressed color="white" @click="handleMode('redo')" :disabled="current_obj_idx >= objQueue.length - 1">
-          <v-icon>mdi-redo</v-icon>
-        </v-btn>
-
         <v-btn depressed color="white" @click="handleMode('move')" v-bind:class="{'v-btn--active': editMode === 'move'}">
           <v-icon>mdi-hand-right</v-icon>
         </v-btn>
 
         <v-btn depressed color="white" @click="handleMode('crop')" v-bind:class="{'v-btn--active': editMode === 'crop'}">
           <v-icon>mdi-crop</v-icon>
+        </v-btn>
+
+        <v-btn depressed color="white" @click="handleMode('undo')" :disabled="current_obj_idx < 0">
+          <v-icon>mdi-undo</v-icon>
+        </v-btn>
+
+        <v-btn depressed color="white" @click="handleMode('redo')" :disabled="current_obj_idx >= objQueue.length - 1">
+          <v-icon>mdi-redo</v-icon>
         </v-btn>
 
         <v-btn depressed color="white" @click="handleMode('save')">
@@ -367,10 +367,10 @@ export default class ImageEditor extends Vue {
     this.viewPortHeight = 600
     this.viewPortOffsetX = 0
     this.viewPortOffsetY = 0
+    this.imageScale = 1
   }
 
   destroy () {
-    // console.log("destroy")
     document.body.removeEventListener('paste', this.pasteFromClipboard)
   }
 
@@ -450,9 +450,9 @@ export default class ImageEditor extends Vue {
 
   getAbsolutePos (mode: string, pos: number) : number {
     if (mode === 'x') {
-      return (pos + this.viewPortOffsetX)
+      return pos * this.imageScale + this.viewPortOffsetX
     } else {
-      return (pos + this.viewPortOffsetY)
+      return pos * this.imageScale + this.viewPortOffsetY
     }
   }
 
@@ -462,8 +462,6 @@ export default class ImageEditor extends Vue {
   }
 
   renderObj () : void {
-    this.imageScale = this.viewPortHeight / this.container.height
-    this.ctx.scale(this.imageScale, this.imageScale)
     this.objQueue.forEach((obj : any) => {
       if (obj.show) {
         if (obj instanceof Pen) {
@@ -571,7 +569,6 @@ export default class ImageEditor extends Vue {
     switch (this.editMode) {
       case 'pen':
         let penObj : Pen = new Pen({
-          // pointList: [new Point(position.x, position.y)],
           pointList: [new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y))],
           lineWidth: this.lineWidth.pen,
           color: this.color.pen
@@ -581,8 +578,6 @@ export default class ImageEditor extends Vue {
         break
       case 'line':
         let lineObj : Line = new Line({
-          // startPoint: new Point(position.x, position.y),
-          // endPoint: new Point(position.x, position.y),
           startPoint: new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)),
           endPoint: new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)),
           lineWidth: this.lineWidth.line,
@@ -593,7 +588,6 @@ export default class ImageEditor extends Vue {
         break
       case 'rectangle':
         let rectObj : Rectangle = new Rectangle({
-          // startPoint: new Point(position.x, position.y),
           startPoint: new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)),
           width: 1,
           height: 1,
@@ -605,7 +599,6 @@ export default class ImageEditor extends Vue {
         break
       case 'circle':
         let circObj : Circle = new Circle({
-          // startPoint: new Point(position.x, position.y),
           startPoint: new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)),
           radiusX: 1,
           radiusY: 1,
@@ -629,29 +622,22 @@ export default class ImageEditor extends Vue {
     switch (this.editMode) {
       case 'pen':
         let penObj: Pen = this.objQueue.pop()
-        // penObj.pointList.push(new Point(position.x, position.y))
         penObj.pointList.push(new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)))
         this.objQueue.push(penObj)
         break
       case 'line':
         let lineObj: Line = this.objQueue.pop()
-        // lineObj.endPoint = new Point(position.x, position.y)
         lineObj.endPoint = new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y))
         this.objQueue.push(lineObj)
         break
       case 'rectangle':
         let rectObj : Rectangle = this.objQueue.pop()
-        // rectObj.width = position.x - rectObj.startPoint.x
-        // rectObj.height = position.y - rectObj.startPoint.y
         rectObj.width = this.getAbsolutePos('x', position.x) - rectObj.startPoint.x
         rectObj.height = this.getAbsolutePos('y', position.y) - rectObj.startPoint.y
         this.objQueue.push(rectObj)
         break
       case 'circle':
         let circObj : Circle = this.objQueue.pop()
-        // circObj.radiusX = Math.abs(position.x - circObj.startPoint.x) / 2
-        // circObj.radiusY = Math.abs(position.y - circObj.startPoint.y) / 2
-        // circObj.centerPoint = new Point((position.x + circObj.startPoint.x) / 2, (position.y + circObj.startPoint.y) / 2)
         circObj.radiusX = Math.abs(this.getAbsolutePos('x', position.x) - circObj.startPoint.x) / 2
         circObj.radiusY = Math.abs(this.getAbsolutePos('y', position.y) - circObj.startPoint.y) / 2
         circObj.centerPoint = new Point((this.getAbsolutePos('x', position.x) + circObj.startPoint.x) / 2, (this.getAbsolutePos('y', position.y) + circObj.startPoint.y) / 2)
@@ -665,7 +651,6 @@ export default class ImageEditor extends Vue {
         this.viewPortOffsetY = -this.moveDistance.y
         break
     }
-    // console.log(this.viewPortOffsetX, this.viewPortOffsetY)
     this.clearCanvas()
     this.renderObj()
   }
@@ -677,29 +662,22 @@ export default class ImageEditor extends Vue {
     switch (this.editMode) {
       case 'pen':
         let penObj: Pen = this.objQueue.pop()
-        // penObj.pointList.push(new Point(position.x, position.y))
         penObj.pointList.push(new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y)))
         this.objQueue.push(penObj)
         break
       case 'line':
         let lineObj: Line = this.objQueue.pop()
-        // lineObj.endPoint = new Point(position.x, position.y)
         lineObj.endPoint = new Point(this.getAbsolutePos('x', position.x), this.getAbsolutePos('y', position.y))
         this.objQueue.push(lineObj)
         break
       case 'rectangle':
         let rectObj : Rectangle = this.objQueue.pop()
-        // rectObj.width = position.x - rectObj.startPoint.x
-        // rectObj.height = position.y - rectObj.startPoint.y
         rectObj.width = this.getAbsolutePos('x', position.x) - rectObj.startPoint.x
         rectObj.height = this.getAbsolutePos('y', position.y) - rectObj.startPoint.y
         this.objQueue.push(rectObj)
         break
       case 'circle':
         let circObj : Circle = this.objQueue.pop()
-        // circObj.radiusX = Math.abs(position.x - circObj.startPoint.x) / 2
-        // circObj.radiusY = Math.abs(position.y - circObj.startPoint.y) / 2
-        // circObj.centerPoint = new Point((position.x + circObj.startPoint.x) / 2, (position.y + circObj.startPoint.y) / 2)
         circObj.radiusX = Math.abs(this.getAbsolutePos('x', position.x) - circObj.startPoint.x) / 2
         circObj.radiusY = Math.abs(this.getAbsolutePos('y', position.y) - circObj.startPoint.y) / 2
         circObj.centerPoint = new Point((this.getAbsolutePos('x', position.x) + circObj.startPoint.x) / 2, (this.getAbsolutePos('y', position.y) + circObj.startPoint.y) / 2)
@@ -712,32 +690,29 @@ export default class ImageEditor extends Vue {
         this.viewPortOffsetY = -this.moveDistance.y
         break
     }
-    console.log(this.viewPortOffsetX, this.viewPortOffsetY)
     this.clearCanvas()
     this.renderObj()
   }
 
   mouseScrollHandler (e) : void {
-    // let scale : number = 1
-    // if (e.deltaY > 0) {
-    //   // 向下滚动
-    //   scale = 1.1
-    // } else {
-    //   scale = 0.9
-    // }
-    // this.container.width = Math.max(Math.min(this.container.width * scale, this.originImageWidth), this.maxViewPortWidth)
-    // this.container.height = Math.max(Math.min(this.container.height * scale, this.originImageHeight), this.maxViewPortHeight)
+    if (this.editMode !== 'move') return
+    let scale : number = 1
+    if (e.deltaY > 0) {
+      // 向下滚动
+      scale = 1.1
+    } else {
+      scale = 0.9
+    }
+    this.container.width = Math.max(Math.min(this.container.width * scale, this.originImageWidth), this.maxViewPortWidth)
+    this.container.height = Math.max(Math.min(this.container.height * scale, this.originImageHeight), this.maxViewPortHeight)
 
-    // this.viewPortWidth = this.container.offsetWidth
-    // this.viewPortHeight = this.container.offsetHeight
-    // console.log(this.container.width, this.container.height)
-    // console.log(this.container.offsetWidth, this.container.offsetHeight)
-    // this.renderObj()
+    this.imageScale = this.container.width / this.viewPortWidth
+    this.renderObj()
   }
 
   addImage (img) : void {
-    // this.container.width = img.width
-    // this.container.height = img.height
+    this.container.width = img.width
+    this.container.height = img.height
 
     this.originImageWidth = img.width
     this.originImageHeight = img.height
@@ -747,8 +722,9 @@ export default class ImageEditor extends Vue {
 
     this.maxViewPortHeight = this.maxViewPortWidth * (this.originImageHeight / this.originImageWidth)
 
+    this.imageScale = this.container.width / this.viewPortWidth
+
     let picObj : Picture = new Picture({
-      // startPoint: new Point((this.container.width - img.width) / 2, (this.container.height - img.height) / 2)),
       startPoint: new Point(0, 0),
       data: img,
       width: img.width,
