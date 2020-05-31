@@ -326,8 +326,7 @@ export default class ImageEditor extends Vue {
   maxViewPortHeight : number = 600
   viewPortWidth : number = 800
   viewPortHeight : number = 600
-  viewPortOffsetX : number = 0
-  viewPortOffsetY : number = 0
+  viewPortOffset : Point = new Point(0, 0)
 
   moveDistance : any = new Point(0, 0)
   lastMovePosition : any = new Point(0, 0)
@@ -365,12 +364,16 @@ export default class ImageEditor extends Vue {
     this.maxViewPortHeight = 600
     this.viewPortWidth = 800
     this.viewPortHeight = 600
-    this.viewPortOffsetX = 0
-    this.viewPortOffsetY = 0
+    this.viewPortOffset.x = 0
+    this.viewPortOffset.y = 0
     this.imageScale = 1
   }
 
   destroy () {
+    this.container.removeEventListener('mousedown', this.mouseDownHandler)
+    this.container.removeEventListener('mousemove', this.mouseMoveHandler)
+    this.container.removeEventListener('mouseup', this.mouseUpHandler)
+    this.container.removeEventListener('mousewheel', this.mouseScrollHandler)
     document.body.removeEventListener('paste', this.pasteFromClipboard)
   }
 
@@ -441,40 +444,35 @@ export default class ImageEditor extends Vue {
   }
 
   coordinateTrans (mode: string, pos: number) : number {
-    if (mode === 'x') {
-      return (pos + this.moveDistance.x)
-    } else {
-      return (pos + this.moveDistance.y)
-    }
+    return pos + this.moveDistance[mode]
   }
 
   getAbsolutePos (mode: string, pos: number) : number {
-    if (mode === 'x') {
-      return pos * this.imageScale + this.viewPortOffsetX
-    } else {
-      return pos * this.imageScale + this.viewPortOffsetY
-    }
+    return pos * this.imageScale + this.viewPortOffset[mode]
   }
 
   clearCanvas () : void {
     this.container.width = this.container.width
-    // this.ctx.clearRect(0, 0, this.container.width, this.container.height);
   }
 
   renderObj () : void {
     this.objQueue.forEach((obj : any) => {
       if (obj.show) {
         if (obj instanceof Pen) {
-          let startPoint : Point = obj.pointList[0]
-          let endPoint : Point = obj.pointList[obj.pointList.length - 1]
+          let pointList : Array<Point> = obj.pointList
+          let startPoint : Point = pointList[0]
+          let endPoint : Point = pointList[pointList.length - 1]
           this.ctx.beginPath()
-          if (obj.pointList.length >= 4) {
-            for (let i = 3; i < obj.pointList.length; i += 2) {
-              let ctrlPoint1 : Point = obj.pointList[i - 2]
-              let ctrlPoint2 : Point = obj.pointList[i - 1]
-              let targ_x : number = (obj.pointList[i - 1].x + obj.pointList[i].x) / 2
-              let targ_y : number = (obj.pointList[i - 1].y + obj.pointList[i].y) / 2
-              this.ctx.moveTo(this.coordinateTrans('x', startPoint.x), this.coordinateTrans('y', startPoint.y))
+          if (pointList.length >= 4) {
+            this.ctx.moveTo(
+              this.coordinateTrans('x', startPoint.x),
+              this.coordinateTrans('y', startPoint.y)
+            )
+            for (let i = 3; i < pointList.length; i += 2) {
+              let ctrlPoint1 : Point = pointList[i - 2]
+              let ctrlPoint2 : Point = pointList[i - 1]
+              let targ_x : number = (pointList[i - 1].x + pointList[i].x) / 2
+              let targ_y : number = (pointList[i - 1].y + pointList[i].y) / 2
               this.ctx.bezierCurveTo(
                 this.coordinateTrans('x', ctrlPoint1.x),
                 this.coordinateTrans('y', ctrlPoint1.y),
@@ -483,11 +481,14 @@ export default class ImageEditor extends Vue {
                 this.coordinateTrans('x', targ_x),
                 this.coordinateTrans('y', targ_y)
               )
-              startPoint = new Point(targ_x, targ_y)
+              // startPoint = new Point(targ_x, targ_y)
             }
-          } else if (obj.pointList.length == 3) {
-            let ctrlPoint : Point = obj.pointList[1]
-            this.ctx.moveTo(startPoint.x + this.moveDistance.x, startPoint.y + this.moveDistance.y)
+          } else if (pointList.length == 3) {
+            let ctrlPoint : Point = pointList[1]
+            this.ctx.moveTo(
+              this.coordinateTrans('x', startPoint.x),
+              this.coordinateTrans('y', startPoint.y)
+            )
             this.ctx.quadraticCurveTo(
               this.coordinateTrans('x', ctrlPoint.x),
               this.coordinateTrans('y', ctrlPoint.y),
@@ -495,9 +496,11 @@ export default class ImageEditor extends Vue {
               this.coordinateTrans('y', endPoint.y)
             )
           } else {
-            this.ctx.lineTo(
+            this.ctx.moveTo(
               this.coordinateTrans('x', startPoint.x),
-              this.coordinateTrans('y', startPoint.y),
+              this.coordinateTrans('y', startPoint.y)
+            )
+            this.ctx.lineTo(
               this.coordinateTrans('x', endPoint.x),
               this.coordinateTrans('y', endPoint.y)
             )
@@ -647,8 +650,8 @@ export default class ImageEditor extends Vue {
         this.moveDistance.x += (position.x - this.lastMovePosition.x)
         this.moveDistance.y += (position.y - this.lastMovePosition.y)
         this.lastMovePosition = new Point(position.x, position.y)
-        this.viewPortOffsetX = -this.moveDistance.x
-        this.viewPortOffsetY = -this.moveDistance.y
+        this.viewPortOffset.x = -this.moveDistance.x
+        this.viewPortOffset.y = -this.moveDistance.y
         break
     }
     this.clearCanvas()
@@ -686,8 +689,8 @@ export default class ImageEditor extends Vue {
       case 'move':
         this.moveDistance.x += (position.x - this.lastMovePosition.x)
         this.moveDistance.y += (position.y - this.lastMovePosition.y)
-        this.viewPortOffsetX = -this.moveDistance.x
-        this.viewPortOffsetY = -this.moveDistance.y
+        this.viewPortOffset.x = -this.moveDistance.x
+        this.viewPortOffset.y = -this.moveDistance.y
         break
     }
     this.clearCanvas()

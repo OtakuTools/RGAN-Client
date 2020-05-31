@@ -29,3 +29,28 @@ export const formatErrorMsg = (err) => {
 export const isMobile = () => {
   if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) { return true } else { return false }
 }
+
+export const throttle = (fn, delay) => {
+  let valid = true
+  return function() {
+    if (!valid) {
+      return false 
+    }
+    // 工作时间，执行函数并且在间隔期内把状态位设为无效
+    valid = false
+    setTimeout(() => {
+      fn()
+      valid = true
+    }, delay)
+  }
+}
+
+export const debounce = (fn, delay) => {
+  let timer = null //借助闭包
+  return function() {
+    if (timer) {
+      clearTimeout(timer) 
+    }
+    timer = setTimeout(fn,delay) // 简化写法
+  }
+}
