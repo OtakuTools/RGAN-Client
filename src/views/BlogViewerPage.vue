@@ -204,15 +204,16 @@ export default {
         this.manualSelected = false
       } else {
         let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6')
+        let len = idxs.length
         let i = 0
-        for (; i < idxs.length; i++) {
-          if ((this.checkIfOutsideWindowTop(idxs[i]) && i < idxs.length-1 && this.checkIfOutsideWindowBottom(idxs[i+1])) || !this.checkIfOutsideWindowTop(idxs[i])) {
+        for (; i < len; i++) {
+          if ((this.checkIfOutsideWindowTop(idxs[i]) && i < len-1 && this.checkIfOutsideWindowBottom(idxs[i+1])) || !this.checkIfOutsideWindowTop(idxs[i])) {
             this.currentIndex = i
             break
           }
         }
-        if (i >= idxs.length) {
-          this.currentIndex = idxs.length - 1
+        if (i >= len) {
+          this.currentIndex = len - 1
         }
       }
     },

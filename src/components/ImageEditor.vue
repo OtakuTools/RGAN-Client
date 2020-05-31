@@ -788,6 +788,8 @@ export default class ImageEditor extends Vue {
       this.cropper && this.cropper.destroy()
     } else {
       this.moveDistance = new Point(0, 0)
+      this.container.width = this.originImageWidth
+      this.container.height = this.originImageHeight
       this.renderObj()
       image.src = this.container.toDataURL('image/png')
     }
