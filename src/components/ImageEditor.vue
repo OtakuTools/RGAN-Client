@@ -201,6 +201,7 @@ class Pen {
   pointList: Array<Point>
   lineWidth: string
   color: string
+  lineCap : string = 'round'
   show: boolean = true
   constructor (obj: any) {
     this.pointList = obj.pointList
@@ -215,6 +216,7 @@ class Line {
   endPoint: Point
   lineWidth: string
   color: string
+  lineCap : string = 'round'
   show: boolean = true
   constructor (obj: any) {
     this.startPoint = obj.startPoint
@@ -515,6 +517,7 @@ export default class ImageEditor extends Vue {
               this.coordinateTrans('y', endPoint.y)
             )
           }
+          this.ctx.lineCap = obj.lineCap
           this.ctx.lineWidth = obj.lineWidth
           this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
@@ -530,6 +533,7 @@ export default class ImageEditor extends Vue {
             this.coordinateTrans('x', obj.endPoint.x),
             this.coordinateTrans('y', obj.endPoint.y)
           )
+          this.ctx.lineCap = obj.lineCap
           this.ctx.lineWidth = obj.lineWidth
           this.ctx.strokeStyle = obj.color
           this.ctx.stroke()
@@ -569,7 +573,6 @@ export default class ImageEditor extends Vue {
           break
       }
     }
-    requestAnimationFrame(this.renderObj)
   }
 
   removeUnvisibleObj () : void {
