@@ -34,7 +34,7 @@
           <v-col cols="9">
             <v-card>
               <v-card-text style="padding-top: 0">
-                <BlogListForUser :userInfo="userInfo" v-bind="$attrs" v-on="$listeners"/>
+                <BlogListForUser :userInfo="userInfo" :getData="getData()" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
           </v-col>
@@ -51,7 +51,7 @@
 
 <script>
 // @ is an alias to /src
-import { getBlogByAuthor, searchBlog } from '@/api/data'
+import { getBlogByAuthor } from '@/api/data'
 import { getUserInfoByName } from '@/api/user'
 import { followUser, unfollowUser, checkIsFollowing } from '@/api/follow'
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -87,6 +87,12 @@ export default {
     })
   },
   methods: {
+    getData() {
+      return (page, size) => {
+        return getBlogByAuthor(this.userInfo.username, page, size)
+      }
+    },
+
     handleFollow () {
       if (!this.$store.state.user.token) {
         this.$router.push({ name: 'login' })

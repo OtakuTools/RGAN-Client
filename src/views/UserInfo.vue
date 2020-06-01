@@ -58,7 +58,7 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="userInfo" v-bind="$attrs" v-on="$listeners" />
+                  <BlogListForUser :userInfo="userInfo" :getData="getData()" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
             </v-tabs>
@@ -77,6 +77,7 @@
 <script>
 // @ is an alias to /src
 import { isMobile } from '@/libs/util'
+import { getSelfBlogs } from '@/api/data'
 
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -101,7 +102,8 @@ export default {
     return {
       activateTab: 'first',
       mobileMode: false,
-      userInfo: {}
+      userInfo: {},
+      blogStatus: 0
     }
   },
 
@@ -114,7 +116,11 @@ export default {
   },
 
   methods: {
-
+    getData () {
+      return (page, size) => {
+        return getSelfBlogs(this.blogStatus, page, size)
+      }
+    }
   }
 }
 </script>

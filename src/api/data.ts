@@ -53,18 +53,6 @@ export const searchBlog = (keywords: string, pages: number = 0, pageSize : numbe
   })
 }
 
-export const getBlogByAuthor = (name: string, pages: number = 0, pageSize : number = 10) : Promise<any> => {
-  return axios.request({
-    url: `/api/blogs/user`,
-    method: 'get',
-    params: {
-      name: name,
-      page: pages,
-      size: pageSize
-    }
-  })
-}
-
 export const getBlogComments = (blogId: number) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/${blogId}/comments`,
@@ -101,5 +89,29 @@ export const deleteBlogComment = (commentId: number) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/comments/${commentId}`,
     method: 'delete'
+  })
+}
+
+export const getBlogByAuthor = (username: string, page: number = 0, size : number = 10) : Promise<any> => {
+  return axios.request({
+    url: `/api/blogs/search`,
+    method: 'get',
+    params: {
+      username,
+      page,
+      size
+    }
+  })
+}
+
+export const getSelfBlogs = (status: number = 0, page: number = 0, size : number = 10) : Promise<any> => {
+  return axios.request({
+    url: `/api/users/self/blogs`,
+    method: 'get',
+    params: {
+      status,
+      page,
+      size
+    }
   })
 }

@@ -63,7 +63,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getBlogByAuthor, searchBlog } from '@/api/data'
 import { getUserInfoByName } from '@/api/user'
 
 class UserInfo {
@@ -75,6 +74,7 @@ class UserInfo {
 @Component
 export default class BlogListForUser extends Vue {
   @Prop({ default: {}, type: UserInfo }) userInfo : UserInfo;
+  @Prop({ default: ()=>{}, type: Function }) getData : Function;
   blogList : any = []
   currentPage : number = 1
   currentPageSize : number = 10
@@ -89,7 +89,7 @@ export default class BlogListForUser extends Vue {
   }
 
   refreshBlogs (page : number = 0, pageSize : number = 10) : void {
-    getBlogByAuthor(this.userInfo.username, page, pageSize).then(res => {
+    this.getData(page, pageSize).then(res => {
       let data = res.data.content
       this.totalPages = res.data.totalPages
       this.blogList = data.map(item => {

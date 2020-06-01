@@ -140,7 +140,7 @@ export default {
     window.addEventListener('scroll', this.updateCurrentIndex, false)
     window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50), false)
   },
-  destroyed () {
+  beforeDestroy () {
     window.removeEventListener('scroll', this.updateCurrentIndex)
     window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
   },

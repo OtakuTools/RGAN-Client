@@ -50,6 +50,8 @@ export default {
           rememberMe
         }).then(res => {
           const data = res.data
+          console.log(res)
+          console.log(document.cookie)
           commit('setUserId', data.id)
           commit('setUserName', data.username)
           commit('setToken', data.id)

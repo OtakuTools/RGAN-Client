@@ -378,7 +378,7 @@ export default class ImageEditor extends Vue {
     this.imageScale = 1
   }
 
-  destroy () {
+  beforeDestroy () {
     this.container.removeEventListener('mousedown', this.mouseDownHandler)
     this.container.removeEventListener('mousemove', this.mouseMoveHandler)
     this.container.removeEventListener('mouseup', this.mouseUpHandler)
