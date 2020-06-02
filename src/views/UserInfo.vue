@@ -58,7 +58,12 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="userInfo" :getData="getData()" v-bind="$attrs" v-on="$listeners" />
+                  <BlogListForUser :userInfo="userInfo" :getData="getBlogData()" v-bind="$attrs" v-on="$listeners" />
+                </v-card>
+              </v-tab-item>
+              <v-tab-item>
+                <v-card flat>
+                  <CommentListForUser :userInfo="userInfo" :getData="getCommentData()" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
             </v-tabs>
@@ -77,13 +82,14 @@
 <script>
 // @ is an alias to /src
 import { isMobile } from '@/libs/util'
-import { getSelfBlogs } from '@/api/data'
+import { getSelfBlogs, getSelfComments } from '@/api/data'
 
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
 const BlogListForUser = () => import('@/components/BlogListForUser')
+const CommentListForUser = () => import('@/components/CommentListForUser')
 const TimelineForBlog = () => import('@/components/TimelineForBlog')
 const TimelineForComment = () => import('@/components/TimelineForComment')
 
@@ -95,6 +101,7 @@ export default {
     Following,
     KanBan,
     BlogListForUser,
+    CommentListForUser,
     TimelineForBlog,
     TimelineForComment
   },
@@ -116,9 +123,15 @@ export default {
   },
 
   methods: {
-    getData () {
+    getBlogData () {
       return (page, size) => {
         return getSelfBlogs(this.blogStatus, page, size)
+      }
+    },
+
+    getCommentData () {
+      return (page, size) => {
+        return getSelfComments(page, size)
       }
     }
   }

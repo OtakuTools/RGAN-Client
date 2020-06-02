@@ -115,3 +115,14 @@ export const getSelfBlogs = (status: number = 0, page: number = 0, size : number
     }
   })
 }
+
+export const getSelfComments = (page: number = 0, size : number = 10) : Promise<any> => {
+  return axios.request({
+    url: `/api/users/self/comments`,
+    method: 'get',
+    params: {
+      page,
+      size
+    }
+  })
+}
