@@ -14,12 +14,12 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 
 @Component
 export default class MonacoEditor extends Vue {
-  @Prop({ default: 'markdown', type: String }) language!: string;
-  @Prop({ default: '', type: String }) codeInput!: string;
+  @Prop({ default: 'markdown', type: String }) language: string;
+  @Prop({ default: '', type: String }) codeInput: string;
 
   monacoEditor : any = null
   code : string = this.codeInput
-  monaco : any = window.monaco
+  monaco : any = null
   // 主要配置
   editorOptions : any = {
     selectOnLineNumbers: true,
@@ -37,6 +37,10 @@ export default class MonacoEditor extends Vue {
   erd : any = null
 
   mounted () {
+    this.init()
+  }
+
+  init () {
     let container : any = this.$refs.container
     let opt : any = {
       value: this.code,
@@ -44,9 +48,12 @@ export default class MonacoEditor extends Vue {
       // theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
       editorOptions: this.editorOptions // 同codes
     }
-    this.monacoEditor = this.monaco.editor.create(container, opt)
 
-    if (this.monacoEditor) {
+    this.monaco = window.monaco || null
+
+    if (this.monaco) {
+      this.monacoEditor = this.monaco.editor.create(container, opt)
+
       this.monacoEditor.onDidChangeModelContent((event : any) => {
         const value = this.monacoEditor.getValue()
         this.code = value
@@ -60,18 +67,18 @@ export default class MonacoEditor extends Vue {
         let originHeight : number = container.clientHeight
         this.$emit('on-content-scroll', event.scrollTop / (event.scrollHeight - originHeight))
       })
-    }
 
-    this.erd = elementResizeDetectorMaker()
-    if (this.erd) {
-      this.erd.listenTo(document.getElementById('editorContainer'), () => {
-        this.monacoEditor.layout()
-      })
+      this.erd = elementResizeDetectorMaker()
+      if (this.erd) {
+        this.erd.listenTo(document.getElementById('editorContainer'), () => {
+          this.monacoEditor.layout()
+        })
+      }
     }
   }
 
-  destroy () {
-    this.monacoEditor.dispose()
+  beforeDestroy () {
+    this.monacoEditor && this.monacoEditor.dispose()
   }
 
   @Watch('codeInput')

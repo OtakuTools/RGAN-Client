@@ -43,8 +43,8 @@
       })
       window.L2Dwidget = L2Dwidget
       window.jQuery = $
-      require(['https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/editor/editor.main'], function() {
-        window.monaco = this.monaco
+      require(['vs/editor/editor.main'], function(monaco) {
+        window.monaco = monaco
       });
     </script>
   </body>
