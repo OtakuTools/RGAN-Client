@@ -6,7 +6,8 @@
           <v-timeline-item
             v-for="(info, index) in infoList"
             :key="index"
-            icon="mdi-book-variant"
+            :icon="info.read? 'mdi-alert-circle-check-outline': 'mdi-alert-circle-outline'"
+            :color="info.read? 'green lighten-1': 'red lighten-1'"
             fill-dot
           >
             <v-card class="elevation-2">
@@ -19,9 +20,7 @@
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                <a class="black--text" style="font-size: 14pt" @click="$router.push({ name: 'blog', query: { id: info.id }})"><strong>{{info.title}}</strong></a>
-                <v-spacer></v-spacer>
-
+                更新：<a class="black--text" style="font-size: 13pt" @click="$router.push({ name: 'blog', query: { id: info.id }})"><strong>{{info.title}}</strong></a>
               </v-card-text>
             </v-card>
           </v-timeline-item>
@@ -45,7 +44,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getTimelineForBlog } from '@/api/timeline'
+import { getTimelineForBlog, updateReadStatus } from '@/api/timeline'
 
 @Component
 export default class TimelineForBlog extends Vue {
@@ -61,8 +60,11 @@ export default class TimelineForBlog extends Vue {
 
   refreshInfo (page: number = 0, size: number = 0) {
     getTimelineForBlog(page, size).then(res => {
-      this.infoList = res.data.content
+      let data : any = res.data.content
+      // let ids : Array<number> = data.map(item => item.id)
+      this.infoList = data
       this.totalPages = res.data.totalPages
+      // updateReadStatus(ids).then(res => {}).catch(err => {})
     }).catch(err => {
       console.error(err)
     })

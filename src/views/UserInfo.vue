@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MenuHeader v-bind="$attrs" v-on="$listeners"/>
+    <MenuHeader :refeshUnreadMsg="refeshUnreadMsg" v-bind="$attrs" v-on="$listeners"/>
     <v-content>
       <v-container>
         <v-card>
@@ -44,14 +44,22 @@
                   <v-tab>
                     评论
                   </v-tab>
+                  <v-tab>
+                    点赞
+                  </v-tab>
                   <v-tab-item>
                     <v-card flat>
-                      <TimelineForBlog v-bind="$attrs" v-on="$listeners" />
+                      <TimelineForBlog @updateUnreadMsg="updateUnreadMsg" v-bind="$attrs" v-on="$listeners" />
                     </v-card>
                   </v-tab-item>
                   <v-tab-item>
                     <v-card flat>
-                      <TimelineForComment v-bind="$attrs" v-on="$listeners" />
+                      <TimelineForComment @updateUnreadMsg="updateUnreadMsg" v-bind="$attrs" v-on="$listeners" />
+                    </v-card>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-card flat>
+                      <TimelineForVote @updateUnreadMsg="updateUnreadMsg" v-bind="$attrs" v-on="$listeners" />
                     </v-card>
                   </v-tab-item>
                 </v-tabs>
@@ -92,6 +100,7 @@ const BlogListForUser = () => import('@/components/BlogListForUser')
 const CommentListForUser = () => import('@/components/CommentListForUser')
 const TimelineForBlog = () => import('@/components/TimelineForBlog')
 const TimelineForComment = () => import('@/components/TimelineForComment')
+const TimelineForVote = () => import('@/components/TimelineForVote')
 
 export default {
   name: 'UserInfoPage',
@@ -103,14 +112,16 @@ export default {
     BlogListForUser,
     CommentListForUser,
     TimelineForBlog,
-    TimelineForComment
+    TimelineForComment,
+    TimelineForVote
   },
   data () {
     return {
       activateTab: 'first',
       mobileMode: false,
       userInfo: {},
-      blogStatus: 0
+      blogStatus: 0,
+      refeshUnreadMsg: 0
     }
   },
 
@@ -133,6 +144,10 @@ export default {
       return (page, size) => {
         return getSelfComments(page, size)
       }
+    },
+
+    updateUnreadMsg () {
+      this.refeshUnreadMsg = Math.random()
     }
   }
 }

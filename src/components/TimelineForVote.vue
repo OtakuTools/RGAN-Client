@@ -13,15 +13,15 @@
             <v-card class="elevation-2">
               <v-card-title class="headline">
                 <a @click="$router.push({ name: 'userspace', query: { name: info.authorName }})">{{info.authorName}}</a>
+                <span style="font-size: 12pt; margin-left: 5px;">{{`点赞了我的${info.voteType === 'blog'? '博客':'评论'}`}}</span>
                 <v-spacer></v-spacer>
-                <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.modifiedTime.replace('T', ' ')}}</span>
+                <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.createdTime.replace('T', ' ')}}</span>
                 <v-btn icon>
                   <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                <p style="font-size: 11pt">{{info.content}}</p>
-                回复：<a class="black--text" style="font-size: 13pt" @click="$router.push({ name: 'blog', query: { id: info.blogId }})"><strong>{{info.blogTitle}}</strong></a>
+                博客地址：<a class="black--text" style="font-size: 13pt" @click="$router.push({ name: 'blog', query: { id: info.blogId }})"><strong>{{info.blogTitle}}</strong></a>
               </v-card-text>
             </v-card>
           </v-timeline-item>
@@ -45,10 +45,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getTimelineForComment, updateReadStatus, getTimelineNews } from '@/api/timeline'
+import { getTimelineForVote, updateReadStatus } from '@/api/timeline'
 
 @Component
-export default class TimelineForComment extends Vue {
+export default class TimelineForVote extends Vue {
   infoList : Array<any> = []
   currentPage : number = 1
   currentPageSize : number = 10
@@ -60,7 +60,7 @@ export default class TimelineForComment extends Vue {
   }
 
   refreshInfo (page: number = 0, size: number = 0) {
-    getTimelineForComment(page, size).then(res => {
+    getTimelineForVote(page, size).then(res => {
       let data : any = res.data.content
       let ids : Array<number> = data.map(item => item.id)
       this.infoList = data

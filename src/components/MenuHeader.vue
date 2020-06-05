@@ -21,9 +21,45 @@
       @click:append="search"
     ></v-text-field>
 
-    <v-btn icon @click="detail" dark>
+    <v-btn icon @click="openEditor" dark>
       <v-icon>mdi-feather</v-icon>
     </v-btn>
+
+    <v-menu
+      open-on-hover
+      offset-y
+      transition="slide-y-transition"
+      close-delay="100"
+    >
+      <template v-slot:activator="{ on }">
+        <v-badge
+          color="error"
+          dot
+          :value="hasUnreadMsg"
+          offset-x="20"
+          offset-y="15"
+          overlap
+        >
+          <v-btn icon dark v-on="on">
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+        </v-badge>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in notificationOptions"
+          :key="index"
+          @click="item.handler"
+        >
+          <v-list-item-title>
+            {{ item.title }}
+            <v-chip v-if="item.data" color="error" tag x-small>
+              {{item.data}}
+            </v-chip>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
     <v-menu
       open-on-hover
@@ -66,11 +102,17 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { mapActions } from 'vuex'
 import { formatErrorMsg } from '@/libs/util'
+import { getTimelineNews } from '@/api/timeline'
 
 @Component
 export default class MenuHeader extends Vue {
+  @Prop({ default: 0, type: Number }) refeshUnreadMsg: number;
+
   searchValue : string = ''
   menuOptions : Array<any> = []
+  notificationOptions : Array<any> = []
+  hasUnreadMsg: boolean = false
+  evtSrc: any = null
 
   mounted () {
     this.menuOptions = [
@@ -91,18 +133,77 @@ export default class MenuHeader extends Vue {
         }
       }
     ]
+
+    this.getTimelineInfo()
+    this.initSSE()
+  }
+
+  getTimelineInfo () {
+    if (this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
+      getTimelineNews().then(res => {
+        let data : any = res.data
+        this.hasUnreadMsg = data.upVoteNum || data.commentNum
+        this.notificationOptions = [
+          {
+            title: '点赞数',
+            data: data.upVoteNum,
+            handler: () => {
+              this.$router.push('/userinfo')
+            }
+          },
+          {
+            title: '评论数',
+            data: data.commentNum,
+            handler: () => {
+              this.$router.push('/userinfo')
+            }
+          },
+        ]
+      }).catch(err => {
+  
+      })
+    }
+  }
+
+  initSSE() {
+    if (!!window.EventSource && this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
+      this.evtSrc = new EventSource('/api/notification/connect')
+      this.evtSrc.onopen = (event) => {
+
+      }
+      this.evtSrc.onmessage = (event) => {
+        // console.log(event.data)
+        this.hasUnreadMsg = true
+      }
+      this.evtSrc.onerror = (event) => {
+        
+      }
+    }
+  }
+
+  beforeDestroy () {
+    this.evtSrc && this.evtSrc.close()
+  }
+
+  notification () {
+    this.$router.push('/userinfo')
   }
 
   login () {
     this.$router.push('/login')
   }
 
-  detail () {
+  openEditor () {
     this.$router.push('/editor')
   }
 
   search () {
     this.$emit('search', this.searchValue)
+  }
+
+  @Watch('refeshUnreadMsg')
+  handleUnreadMsg(newVal: boolean) {
+    this.getTimelineInfo()
   }
 }
 </script>
