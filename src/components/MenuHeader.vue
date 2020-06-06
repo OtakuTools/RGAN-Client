@@ -47,14 +47,22 @@
       </template>
       <v-list>
         <v-list-item
-          v-for="(item, index) in notificationOptions"
-          :key="index"
-          @click="item.handler"
+          @click="$router.push('/userinfo')"
         >
           <v-list-item-title>
-            {{ item.title }}
-            <v-chip v-if="item.data" color="error" tag x-small>
-              {{item.data}}
+            点赞数
+            <v-chip v-if="notifications.vote" color="error" x-small>
+              {{notifications.vote}}
+            </v-chip>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          @click="$router.push('/userinfo')"
+        >
+          <v-list-item-title>
+            评论数
+            <v-chip v-if="notifications.comment" color="error" x-small>
+              {{notifications.comment}}
             </v-chip>
           </v-list-item-title>
         </v-list-item>
@@ -110,7 +118,10 @@ export default class MenuHeader extends Vue {
 
   searchValue : string = ''
   menuOptions : Array<any> = []
-  notificationOptions : Array<any> = []
+  notifications : any = {
+    vote: 0,
+    comment: 0
+  }
   hasUnreadMsg: boolean = false
   evtSrc: any = null
 
@@ -133,6 +144,10 @@ export default class MenuHeader extends Vue {
         }
       }
     ]
+    this.notifications = {
+      comment: 0,
+      vote: 0
+    }
 
     this.getTimelineInfo()
     this.initSSE()
@@ -143,22 +158,10 @@ export default class MenuHeader extends Vue {
       getTimelineNews().then(res => {
         let data : any = res.data
         this.hasUnreadMsg = data.upVoteNum || data.commentNum
-        this.notificationOptions = [
-          {
-            title: '点赞数',
-            data: data.upVoteNum,
-            handler: () => {
-              this.$router.push('/userinfo')
-            }
-          },
-          {
-            title: '评论数',
-            data: data.commentNum,
-            handler: () => {
-              this.$router.push('/userinfo')
-            }
-          },
-        ]
+        this.notifications = {
+          comment: data.commentNum,
+          vote: data.upVoteNum
+        }
       }).catch(err => {
   
       })
@@ -166,17 +169,59 @@ export default class MenuHeader extends Vue {
   }
 
   initSSE() {
+    let toString : any = Object.prototype.toString
     if (!!window.EventSource && this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
       this.evtSrc = new EventSource('/api/notification/connect')
       this.evtSrc.onopen = (event) => {
 
       }
-      this.evtSrc.onmessage = (event) => {
-        // console.log(event.data)
-        this.hasUnreadMsg = true
-      }
+
+      this.evtSrc.addEventListener('blog_vote', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        this.notifications.vote += 1
+      }, false)
+
+      this.evtSrc.addEventListener('blog_vote_withdraw', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        if (this.notifications.vote > 0) {
+          this.notifications.vote -= 1
+        }
+      }, false)
+
+      this.evtSrc.addEventListener('comment_vote', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        this.notifications.vote += 1
+      }, false)
+
+      this.evtSrc.addEventListener('comment_vote_withdraw', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        if (this.notifications.vote > 0) {
+          this.notifications.vote -= 1
+        }
+      }, false)
+
+      this.evtSrc.addEventListener('comment_new', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        this.notifications.comment += 1
+      }, false)
+
       this.evtSrc.onerror = (event) => {
-        
+        console.error(event)
       }
     }
   }

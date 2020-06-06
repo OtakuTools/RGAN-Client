@@ -26,6 +26,10 @@
                 <v-icon :left="!mobileMode">mdi-comment-outline</v-icon>
                 {{ mobileMode? '' : '评论管理'}}
               </v-tab>
+              <v-tab>
+                <v-icon :left="!mobileMode">mdi-heart-outline</v-icon>
+                {{ mobileMode? '' : '收藏管理'}}
+              </v-tab>
               <v-tab-item>
                 <v-card flat>
                   <UserInfoEditor v-bind="$attrs" v-on="$listeners" />
@@ -66,12 +70,17 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="userInfo" :getData="getBlogData()" v-bind="$attrs" v-on="$listeners" />
+                  <BlogListForUser :userInfo="userInfo" :getData="getBlogData" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <CommentListForUser :userInfo="userInfo" :getData="getCommentData()" v-bind="$attrs" v-on="$listeners" />
+                  <CommentListForUser :userInfo="userInfo" :getData="getCommentData" v-bind="$attrs" v-on="$listeners" />
+                </v-card>
+              </v-tab-item>
+              <v-tab-item>
+                <v-card flat>
+                  <BlogListForUser :userInfo="userInfo" :getData="getFavouriteData" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
             </v-tabs>
@@ -91,6 +100,7 @@
 // @ is an alias to /src
 import { isMobile } from '@/libs/util'
 import { getSelfBlogs, getSelfComments } from '@/api/data'
+import { getSelfFavourites } from '@/api/favourite'
 
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -134,16 +144,16 @@ export default {
   },
 
   methods: {
-    getBlogData () {
-      return (page, size) => {
-        return getSelfBlogs(this.blogStatus, page, size)
-      }
+    getBlogData (page, size) {
+      return getSelfBlogs(this.blogStatus, page, size)
     },
 
-    getCommentData () {
-      return (page, size) => {
-        return getSelfComments(page, size)
-      }
+    getCommentData (page, size) {
+      return getSelfComments(page, size)
+    },
+
+    getFavouriteData (page, size) {
+      return getSelfFavourites(page, size)
     },
 
     updateUnreadMsg () {

@@ -160,7 +160,7 @@ export default class BlogComment extends Vue {
 
   getComments () : void {
     getBlogComments(this.blogId).then(res => {
-      let data = res.data.content
+      let data = res.data
       let commentIds = []
       this.commentVote = {}
       this.commentVoteCount = {}
@@ -174,8 +174,8 @@ export default class BlogComment extends Vue {
             this.commentVote[item.entityId] = item.status
           })
         }).catch(err => {
-          res.data.forEach(item => {
-            this.commentVote[item.entityId] = this.CANCEL_VOTE
+          commentIds.forEach(item => {
+            this.commentVote[item] = this.CANCEL_VOTE
           })
         }).finally(() => {
           this.commentTree = this.buildCommentTree(data)

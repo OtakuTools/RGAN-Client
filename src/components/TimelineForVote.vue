@@ -62,12 +62,14 @@ export default class TimelineForVote extends Vue {
   refreshInfo (page: number = 0, size: number = 0) {
     getTimelineForVote(page, size).then(res => {
       let data : any = res.data.content
-      let ids : Array<number> = data.map(item => item.id)
       this.infoList = data
       this.totalPages = res.data.totalPages
-      updateReadStatus(ids).then(res => {
-        this.$emit('updateUnreadMsg')
-      }).catch(err => {})
+      this.$nextTick(() => {
+        let ids : Array<number> = data.filter(item => !item.read).map(item => item.id)
+        updateReadStatus(ids).then(res => {
+          this.$emit('updateUnreadMsg')
+        }).catch(err => {})
+      })
     }).catch(err => {
       console.error(err)
     })

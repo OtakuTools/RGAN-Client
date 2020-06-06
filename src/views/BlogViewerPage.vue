@@ -42,11 +42,11 @@
                   <v-icon left>mdi-star-outline</v-icon>
                   {{blogInfo.voteCount}}
                 </v-btn>
-                <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" style="margin-right: 10px">
+                <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" dark style="margin-right: 10px">
                   <v-icon left>mdi-thumb-up-outline</v-icon>
                   赞
                 </v-btn>
-                <v-btn :outlined="voteStatus != DOWN_VOTE" @click="voteBlog(-1)" color="blue">
+                <v-btn :outlined="voteStatus != DOWN_VOTE" @click="voteBlog(-1)" dark color="blue">
                   <v-icon left>mdi-thumb-down-outline</v-icon>
                   踩
                 </v-btn>
@@ -142,7 +142,7 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.updateCurrentIndex)
-    window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
+    window.removeEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
   },
   methods: {
     getVoteStatus () {
@@ -155,8 +155,8 @@ export default {
     },
     upVote () {
       voteBlog(this.blogId, this.UP_VOTE).then(res => {
-        this.blogInfo.upvoteCount -= this.voteStatus
-        this.blogInfo.upvoteCount += this.UP_VOTE
+        this.blogInfo.voteCount -= this.voteStatus
+        this.blogInfo.voteCount += this.UP_VOTE
         this.voteStatus = this.UP_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
@@ -164,8 +164,8 @@ export default {
     },
     downVote () {
       voteBlog(this.blogId, this.DOWN_VOTE).then(res => {
-        this.blogInfo.upvoteCount -= this.voteStatus
-        this.blogInfo.upvoteCount += this.DOWN_VOTE
+        this.blogInfo.voteCount -= this.voteStatus
+        this.blogInfo.voteCount += this.DOWN_VOTE
         this.voteStatus = this.DOWN_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
@@ -173,7 +173,7 @@ export default {
     },
     cancelVote () {
       voteBlog(this.blogId, this.CANCEL_VOTE).then(res => {
-        this.blogInfo.upvoteCount -= this.voteStatus
+        this.blogInfo.voteCount -= this.voteStatus
         this.voteStatus = this.CANCEL_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
@@ -189,7 +189,7 @@ export default {
       }
     },
     generateIndex() {
-      let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6')
+      let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6') || []
       let idxTree = []
       idxs.forEach((item, index) => {
         idxTree.push({
@@ -236,10 +236,10 @@ export default {
       }
     },
     checkIfOutsideWindowTop(item) {
-      return item.getBoundingClientRect().top < 0
+      return item && item.getBoundingClientRect().top < 0
     },
     checkIfOutsideWindowBottom(item) {
-      return item.getBoundingClientRect().top > (document.documentElement.clientHeight || document.body.clientHeight)
+      return item && item.getBoundingClientRect().top > (document.documentElement.clientHeight || document.body.clientHeight)
     }
   }
 }

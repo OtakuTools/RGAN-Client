@@ -87,10 +87,8 @@ export default {
     })
   },
   methods: {
-    getData() {
-      return (page, size) => {
-        return getBlogByAuthor(this.userInfo.username, page, size)
-      }
+    getData(page, size) {
+      return getBlogByAuthor(this.userInfo.username, page, size)
     },
 
     handleFollow () {

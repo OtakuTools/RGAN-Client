@@ -60,11 +60,9 @@ export default class TimelineForBlog extends Vue {
 
   refreshInfo (page: number = 0, size: number = 0) {
     getTimelineForBlog(page, size).then(res => {
-      let data : any = res.data.content
-      // let ids : Array<number> = data.map(item => item.id)
-      this.infoList = data
-      this.totalPages = res.data.totalPages
-      // updateReadStatus(ids).then(res => {}).catch(err => {})
+      let data : any = res.data
+      this.infoList = data.content
+      this.totalPages = data.totalPages
     }).catch(err => {
       console.error(err)
     })
