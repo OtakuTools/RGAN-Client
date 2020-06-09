@@ -124,6 +124,7 @@ export default class MenuHeader extends Vue {
   }
   hasUnreadMsg: boolean = false
   evtSrc: any = null
+  sseRtryTimes: number = 3
 
   mounted () {
     this.menuOptions = [
@@ -173,7 +174,7 @@ export default class MenuHeader extends Vue {
     if (!!window.EventSource && this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
       this.evtSrc = new EventSource('/api/notification/connect')
       this.evtSrc.onopen = (event) => {
-
+        this.sseRtryTimes = 3
       }
 
       this.evtSrc.addEventListener('blog_vote', (event) => {
@@ -221,7 +222,13 @@ export default class MenuHeader extends Vue {
       }, false)
 
       this.evtSrc.onerror = (event) => {
-        console.error(event)
+        this.evtSrc.close()
+        if (this.sseRtryTimes > 0) {
+          setTimeout(() => {
+            this.sseRtryTimes--;
+            this.initSSE();
+          }, 1000)
+        }
       }
     }
   }

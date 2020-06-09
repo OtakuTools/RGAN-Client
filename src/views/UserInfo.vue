@@ -70,7 +70,7 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="userInfo" :getData="getBlogData" v-bind="$attrs" v-on="$listeners" />
+                  <BlogListForCurrentUser :userInfo="userInfo" :blogStatus="blogStatus.PUBLISHED" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
               <v-tab-item>
@@ -80,7 +80,7 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat>
-                  <BlogListForUser :userInfo="userInfo" :getData="getFavouriteData" v-bind="$attrs" v-on="$listeners" />
+                  <FavouriteListForUser :userInfo="userInfo" v-bind="$attrs" v-on="$listeners" />
                 </v-card>
               </v-tab-item>
             </v-tabs>
@@ -99,14 +99,15 @@
 <script>
 // @ is an alias to /src
 import { isMobile } from '@/libs/util'
-import { getSelfBlogs, getSelfComments } from '@/api/data'
-import { getSelfFavourites } from '@/api/favourite'
+import { BLOG_STATUS } from '@/libs/constant'
+import { getSelfComments } from '@/api/data'
 
 const UserInfoEditor = () => import('@/components/UserInfoEditor')
 const MenuHeader = () => import('@/components/MenuHeader')
 const KanBan = () => import('@/components/KanBan')
 const Following = () => import('@/components/FollingUsers')
-const BlogListForUser = () => import('@/components/BlogListForUser')
+const BlogListForCurrentUser = () => import('@/components/BlogListForCurrentUser')
+const FavouriteListForUser = () => import('@/components/FavouriteListForUser')
 const CommentListForUser = () => import('@/components/CommentListForUser')
 const TimelineForBlog = () => import('@/components/TimelineForBlog')
 const TimelineForComment = () => import('@/components/TimelineForComment')
@@ -119,7 +120,8 @@ export default {
     MenuHeader,
     Following,
     KanBan,
-    BlogListForUser,
+    BlogListForCurrentUser,
+    FavouriteListForUser,
     CommentListForUser,
     TimelineForBlog,
     TimelineForComment,
@@ -131,7 +133,8 @@ export default {
       mobileMode: false,
       userInfo: {},
       blogStatus: 0,
-      refeshUnreadMsg: 0
+      refeshUnreadMsg: 0,
+      blogStatus: BLOG_STATUS
     }
   },
 
@@ -144,16 +147,9 @@ export default {
   },
 
   methods: {
-    getBlogData (page, size) {
-      return getSelfBlogs(this.blogStatus, page, size)
-    },
 
     getCommentData (page, size) {
       return getSelfComments(page, size)
-    },
-
-    getFavouriteData (page, size) {
-      return getSelfFavourites(page, size)
     },
 
     updateUnreadMsg () {

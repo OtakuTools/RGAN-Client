@@ -34,6 +34,16 @@ export const modifyBlog = (id : number, data : Object) : Promise<any> => {
   })
 }
 
+export const deleteBlog = (id : number) : Promise<any> => {
+  if (!getToken()) {
+    return Promise.reject('请先登录')
+  }
+  return axios.request({
+    url: `/api/blogs/${id}`,
+    method: 'delete',
+  })
+}
+
 export const getBlogById = (id: number) : Promise<any> => {
   return axios.request({
     url: `/api/blogs/${id}`,

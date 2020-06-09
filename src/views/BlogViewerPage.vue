@@ -42,13 +42,17 @@
                   <v-icon left>mdi-star-outline</v-icon>
                   {{blogInfo.voteCount}}
                 </v-btn>
-                <v-btn :outlined="voteStatus != UP_VOTE" @click="voteBlog(1)" color="red" dark style="margin-right: 10px">
+                <v-btn :outlined="voteStatus != voteType.UP_VOTE" @click="voteBlog(1)" color="red" dark style="margin-right: 10px">
                   <v-icon left>mdi-thumb-up-outline</v-icon>
                   赞
                 </v-btn>
-                <v-btn :outlined="voteStatus != DOWN_VOTE" @click="voteBlog(-1)" dark color="blue">
+                <v-btn :outlined="voteStatus != voteType.DOWN_VOTE" @click="voteBlog(-1)" dark color="blue" style="margin-right: 10px">
                   <v-icon left>mdi-thumb-down-outline</v-icon>
                   踩
+                </v-btn>
+                <v-btn :outlined="!favouriteStatus" @click="favouriteBlog" dark color="pink">
+                  <v-icon left>mdi-heart-outline</v-icon>
+                  收藏
                 </v-btn>
                 <v-divider style="margin: 20px 0"/>
                 <BlogComment :blogId ="blogId" v-bind="$attrs" v-on="$listeners"/>
@@ -64,8 +68,7 @@
                     <v-list-item
                       v-for="(item, i) in indexInfo"
                       :key="i"
-                      :href="`#${item.id}`"
-                      @click="manualSelected = true"
+                      @click="() => { manualSelected = true; $vuetify.goTo(`#${item.id}`)}"
                     >
                       <v-list-item-content>
                         <v-list-item-title v-text="item.text"></v-list-item-title>
@@ -93,9 +96,10 @@
 <script>
 // @ is an alias to /src
 import { getBlogById } from '@/api/data'
+import { getFavouriteStatus, addFavourite, deleteFavourite } from '@/api/favourite'
 import { voteBlog, getBlogStatus } from '@/api/vote'
 import { formatErrorMsg } from '@/libs/util'
-import { BLOG_TYPE } from '@/libs/constant'
+import { BLOG_TYPE, BLOG_STATUS, VOTE_STATUS } from '@/libs/constant'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
 const BlogComment = () => import('@/components/BlogComment')
 const MenuHeader = () => import('@/components/MenuHeader')
@@ -103,12 +107,14 @@ const KanBan = () => import('@/components/KanBan')
 
 export default {
   name: 'BlogViewerPage',
+
   components: {
     MarkdownViewer,
     MenuHeader,
     BlogComment,
     KanBan
   },
+
   data () {
     return {
       blogId: 0,
@@ -118,13 +124,13 @@ export default {
       manualSelected: false,
       fixedIndexCard: false,
       voteStatus: 0,
-      UP_VOTE: 1,
-      CANCEL_VOTE: 0,
-      DOWN_VOTE: -1,
+      favouriteStatus: false,
 
+      voteType: VOTE_STATUS,
       blogType: BLOG_TYPE
     }
   },
+
   mounted () {
     this.blogId = parseInt(this.$route.query.id)
     getBlogById(this.$route.query.id).then(res => {
@@ -137,13 +143,16 @@ export default {
       this.$emit('alertMsg', formatErrorMsg(err))
     })
     this.getVoteStatus()
+    this.getFavouriteStatus()
     window.addEventListener('scroll', this.updateCurrentIndex, false)
     window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50), false)
   },
+
   beforeDestroy () {
     window.removeEventListener('scroll', this.updateCurrentIndex)
     window.removeEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
   },
+
   methods: {
     getVoteStatus () {
       if (!this.$route.query.hasOwnProperty('id') || !this.$store.state.user.token) return
@@ -153,47 +162,78 @@ export default {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
+
+    getFavouriteStatus () {
+      if (!this.$route.query.hasOwnProperty('id') || !this.$store.state.user.token) return
+      getFavouriteStatus(this.$route.query.id).then(res => {
+        this.favouriteStatus = res.data
+      }).catch(err => {
+        this.$emit('alertMsg', formatErrorMsg(err))
+      })
+    },
+
     upVote () {
-      voteBlog(this.blogId, this.UP_VOTE).then(res => {
+      voteBlog(this.blogId, VOTE_STATUS.UP_VOTE).then(res => {
         this.blogInfo.voteCount -= this.voteStatus
-        this.blogInfo.voteCount += this.UP_VOTE
-        this.voteStatus = this.UP_VOTE
+        this.blogInfo.voteCount += VOTE_STATUS.UP_VOTE
+        this.voteStatus = VOTE_STATUS.UP_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
+
     downVote () {
-      voteBlog(this.blogId, this.DOWN_VOTE).then(res => {
+      voteBlog(this.blogId, VOTE_STATUS.DOWN_VOTE).then(res => {
         this.blogInfo.voteCount -= this.voteStatus
-        this.blogInfo.voteCount += this.DOWN_VOTE
-        this.voteStatus = this.DOWN_VOTE
+        this.blogInfo.voteCount += VOTE_STATUS.DOWN_VOTE
+        this.voteStatus = VOTE_STATUS.DOWN_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
+
     cancelVote () {
-      voteBlog(this.blogId, this.CANCEL_VOTE).then(res => {
+      voteBlog(this.blogId, VOTE_STATUS.CANCEL_VOTE).then(res => {
         this.blogInfo.voteCount -= this.voteStatus
-        this.voteStatus = this.CANCEL_VOTE
+        this.voteStatus = VOTE_STATUS.CANCEL_VOTE
       }).catch(err => {
         this.$emit('alertMsg', formatErrorMsg(err))
       })
     },
+
     voteBlog (mode) {
       if (this.voteStatus === mode) {
         this.cancelVote()
-      } else if (mode === this.UP_VOTE) {
+      } else if (mode === VOTE_STATUS.UP_VOTE) {
         this.upVote()
       } else {
         this.downVote()
       }
     },
+
+    favouriteBlog () {
+      if (this.favouriteStatus) {
+        deleteFavourite(this.blogId).then(res => {
+          this.favouriteStatus = false
+        }).catch(err => {
+          this.$emit('alertMsg', formatErrorMsg(err))
+        })
+      } else {
+        addFavourite(this.blogId).then(res => {
+          this.favouriteStatus = true
+        }).catch(err => {
+          this.$emit('alertMsg', formatErrorMsg(err))
+        })
+      }
+    },
+
     generateIndex() {
       let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6') || []
       let idxTree = []
       idxs.forEach((item, index) => {
+        item.id = `idx_${index}`
         idxTree.push({
-          id: item.id,
+          id: `idx_${index}`,
           text: item.textContent
         })
       })
@@ -207,7 +247,7 @@ export default {
         let len = idxs.length
         let i = 0
         for (; i < len; i++) {
-          if ((this.checkIfOutsideWindowTop(idxs[i]) && i < len-1 && this.checkIfOutsideWindowBottom(idxs[i+1])) || !this.checkIfOutsideWindowTop(idxs[i])) {
+          if ((this.checkIfOutsideWindowTop(idxs[i]) && i < len - 1 && this.checkIfOutsideWindowBottom(idxs[i + 1])) || !this.checkIfOutsideWindowTop(idxs[i])) {
             this.currentIndex = i
             break
           }
@@ -218,7 +258,8 @@ export default {
       }
     },
     updateIndexPosition (e) {
-      let cp = document.getElementById('indexCard').getBoundingClientRect().top <= 20
+      let cp = document.getElementById('indexCard')
+      cp = cp && cp.getBoundingClientRect().top <= 20
       let top_distance = document.documentElement.scrollTop || document.body.scrollTop
       if (top_distance > 0 && cp !== this.fixedIndexCard) {
         this.fixedIndexCard = cp
