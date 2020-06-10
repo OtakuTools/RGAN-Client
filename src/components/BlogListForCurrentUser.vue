@@ -37,7 +37,7 @@
                 </v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-btn icon @click="handleSelected(blog.id)" v-if="blogStatus !== 2">
+                <v-btn icon @click="handleSelected(blog.id)" v-if="blogStatus === 0">
                   <v-icon color="primary lighten-1">mdi-eye-outline</v-icon>
                 </v-btn>
                 <v-btn icon @click="editBlog(blog.id)">
