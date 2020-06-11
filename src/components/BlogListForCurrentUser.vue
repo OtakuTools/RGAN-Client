@@ -111,8 +111,8 @@ export default class BlogListForCurrentUser extends Vue {
           content: '',
           summary: '',
           tags: [],
-          createdTime: '2020-02-02 02:02',
-          authorName: 'admin',
+          createdTime: '',
+          author: {},
           voteCount: 0,
           visitorCount: 0
         }

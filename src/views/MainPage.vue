@@ -39,7 +39,7 @@
                             </v-chip>
                             <v-chip style="border: none" outlined small label>
                               <v-icon left small>mdi-account</v-icon>
-                              {{blog.authorName}}
+                              {{blog.author.username}}
                             </v-chip>
 
                             <!-- <v-chip outlined small label>

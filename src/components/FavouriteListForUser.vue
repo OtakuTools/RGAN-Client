@@ -109,7 +109,7 @@ export default class BlogListForUser extends Vue {
           summary: '',
           tags: [],
           createdTime: '',
-          authorName: '',
+          author: {},
           voteCount: 0,
           visitorCount: 0,
           enlistTime: ''

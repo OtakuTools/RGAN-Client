@@ -31,9 +31,9 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-              <span class="text--secondary" style="font-size: 14px;">{{comment.authorName}}</span>
+              <span class="text--secondary" style="font-size: 14px;">{{comment.author.username}}</span>
               <div class="text--secondary" style="float:right">
-                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.authorName === $store.state.user.name" @click="deleteComment(comment.id)">
+                <v-btn x-small text color="rgba(0,0,0,.6)" v-if="comment.author.username === $store.state.user.name" @click="deleteComment(comment.id)">
                   删除
                 </v-btn>
                 <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = comment.id">
@@ -71,11 +71,11 @@
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="text--secondary" style="font-size: 14px;">
-                      <span>{{subComment.authorName}}</span>
-                      <span class="text--primary" v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">&nbsp;回复&nbsp;</span>
-                      <span v-if="commentLevelTree[subComment.replyTo].authorName !== comment.authorName">{{commentLevelTree[subComment.replyTo].authorName}}</span>
+                      <span>{{subComment.author.username}}</span>
+                      <span class="text--primary" v-if="commentLevelTree[subComment.replyTo].author.username !== comment.author.username">&nbsp;回复&nbsp;</span>
+                      <span v-if="commentLevelTree[subComment.replyTo].author.username !== comment.author.username">{{commentLevelTree[subComment.replyTo].author.username}}</span>
                       <div style="float: right">
-                        <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.authorName === $store.state.user.name" @click="deleteComment(subComment.id)">
+                        <v-btn x-small text color="rgba(0,0,0,.6)" v-if="subComment.author.username === $store.state.user.name" @click="deleteComment(subComment.id)">
                           删除
                         </v-btn>
                         <v-btn x-small text color="rgba(0,0,0,.6)" @click="replyTo = subComment.id">
@@ -127,7 +127,7 @@ import { formatErrorMsg } from '@/libs/util'
 class Comment {
   id : number
   content : string
-  authorName : string
+  author : object
   replyTo : number
   createdTime : string
   modifiedTime: string

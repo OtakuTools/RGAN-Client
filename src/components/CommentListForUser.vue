@@ -85,19 +85,6 @@ export default class CommentListForUser extends Vue {
       let data = res.data.content
       this.totalPages = res.data.totalPages
       this.commentList = data
-      // this.commentList = data.map(item => {
-      //   let dataFormat = {
-      //     id: 0,
-      //     content: '',
-      //     authorName: '',
-      //     replyTo: 0,
-      //     createdTime: '',
-      //     modifiedTime: '',
-      //     voteCount: 0
-      //   }
-      //   Object.assign(dataFormat, item)
-      //   return dataFormat
-      // })
     }).catch(err => {
       this.$emit('alertMsg', {
         message: '获取评论列表失败',

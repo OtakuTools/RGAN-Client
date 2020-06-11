@@ -12,7 +12,7 @@
           >
             <v-card class="elevation-2">
               <v-card-title class="headline">
-                <a @click="$router.push({ name: 'userspace', query: { name: info.authorName }})">{{info.authorName}}</a>
+                <a @click="$router.push({ name: 'userspace', query: { name: info.author.username }})">{{info.author.username}}</a>
                 <span style="font-size: 12pt; margin-left: 5px;">{{`点赞了我的${info.voteType === 'blog'? '博客':'评论'}`}}</span>
                 <v-spacer></v-spacer>
                 <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.createdTime.replace('T', ' ')}}</span>
