@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-row
           justify="center"
-          class="grey lighten-5"
+          class="#F7F8FA5"
         >
           <v-card class="card-box" style="width: 400px;">
             <v-form v-model="valid" ref="form">
