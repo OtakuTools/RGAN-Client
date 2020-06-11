@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     absolute
-    color="primary"
+    color="primary lighten-1"
     hide-on-scroll
     flat
     app
@@ -183,6 +183,7 @@ export default class MenuHeader extends Vue {
           data = JSON.parse(data)
         }
         this.notifications.vote += 1
+        this.hasUnreadMsg = true
       }, false)
 
       this.evtSrc.addEventListener('blog_vote_withdraw', (event) => {
@@ -192,6 +193,7 @@ export default class MenuHeader extends Vue {
         }
         if (this.notifications.vote > 0) {
           this.notifications.vote -= 1
+          this.hasUnreadMsg = this.notifications.vote || this.notifications.comment
         }
       }, false)
 
@@ -201,6 +203,7 @@ export default class MenuHeader extends Vue {
           data = JSON.parse(data)
         }
         this.notifications.vote += 1
+        this.hasUnreadMsg = true
       }, false)
 
       this.evtSrc.addEventListener('comment_vote_withdraw', (event) => {
@@ -210,6 +213,7 @@ export default class MenuHeader extends Vue {
         }
         if (this.notifications.vote > 0) {
           this.notifications.vote -= 1
+          this.hasUnreadMsg = this.notifications.vote || this.notifications.comment
         }
       }, false)
 
@@ -219,6 +223,7 @@ export default class MenuHeader extends Vue {
           data = JSON.parse(data)
         }
         this.notifications.comment += 1
+        this.hasUnreadMsg = true
       }, false)
 
       this.evtSrc.onerror = (event) => {

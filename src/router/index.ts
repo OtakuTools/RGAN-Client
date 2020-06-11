@@ -45,8 +45,7 @@ router.beforeEach((to, from, next) => {
   } else {
     let obj : any = store.state
     let user : any = obj.user
-    if (user.hasGetInfo && token) {
-      setToken(user.token)
+    if (user.hasGetInfo && (token === user.token)) {
       turnTo(to, user.access, next)
     } else {
       store.dispatch('getUserInfo').then(user => {
@@ -54,6 +53,7 @@ router.beforeEach((to, from, next) => {
         turnTo(to, user.access, next)
       }).catch(() => {
         setToken('')
+        user.token = false
         if (to.name === VERIFIATION_PAGE_NAME) {
           next()
         } else if (to.name === HOME_PAGE_NAME) {
