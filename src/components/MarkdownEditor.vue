@@ -244,6 +244,7 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog, modifyBlog, getBlogById } from '@/api/data'
 import { BLOG_TYPE, BLOG_STATUS } from '@/libs/constant'
+import { getStorageToken } from '@/api/storage'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -399,8 +400,59 @@ export default class MDEditor extends Vue {
   }
 
   getImageFromImageEditor (image) : void {
-    this.insertContentWithoutSelection(`![图片](${image.image.src})\n`, '')
-    this.imageEditorVisible = false
+    var putExtra = {
+      fname: 'test',
+      params: {},
+      mimeType: null
+    }
+    var observer = {
+      next: (res) => {
+        
+      },
+      error (err) {
+        console.log('err', err)
+      },
+      complete: (res) => {
+        let profilePicturePath = `http://res.rgan.work/${res.key}`
+        this.insertContentWithoutSelection(`![图片](${profilePicturePath})\n`, '')
+        this.imageEditorVisible = false
+      }
+    }
+    let compressOptions = {
+      quality: 1.00,
+      noCompressIfLarger: true
+      // maxWidth: 1000,
+      // maxHeight: 618
+    }
+    let img = image.image.src
+    img = this.dataURLtoFile(img, `pic${this.guid()}.png`)
+    getStorageToken().then(res => {
+      let token = res.data
+      window.qiniu.compressImage(img, compressOptions).then(() => {
+        let observable = window.qiniu.upload(img, img.name, token, putExtra)
+        let subscription = observable.subscribe(observer) // 上传开始
+        // subscription.unsubscribe()
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+  }
+
+  S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+
+  guid() {
+    return (this.S4() + this.S4() + "-" + this.S4() + "-" + this.S4() + this.S4());
   }
 
   closeImageEditor () : void {

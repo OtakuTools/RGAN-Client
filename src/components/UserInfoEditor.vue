@@ -4,7 +4,7 @@
       <v-list-item>
         <v-list-item-avatar size="120" class="avatarback">
           <v-img
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+            :src="userInfo.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
             alt="user"
             class="avatar"
             @click="chooseAvatar"
@@ -116,7 +116,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
-import { getUserInfo } from '@/api/user'
+import { getUserInfo, modifyUserInfo } from '@/api/user'
 import { getStorageToken } from '@/api/storage'
 
 @Component
@@ -125,7 +125,7 @@ export default class UserInfoEditor extends Vue {
     id: '',
     username: '',
     password: '',
-    avatarUrl: '',
+    profilePicturePath: '',
     email: '',
     description: ''
   }
@@ -183,14 +183,21 @@ export default class UserInfoEditor extends Vue {
       mimeType: null
     }
     var observer = {
-      next (res) {
-        console.log('next', res)
+      next: (res) => {
+        
       },
       error (err) {
         console.log('err', err)
       },
-      complete (res) {
-        console.log('complete', res)
+      complete: (res) => {
+        let profilePicturePath = `http://res.rgan.work/${res.key}`
+        modifyUserInfo(this.userInfo.id, { profilePicturePath }).then(res => {
+          this.userInfo.profilePicturePath = profilePicturePath
+          this.uploadAvartar = ''
+          this.avatarDialog = false
+        }).catch(err => {
+          console.error(err)
+        })
       }
     }
     let compressOptions = {
@@ -199,6 +206,8 @@ export default class UserInfoEditor extends Vue {
       // maxWidth: 1000,
       // maxHeight: 618
     }
+    console.log(this.uploadAvartar)
+    return
     getStorageToken().then(res => {
       let token = res.data
       window.qiniu.compressImage(this.uploadAvartar, compressOptions).then(() => {

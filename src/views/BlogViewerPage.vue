@@ -118,7 +118,9 @@ export default {
   data () {
     return {
       blogId: 0,
-      blogInfo: {},
+      blogInfo: {
+        author: {}
+      },
       indexInfo: [],
       currentIndex: 0,
       manualSelected: false,

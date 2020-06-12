@@ -36,6 +36,14 @@ export const getUserInfo = (id: string) : Promise<any> => {
   })
 }
 
+export const modifyUserInfo = (id: number, data: any) : Promise<any> => {
+  return axios.request({
+    url: `/api/users/${id}/profile`,
+    method: 'put',
+    data
+  })
+}
+
 export const getUserInfoByName = (name: string) : Promise<any> => {
   return axios.request({
     url: `/api/users`,

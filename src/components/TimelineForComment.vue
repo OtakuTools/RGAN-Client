@@ -6,11 +6,16 @@
           <v-timeline-item
             v-for="(info, index) in infoList"
             :key="index"
-            :icon="info.read? 'mdi-alert-circle-check-outline': 'mdi-alert-circle-outline'"
-            :color="info.read? 'green lighten-1': 'red lighten-1'"
+            :icon="info ? info.read? 'mdi-alert-circle-check-outline': 'mdi-alert-circle-outline' : 'mdi-cancel'"
+            :color="info ? info.read? 'green lighten-1': 'red lighten-1' : 'grey'"
             fill-dot
           >
-            <v-card class="elevation-2">
+            <v-card v-if="!info">
+              <v-card-title class="headline">
+                该动态已过期
+              </v-card-title>
+            </v-card>
+            <v-card v-else class="elevation-2">
               <v-card-title class="headline">
                 <a @click="$router.push({ name: 'userspace', query: { name: info.author.username }})">{{info.author.username}}</a>
                 <v-spacer></v-spacer>
@@ -65,7 +70,7 @@ export default class TimelineForComment extends Vue {
       this.infoList = data
       this.totalPages = res.data.totalPages
       this.$nextTick(() => {
-        let ids : Array<number> = data.filter(item => !item.read).map(item => item.id)
+        let ids : Array<number> = data.filter(item => item && !item.read).map(item => item.id)
         updateReadStatus(ids).then(res => {
           this.$emit('updateUnreadMsg')
         }).catch(err => {})

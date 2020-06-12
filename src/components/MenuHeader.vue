@@ -226,6 +226,21 @@ export default class MenuHeader extends Vue {
         this.hasUnreadMsg = true
       }, false)
 
+      this.evtSrc.addEventListener('comment_withdraw', (event) => {
+        let data = event.data
+        if (toString.call(event.data) === '[object String]') {
+          data = JSON.parse(data)
+        }
+        if (this.notifications.comment > 0) {
+          this.notifications.comment -= 1
+          this.hasUnreadMsg = this.notifications.vote || this.notifications.comment
+        }
+      }, false)
+
+      this.evtSrc.addEventListener('heart_beat', (event) => {
+        console.log('keep sse alive')
+      }, false)
+
       this.evtSrc.onerror = (event) => {
         this.evtSrc.close()
         if (this.sseRtryTimes > 0) {
