@@ -47,22 +47,22 @@
       </template>
       <v-list>
         <v-list-item
-          @click="$router.push('/userinfo')"
-        >
-          <v-list-item-title>
-            点赞数
-            <v-chip v-if="notifications.vote" color="error" x-small>
-              {{notifications.vote}}
-            </v-chip>
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          @click="$router.push('/userinfo')"
+          @click="$router.push({name: 'userinfo', params: { module: 2, submodule: 1}})"
         >
           <v-list-item-title>
             评论数
             <v-chip v-if="notifications.comment" color="error" x-small>
               {{notifications.comment}}
+            </v-chip>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          @click="$router.push({name: 'userinfo', params: { module: 2, submodule: 2}})"
+        >
+          <v-list-item-title>
+            点赞数
+            <v-chip v-if="notifications.vote" color="error" x-small>
+              {{notifications.vote}}
             </v-chip>
           </v-list-item-title>
         </v-list-item>
@@ -74,12 +74,12 @@
       offset-y
       transition="slide-y-transition"
       close-delay="100"
-      v-if="$store.state.user.hasGetInfo && $store.state.user.token && $store.state.user.token !== ''">
+      v-if="userInfo.hasGetInfo && userInfo.token && userInfo.token !== ''">
       <template v-slot:activator="{ on }">
         <v-btn icon dark>
           <v-avatar size="38" v-on="on">
             <img
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="userInfo.avatarImgPath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
               alt="user"
             >
           </v-avatar>
@@ -125,6 +125,7 @@ export default class MenuHeader extends Vue {
   hasUnreadMsg: boolean = false
   evtSrc: any = null
   sseRtryTimes: number = 3
+  userInfo : any = this.$store.state.user
 
   mounted () {
     this.menuOptions = [
@@ -155,7 +156,7 @@ export default class MenuHeader extends Vue {
   }
 
   getTimelineInfo () {
-    if (this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
+    if (this.userInfo.hasGetInfo && this.userInfo.token) {
       getTimelineNews().then(res => {
         let data : any = res.data
         this.hasUnreadMsg = data.upVoteNum || data.commentNum
@@ -171,7 +172,7 @@ export default class MenuHeader extends Vue {
 
   initSSE() {
     let toString : any = Object.prototype.toString
-    if (!!window.EventSource && this.$store.state.user.hasGetInfo && this.$store.state.user.token) {
+    if (!!window.EventSource && this.userInfo.hasGetInfo && this.userInfo.token) {
       this.evtSrc = new EventSource('/api/notification/connect')
       this.evtSrc.onopen = (event) => {
         this.sseRtryTimes = 3

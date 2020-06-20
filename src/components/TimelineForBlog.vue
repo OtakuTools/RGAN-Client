@@ -6,8 +6,7 @@
           <v-timeline-item
             v-for="(info, index) in infoList"
             :key="index"
-            :icon="info ? info.read? 'mdi-alert-circle-check-outline': 'mdi-alert-circle-outline' : 'mdi-cancel'"
-            :color="info ? info.read? 'green lighten-1': 'red lighten-1' : 'grey'"
+            icon="mdi-bookmark"
             fill-dot
           >
             <v-card v-if="!info">
@@ -17,7 +16,14 @@
             </v-card>
             <v-card v-else class="elevation-2">
               <v-card-title class="headline">
+                <v-avatar size="32" style="margin-right: 10px">
+                  <img
+                    :src="info.author.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+                    alt="avatar"
+                  >
+                </v-avatar>
                 <a @click="$router.push({ name: 'userspace', query: { name: info.author.username }})">{{info.author.username}}</a>
+                <span style="font-size: 12pt; margin-left: 5px;">更新了博客</span>
                 <v-spacer></v-spacer>
                 <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.modifiedTime.replace('T', ' ')}}</span>
                 <v-btn icon>
@@ -25,7 +31,7 @@
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                更新：<a class="black--text" style="font-size: 13pt" @click="$router.push({ name: 'blog', query: { id: info.id }})"><strong>{{info.title}}</strong></a>
+                博客地址：<a class="black--text" style="font-size: 13pt" @click="$router.push({ name: 'blog', query: { id: info.id }})"><strong>{{info.title}}</strong></a>
               </v-card-text>
             </v-card>
           </v-timeline-item>

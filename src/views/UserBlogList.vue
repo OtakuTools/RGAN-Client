@@ -11,7 +11,7 @@
                   class="profile"
                   size="100"
                 >
-                  <v-img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></v-img>
+                  <v-img :src="userInfo.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"></v-img>
                 </v-avatar>
                 <v-list-item
                   color="rgba(0, 0, 0, .4)"

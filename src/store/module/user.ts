@@ -52,6 +52,7 @@ export default {
           const data = res.data
           commit('setUserId', data.id)
           commit('setUserName', data.username)
+          commit('setAvatar', data.profilePicturePath)
           commit('setToken', data.id)
           commit('setHasGetInfo', true)
           resolve()
@@ -66,6 +67,7 @@ export default {
         logout(state.token).then(() => {
           commit('setToken', '')
           commit('setUserId', '')
+          commit('setAvatar', '')
           commit('setUserName', '')
           commit('setHasGetInfo', false)
           resolve()
@@ -85,6 +87,7 @@ export default {
             const data = res.data
             commit('setUserName', data.username)
             commit('setUserId', data.id)
+            commit('setAvatar', data.profilePicturePath)
             commit('setToken', data.id)
             commit('setHasGetInfo', true)
             resolve(data)

@@ -5,7 +5,7 @@
       <v-container>
         <v-card>
           <v-card-text style="padding: 0 16px 16px 0">
-            <v-tabs vertical>
+            <v-tabs vertical v-model="activateModuleTab">
               <v-tab>
                 <v-icon :left="!mobileMode">mdi-account-outline</v-icon>
                 {{ mobileMode? '' : '用户管理' }}
@@ -41,7 +41,7 @@
                 </v-card>
               </v-tab-item>
               <v-tab-item>
-                <v-tabs right>
+                <v-tabs right v-model="activatePostTab">
                   <v-tab>
                     博客
                   </v-tab>
@@ -152,7 +152,8 @@ export default {
   },
   data () {
     return {
-      activateTab: 'first',
+      activateModuleTab: 0,
+      activatePostTab: 0,
       mobileMode: false,
       userInfo: {},
       blogStatus: 0,
@@ -162,15 +163,19 @@ export default {
   },
 
   mounted () {
+    let params = this.$route.params
     this.mobileMode = isMobile()
     this.userInfo = {
       username: this.$store.state.user.name,
       id: this.$store.state.user.id
     }
+    if (params.hasOwnProperty('module')) {
+      this.activateModuleTab = params.module
+      this.activatePostTab = params.submodule
+    }
   },
 
   methods: {
-
     getCommentData (page, size) {
       return getSelfComments(page, size)
     },

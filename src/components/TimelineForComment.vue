@@ -17,7 +17,14 @@
             </v-card>
             <v-card v-else class="elevation-2">
               <v-card-title class="headline">
+                <v-avatar size="32" style="margin-right: 10px">
+                  <img
+                    :src="info.author.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+                    alt="avatar"
+                  >
+                </v-avatar>
                 <a @click="$router.push({ name: 'userspace', query: { name: info.author.username }})">{{info.author.username}}</a>
+                <span style="font-size: 12pt; margin-left: 5px;">发表了评论</span>
                 <v-spacer></v-spacer>
                 <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.modifiedTime.replace('T', ' ')}}</span>
                 <v-btn icon>

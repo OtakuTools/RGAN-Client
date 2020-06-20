@@ -13,7 +13,7 @@
         <v-list-item v-for="following in followings" :key="following.id">
           <v-list-item-avatar>
             <img
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="following.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
               alt="user"
             >
           </v-list-item-avatar>
@@ -44,7 +44,7 @@
         <v-list-item v-for="follower in followers" :key="follower.id">
           <v-list-item-avatar>
             <img
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="follower.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
               alt="user"
             >
           </v-list-item-avatar>

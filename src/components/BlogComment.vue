@@ -25,7 +25,7 @@
         >
           <v-list-item-avatar size="30">
             <img
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="comment.author.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
               alt="user"
             >
           </v-list-item-avatar>
@@ -65,7 +65,7 @@
                 >
                   <v-list-item-avatar size="30">
                     <img
-                      src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                      :src="subComment.author.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
                       alt="user"
                     >
                   </v-list-item-avatar>
@@ -315,11 +315,11 @@ export default class BlogComment extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-li {
+/* li {
   list-style-type: none;
   background: url("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png") no-repeat 0rem -0.2rem;
   background-size: 2rem 2rem;
-}
+} */
 
 .v-list--three-line .v-list-item .v-list-item__subtitle, .v-list-item--three-line .v-list-item__subtitle {
   -webkit-line-clamp: unset;

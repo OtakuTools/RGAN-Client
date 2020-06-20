@@ -206,12 +206,12 @@ export default class UserInfoEditor extends Vue {
       // maxWidth: 1000,
       // maxHeight: 618
     }
-    console.log(this.uploadAvartar)
-    return
     getStorageToken().then(res => {
       let token = res.data
       window.qiniu.compressImage(this.uploadAvartar, compressOptions).then(() => {
-        let observable = window.qiniu.upload(this.uploadAvartar, this.uploadAvartar.name, token, putExtra)
+        let fileName = this.uploadAvartar.name
+        let extName = fileName.substring(fileName.lastIndexOf('.')+1);    //后缀名
+        let observable = window.qiniu.upload(this.uploadAvartar, `${this.userInfo.username}.${extName}`, token, putExtra)
         let subscription = observable.subscribe(observer) // 上传开始
         // subscription.unsubscribe()
       })
