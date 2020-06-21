@@ -5,7 +5,7 @@
       <v-container style="max-width: 1400px;">
         <v-row>
           <v-col cols="10">
-            <v-card>
+            <v-card flat>
               <v-card-title class="headline" v-text="blogInfo.title"></v-card-title>
               <v-card-subtitle style="padding: 0">
                 <v-list three-line flat>
@@ -60,24 +60,29 @@
             </v-card>
           </v-col>
           <v-col cols="2">
-            <v-card id="indexCard" v-bind:class="{'pin': fixedIndexCard}">
-              <v-card-text>
-                <v-list nav dense subheader flat>
-                  <v-subheader>目录</v-subheader>
-                  <v-list-item-group v-model="currentIndex" color="primary">
-                    <v-list-item
-                      v-for="(item, i) in indexInfo"
-                      :key="i"
-                      @click="() => { manualSelected = true; $vuetify.goTo(`#${item.id}`)}"
-                    >
-                      <v-list-item-content>
-                        <v-list-item-title v-text="item.text"></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-card-text>
-            </v-card>
+            <div class="v-navigation-drawer__content pin">
+              <ul class="pt-8 mb-6 documentation-toc">
+                <li class="mb-4">
+                  <h3 class="caption font-weight-bold text-uppercase grey--text">
+                    <div class="subtitle">
+                      <p>目 录</p>
+                    </div>
+                  </h3>
+                </li>
+                <li
+                  class="documentation-toc__link mb-2"
+                  v-bind:class="{'primary--text': currentIndex === i, 'text--disabled': currentIndex !== i}"
+                  style="border-color: currentcolor"
+                  v-for="(item, i) in indexInfo"
+                  :key="i"
+                  @click="() => { currentIndex = i; manualSelected = true; $vuetify.goTo(`#${item.id}`)}"
+                >
+                  <a class="d-block font-weight-medium" v-bind:class="{'text--disabled': currentIndex !== i}">
+                    {{item.text}}
+                  </a>
+                </li>
+              </ul>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -89,7 +94,24 @@
 <style scoped>
 .pin {
   position: fixed;
-  top: 20px;
+  max-width: 200px;
+}
+
+.index-on {
+  color: #00a4ff;
+}
+
+.documentation-toc {
+  list-style-type: none !important;
+  margin: 0;
+  padding: 32px 0 0;
+  text-align: left;
+  width: 100%;
+}
+
+.documentation-toc li {
+  border-left: 2px solid transparent;
+  padding: 0 24px 0 8px;
 }
 </style>
 
@@ -147,12 +169,14 @@ export default {
     this.getVoteStatus()
     this.getFavouriteStatus()
     window.addEventListener('scroll', this.updateCurrentIndex, false)
-    window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50), false)
+    // window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50), false)
+    window.addEventListener('mousewheel', this.handleMouseWheel, false)
   },
 
   beforeDestroy () {
     window.removeEventListener('scroll', this.updateCurrentIndex)
-    window.removeEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
+    // window.removeEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
+    window.removeEventListener('mousewheel', this.handleMouseWheel)
   },
 
   methods: {
@@ -241,10 +265,13 @@ export default {
       })
       this.indexInfo = idxTree
     },
+
+    handleMouseWheel (e) {
+      this.manualSelected = false
+    },
+
     updateCurrentIndex(e) {
-      if (this.manualSelected) {
-        this.manualSelected = false
-      } else {
+      if (!this.manualSelected) {
         let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6')
         let len = idxs.length
         let i = 0

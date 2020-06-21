@@ -3,73 +3,72 @@
     <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
     <v-content>
       <v-container>
-        <v-card>
-          <v-card-text style="padding-top: 0">
-            <v-list two-line flat>
-              <v-list-item-group
-                multiple
-              >
-                <template v-for="(blog, index) in blogList">
-                  <v-list-item :key="blog.id" @click="handleSelected(blog.id)">
-                    <template>
-                      <v-list-item-content style="padding-bottom: 0">
-                        <v-list-item-title v-text="blog.title"></v-list-item-title>
-                        <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
-                        <v-list-item-subtitle>
-                          <v-chip-group
-                            column
-                          >
-                            <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
-                              {{ tag.title }}
-                            </v-chip>
-                          </v-chip-group>
-                        </v-list-item-subtitle>
-                        <v-list-item-subtitle>
-                          <v-chip-group
-                            column
-                            disabled
-                          >
-                            <v-chip style="border: none" outlined small label>
-                              <v-icon left small>mdi-calendar</v-icon>
-                              {{blog.createdTime.replace("T", " ")}}
-                            </v-chip>
-                            <v-chip style="border: none" outlined small label>
-                              <v-icon left small>mdi-thumb-up-outline</v-icon>
-                              {{blog.voteCount}}
-                            </v-chip>
-                            <v-chip style="border: none" outlined small label>
-                              <v-icon left small>mdi-account</v-icon>
-                              {{blog.author.username}}
-                            </v-chip>
+        <v-list two-line flat>
+          <template v-for="(blog, index) in blogList">
+            <v-list-item :key="blog.id" @click="handleSelected(blog.id)" style="padding: 0" class="blog-box">
+              <template>
+                <v-card
+                  class="grow"
+                  flat
+                >
+                  <v-card-title class="headline blog-box-title">
+                    {{blog.title}}
+                  </v-card-title>
 
-                            <!-- <v-chip outlined small label>
-                              <v-icon left small>mdi-eye</v-icon>
-                              {{blog.visitorCount}}
-                            </v-chip> -->
-                          </v-chip-group>
+                  <v-card-text class="title font-weight-light">
+                    {{blog.summary}}
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-list-item class="grow">
+                      <v-list-item-avatar>
+                        <v-img
+                          class="elevation-6"
+                          :src="blog.author.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+                        ></v-img>
+                      </v-list-item-avatar>
+
+                      <v-list-item-content>
+                        <v-list-item-title>{{blog.author.username}}</v-list-item-title>
+                        <v-list-item-subtitle>
+                          {{blog.createdTime.replace("T", " ")}}
+                          <v-icon class="mr-1 ml-1" v-if="blog.tags.length">mdi-tag-outline</v-icon>
+                          <span class="subheading">{{blog.tags.map(item => item.title).join(',')}}</span>
                         </v-list-item-subtitle>
                       </v-list-item-content>
-                    </template>
-                  </v-list-item>
 
-                  <v-divider
-                    v-if="index + 1 < blogList.length"
-                    :key="blog.id"
-                    style="margin-top: 0"
-                  ></v-divider>
-                </template>
-              </v-list-item-group>
-            </v-list>
-            <v-pagination
-              v-model="currentPage"
-              :length="totalPages"
-              :total-visible="7"
-              @input="handlePageChange"
-              @next="handleNextPage"
-              @previous="handlePrevPage"
-            ></v-pagination>
-          </v-card-text>
-        </v-card>
+                      <v-row
+                        align="center"
+                        justify="end"
+                      >
+                        <!-- <v-icon class="mr-1" v-if="blog.tags.length">mdi-tag-outline</v-icon>
+                        <span class="subheading mr-2">{{blog.tags.map(item => item.title).join(',')}}</span>
+                        <v-divider vertical v-if="blog.tags.length" style="margin-right: 10px"></v-divider> -->
+                        <v-icon class="mr-2">mdi-thumb-up-outline</v-icon>
+                        <span class="subheading">{{blog.voteCount}}</span>
+                      </v-row>
+                    </v-list-item>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-list-item>
+
+            <v-divider
+              v-if="index + 1 < blogList.length"
+              :key="blog.id"
+              style="margin-top: 0"
+            ></v-divider>
+          </template>
+        </v-list>
+        <v-pagination
+          color="#00a4ff"
+          v-model="currentPage"
+          :length="totalPages"
+          :total-visible="7"
+          @input="handlePageChange"
+          @next="handleNextPage"
+          @previous="handlePrevPage"
+        ></v-pagination>
       </v-container>
     </v-content>
     <KanBan />
@@ -77,7 +76,10 @@
 </template>
 
 <style scoped>
-
+.blog-box:hover .blog-box-title {
+  color: #00a4ff;
+  cursor: pointer;
+}
 </style>
 
 <script>

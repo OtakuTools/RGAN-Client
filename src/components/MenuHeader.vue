@@ -1,18 +1,16 @@
 <template>
   <v-app-bar
-    absolute
-    color="primary lighten-1"
+    color="white"
     hide-on-scroll
-    flat
+    elevation="1"
     app
   >
-    <v-toolbar-title style="color: white; min-width: 100px; cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
+    <v-toolbar-title style="cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
     <v-text-field
       label="搜索..."
-      dark
       clearable
       single-line
       v-model="searchValue"
@@ -21,7 +19,7 @@
       @click:append="search"
     ></v-text-field>
 
-    <v-btn icon @click="openEditor" dark>
+    <v-btn icon @click="openEditor">
       <v-icon>mdi-feather</v-icon>
     </v-btn>
 
@@ -40,7 +38,7 @@
           offset-y="15"
           overlap
         >
-          <v-btn icon dark v-on="on">
+          <v-btn icon v-on="on">
             <v-icon>mdi-bell</v-icon>
           </v-btn>
         </v-badge>
@@ -76,7 +74,7 @@
       close-delay="100"
       v-if="userInfo.hasGetInfo && userInfo.token && userInfo.token !== ''">
       <template v-slot:activator="{ on }">
-        <v-btn icon dark>
+        <v-btn icon>
           <v-avatar size="38" v-on="on">
             <img
               :src="userInfo.avatarImgPath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
@@ -95,7 +93,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn icon v-else @click="login" dark>
+    <v-btn icon v-else @click="login">
       <v-icon>mdi-account-circle</v-icon>
     </v-btn>
   </v-app-bar>
@@ -126,6 +124,8 @@ export default class MenuHeader extends Vue {
   evtSrc: any = null
   sseRtryTimes: number = 3
   userInfo : any = this.$store.state.user
+
+  mapActions
 
   mounted () {
     this.menuOptions = [
@@ -165,7 +165,13 @@ export default class MenuHeader extends Vue {
           vote: data.upVoteNum
         }
       }).catch(err => {
-  
+        if (err.response.status === 401) {
+          this.$store.dispatch('handleLogOut').then(res => {
+            this.$router.push('/')
+          }).catch(err => {
+            this.$emit('alertMsg', formatErrorMsg(err))
+          })
+        }
       })
     }
   }

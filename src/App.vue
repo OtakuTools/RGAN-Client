@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <v-app class="bg-color">
+    <!-- <v-app class="bg-color"> -->
+    <v-app>
       <Alert :type="alertType" :message="alertMsg" :msgId="alertId"/>
       <router-view @alertMsg="handleAlertMsg"></router-view>
       <v-footer
