@@ -21,17 +21,25 @@ export default class MonacoEditor extends Vue {
   code : string = this.codeInput
   monaco : any = null
   // 主要配置
+  // 其他属性请查看 https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
   editorOptions : any = {
     selectOnLineNumbers: true,
-    roundedSelection: false,
-    scrollBeyondLastLine: true,
+    roundedSelection: true,
+    scrollBeyondLastLine: false,
     readOnly: false, // 只读
     cursorStyle: 'line', // 光标样式
     automaticLayout: true, // 自动布局
-    glyphMargin: true, // 字形边缘
+    glyphMargin: false, // 字形边缘
     useTabStops: false,
-    fontSize: 28, // 字体大小
-    autoIndent: true // 自动布局
+    fontSize: 15, // 字体大小
+    minimap: {
+      enabled: false
+    },
+    cursorSmoothCaretAnimation: true,
+    detectIndentation: true,
+    tabSize: 2,
+    wordWrap: 'on',
+    dragAndDrop: true
   }
 
   erd : any = null
@@ -46,7 +54,7 @@ export default class MonacoEditor extends Vue {
       value: this.code,
       language: this.language,
       // theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
-      editorOptions: this.editorOptions // 同codes
+      ...this.editorOptions // 同codes
     }
 
     this.monaco = window.monaco || null
