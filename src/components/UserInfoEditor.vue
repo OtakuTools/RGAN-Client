@@ -6,7 +6,6 @@
           :src="userInfo.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
           alt="user"
           class="avatar"
-          @click="chooseAvatar"
         >
         </v-img>
         <v-dialog
@@ -31,7 +30,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="avatarDialog = false">取消</v-btn>
+              <v-btn color="blue darken-1" text @click="() => { avatarDialog = false; uploadAvartar = null} ">取消</v-btn>
               <v-btn color="blue darken-1" text @click="onSubmitAvatar()">提交</v-btn>
             </v-card-actions>
           </v-card>
@@ -127,7 +126,7 @@ export default class UserInfoEditor extends Vue {
     description: ''
   }
 
-  uploadAvartar : any = ''
+  uploadAvartar : any = null
 
   modifyMode : boolean = false
   avatarDialog : boolean = false
@@ -163,10 +162,6 @@ export default class UserInfoEditor extends Vue {
         this.emailVerifyLoading = false
       })
     }
-  }
-
-  chooseAvatar () {
-    console.log('a')
   }
 
   onSubmit () {
