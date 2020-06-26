@@ -89,6 +89,8 @@ pre > code {
 
 p > code {
   color: #bd4147 !important;
+  margin: 0 4px;
+  padding: 0 2px;
 }
 
 table {

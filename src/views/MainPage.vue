@@ -70,8 +70,21 @@
           @previous="handlePrevPage"
         ></v-pagination>
       </v-container>
+      <v-footer
+        class="font-weight-medium"
+        color="#F7F8FA"
+      >
+        <v-col
+          class="text-center"
+          cols="12"
+        >
+          <span>©2020</span>
+          &nbsp;&nbsp;&nbsp;
+          <a style="color: black; text-decoration: none;" href="http://beian.miit.gov.cn/publish/query/indexFirst.action" rel="noreferrer" target="_blank">粤ICP备20048983号-1</a>
+        </v-col>
+      </v-footer>
+      <KanBan />
     </v-content>
-    <KanBan />
   </div>
 </template>
 

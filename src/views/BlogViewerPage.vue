@@ -7,15 +7,15 @@
           <v-col cols="10">
             <v-card flat>
               <v-card-title class="headline" v-text="blogInfo.title"></v-card-title>
-              <v-card-subtitle style="padding: 0">
+              <v-card-subtitle class="pa-0">
                 <v-list three-line flat>
-                  <v-list-item style="padding-top: 0; padding-bottom: 0;">
+                  <v-list-item class="pt-0 pb-0">
                     <v-list-item-content>
                       <v-list-item-subtitle>
-                        <v-chip :color="blogInfo.type === '0' ? 'green' : blogInfo.type === '1' ? 'orange' : 'red'" x-small label outlined style="margin-right: 10px">{{ blogType[blogInfo.type] }}</v-chip>
-                        <a style="margin-right: 10px" @click="$router.push({ name: 'userspace', query: { name: blogInfo.author.username }})">{{blogInfo.author.username}}</a>
+                        <v-chip class="mr-2" :color="blogInfo.type === '0' ? 'green' : blogInfo.type === '1' ? 'orange' : 'red'" x-small label outlined>{{ blogType[blogInfo.type] }}</v-chip>
+                        <a class="mr-2" @click="$router.push({ name: 'userspace', query: { name: blogInfo.author.username }})">{{blogInfo.author.username}}</a>
                         <span>最后发表于 {{blogInfo.modifiedTime ? blogInfo.modifiedTime.replace("T", " ") : ""}}</span>
-                        <a v-if="blogInfo.author.username === $store.state.user.name" style="float: right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
+                        <a v-if="blogInfo.author.username === $store.state.user.name" class="float-right" @click="$router.push({ path: 'editor', query: { blog: blogId}})">编辑</a>
                       </v-list-item-subtitle>
                       <v-list-item-subtitle>
                         <v-chip-group
@@ -23,7 +23,7 @@
                           active-class="primary--text"
                           readonly
                         >
-                          <div style="line-height: 24px; margin-right: 5px">标签</div>
+                          <div class="mr-2" style="line-height: 24px;">标签</div>
                           <v-chip v-for="tag in blogInfo.tags" :key="tag.id" x-small>
                             {{ tag.title }}
                           </v-chip>
@@ -36,17 +36,17 @@
                   </v-list-item>
                 </v-list>
               </v-card-subtitle>
-              <v-card-text style="padding-top: 0">
+              <v-card-text class="pt-0">
                 <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
-                <v-btn outlined color="orange" style="margin-right: 10px">
+                <v-btn outlined color="orange" class="mr-2">
                   <v-icon left>mdi-star-outline</v-icon>
                   {{blogInfo.voteCount}}
                 </v-btn>
-                <v-btn :outlined="voteStatus != voteType.UP_VOTE" @click="voteBlog(1)" color="red" dark style="margin-right: 10px">
+                <v-btn :outlined="voteStatus != voteType.UP_VOTE" @click="voteBlog(1)" color="red" dark class="mr-2">
                   <v-icon left>mdi-thumb-up-outline</v-icon>
                   赞
                 </v-btn>
-                <v-btn :outlined="voteStatus != voteType.DOWN_VOTE" @click="voteBlog(-1)" dark color="blue" style="margin-right: 10px">
+                <v-btn :outlined="voteStatus != voteType.DOWN_VOTE" @click="voteBlog(-1)" dark color="blue" class="mr-2">
                   <v-icon left>mdi-thumb-down-outline</v-icon>
                   踩
                 </v-btn>
@@ -54,7 +54,7 @@
                   <v-icon left>mdi-heart-outline</v-icon>
                   收藏
                 </v-btn>
-                <v-divider style="margin: 20px 0"/>
+                <v-divider class="my-5"/>
                 <BlogComment :blogId ="blogId" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
