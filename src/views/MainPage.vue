@@ -15,7 +15,7 @@
                     {{blog.title}}
                   </v-card-title>
 
-                  <v-card-text class="title font-weight-light">
+                  <v-card-text class="title font-weight-light pb-0">
                     {{blog.summary}}
                   </v-card-text>
 

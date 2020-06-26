@@ -4,7 +4,9 @@
     hide-on-scroll
     elevation="1"
     app
+    clipped-left
   >
+    <v-app-bar-nav-icon v-if="showNavDrawer" @click.stop="handleNavDrawer"></v-app-bar-nav-icon>
     <v-toolbar-title style="cursor: pointer;" @click="$router.push('/')">RGAN</v-toolbar-title>
 
     <v-spacer></v-spacer>
@@ -113,6 +115,7 @@ import { getTimelineNews } from '@/api/timeline'
 @Component
 export default class MenuHeader extends Vue {
   @Prop({ default: 0, type: Number }) refeshUnreadMsg: number;
+  @Prop({ default: false, type: Boolean}) showNavDrawer: boolean;
 
   searchValue : string = ''
   menuOptions : Array<any> = []
@@ -278,6 +281,10 @@ export default class MenuHeader extends Vue {
 
   search () {
     this.$emit('search', this.searchValue)
+  }
+
+  handleNavDrawer () {
+    this.$emit('handle-nav-drawer')
   }
 
   @Watch('refeshUnreadMsg')

@@ -18,6 +18,7 @@ declare global {
     jQuery : any,
     qiniu: any,
     showdown: any,
-    Cropper: any
+    Cropper: any,
+    mermaid: any
   }
 }

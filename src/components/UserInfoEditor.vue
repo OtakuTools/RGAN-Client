@@ -1,116 +1,113 @@
 <template>
-  <v-container>
-    <v-list three-line flat>
-      <v-list-item>
-        <v-list-item-avatar size="120" class="avatarback">
-          <v-img
-            :src="userInfo.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
-            alt="user"
-            class="avatar"
-            @click="chooseAvatar"
-          >
-          </v-img>
-          <!-- <p class="avatartext">修改图片</p> -->
-          <v-dialog
-            v-model="avatarDialog"
-            width="500"
-          >
-            <template v-slot:activator="{ on }">
-              <p class="avatartext" v-on="on">上传图片</p>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">图片上传</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-file-input v-model="uploadAvartar" show-size accept="image/*" label="选择图片文件"></v-file-input>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="avatarDialog = false">取消</v-btn>
-                <v-btn color="blue darken-1" text @click="onSubmitAvatar()">提交</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle style="font-size: 16pt; margin: 20px 0;">ID: {{userInfo.id}}</v-list-item-subtitle>
-          <v-list-item-subtitle style="margin: 15px 0;" v-text="`关注 0 粉丝 0`"></v-list-item-subtitle>
-          <v-list-item-subtitle>
-            <v-divider style="margin: 15px 0" />
-            <v-form>
-              <v-text-field
-                v-model="userInfo.username"
-                :counter="10"
-                label="昵称"
-                outlined
-                shaped
-                :readonly="!modifyMode"
-              ></v-text-field>
-              <v-text-field
-                v-if="modifyMode"
-                v-model="userInfo.email"
-                label="邮箱"
-                outlined
-                shaped
-                :loading="emailVerifyLoading"
-                append-outer-icon="mdi-email-check-outline"
-                @click:append-outer="verifyEmail()"
-              ></v-text-field>
-              <v-text-field
-                v-else
-                v-model="userInfo.email"
-                label="邮箱"
-                outlined
-                shaped
-                :readonly="!modifyMode"
-                @click:append-outer="verifyEmail()"
-              ></v-text-field>
-              <v-textarea
-                v-model="userInfo.description"
-                label="个人简介"
-                outlined
-                shaped
-                no-resize
-                auto-grow
-                :readonly="!modifyMode"
-              ></v-textarea>
-              <v-btn
-                v-if="!modifyMode"
-                color="primary"
-                @click="modifyMode = !modifyMode"
-              >
-                修改用户资料
-              </v-btn>
+  <v-list three-line flat>
+    <v-list-item>
+      <v-list-item-avatar size="120" class="avatarback">
+        <v-img
+          :src="userInfo.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+          alt="user"
+          class="avatar"
+          @click="chooseAvatar"
+        >
+        </v-img>
+        <v-dialog
+          v-model="avatarDialog"
+          width="500"
+        >
+          <template v-slot:activator="{ on }">
+            <p class="avatartext" v-on="on">上传图片</p>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">图片上传</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-file-input v-model="uploadAvartar" show-size accept="image/*" label="选择图片文件"></v-file-input>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="avatarDialog = false">取消</v-btn>
+              <v-btn color="blue darken-1" text @click="onSubmitAvatar()">提交</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-subtitle style="font-size: 16pt; margin: 20px 0;">ID: {{userInfo.id}}</v-list-item-subtitle>
+        <v-list-item-subtitle style="margin: 15px 0;" v-text="`关注 0 粉丝 0`"></v-list-item-subtitle>
+        <v-list-item-subtitle>
+          <v-divider style="margin: 15px 0" />
+          <v-form>
+            <v-text-field
+              v-model="userInfo.username"
+              :counter="10"
+              label="昵称"
+              outlined
+              shaped
+              :readonly="!modifyMode"
+            ></v-text-field>
+            <v-text-field
+              v-if="modifyMode"
+              v-model="userInfo.email"
+              label="邮箱"
+              outlined
+              shaped
+              :loading="emailVerifyLoading"
+              append-outer-icon="mdi-email-check-outline"
+              @click:append-outer="verifyEmail()"
+            ></v-text-field>
+            <v-text-field
+              v-else
+              v-model="userInfo.email"
+              label="邮箱"
+              outlined
+              shaped
+              :readonly="!modifyMode"
+              @click:append-outer="verifyEmail()"
+            ></v-text-field>
+            <v-textarea
+              v-model="userInfo.description"
+              label="个人简介"
+              outlined
+              shaped
+              no-resize
+              auto-grow
+              :readonly="!modifyMode"
+            ></v-textarea>
+            <v-btn
+              v-if="!modifyMode"
+              color="primary"
+              @click="modifyMode = !modifyMode"
+            >
+              修改用户资料
+            </v-btn>
 
-              <v-btn
-                v-if="modifyMode"
-                color="warning"
-                @click="modifyMode = !modifyMode"
-                style="margin-right: 10px;"
-              >
-                取消修改
-              </v-btn>
+            <v-btn
+              v-if="modifyMode"
+              color="warning"
+              @click="modifyMode = !modifyMode"
+              style="margin-right: 10px;"
+            >
+              取消修改
+            </v-btn>
 
-              <v-btn
-                v-if="modifyMode"
-                color="success"
-                @click="onSubmit()"
-              >
-                保存修改
-              </v-btn>
-            </v-form>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </v-container>
+            <v-btn
+              v-if="modifyMode"
+              color="success"
+              @click="onSubmit()"
+            >
+              保存修改
+            </v-btn>
+          </v-form>
+        </v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script lang="ts">

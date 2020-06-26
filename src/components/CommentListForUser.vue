@@ -56,6 +56,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { getUserInfoByName } from '@/api/user'
+import { getSelfComments } from '@/api/data'
 
 class UserInfo {
   username: string
@@ -66,7 +67,7 @@ class UserInfo {
 @Component
 export default class CommentListForUser extends Vue {
   @Prop({ default: {}, type: UserInfo }) userInfo : UserInfo;
-  @Prop({ default: ()=>{}, type: Function }) getData : Function;
+  // @Prop({ default: ()=>{}, type: Function }) getData : Function;
   commentList : any = []
   currentPage : number = 1
   currentPageSize : number = 10
@@ -81,7 +82,7 @@ export default class CommentListForUser extends Vue {
   }
 
   refreshComments (page : number = 0, pageSize : number = 10) : void {
-    this.getData(page, pageSize).then(res => {
+    getSelfComments(page, pageSize).then(res => {
       let data = res.data.content
       this.totalPages = res.data.totalPages
       this.commentList = data
