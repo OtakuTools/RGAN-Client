@@ -1,5 +1,5 @@
 <template>
-  <v-tabs right v-model="currentTab">
+  <v-tabs v-model="currentTab">
     <v-tab>
       博客
     </v-tab>

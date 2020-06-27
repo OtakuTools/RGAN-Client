@@ -1,7 +1,5 @@
 <template>
-  <v-tabs
-    right
-  >
+  <v-tabs>
     <v-tab>
       关注
     </v-tab>
@@ -31,6 +29,7 @@
         </v-list-item>
       </v-list>
       <v-pagination
+        v-if="followings.length"
         v-model="f_ing_page"
         :length="f_ing_totalPages"
         :total-visible="7"
@@ -59,6 +58,7 @@
         </v-list-item>
       </v-list>
       <v-pagination
+        v-if="followers.length"
         v-model="f_er_page"
         :length="f_er_totalPages"
         :total-visible="7"

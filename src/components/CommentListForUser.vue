@@ -39,6 +39,7 @@
       </v-list-item-group>
     </v-list>
     <v-pagination
+      v-if="commentList.length"
       v-model="currentPage"
       :length="totalPages"
       :total-visible="7"

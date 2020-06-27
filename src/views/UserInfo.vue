@@ -35,12 +35,14 @@
         />
       </v-card>
     </v-content>
-    <KanBan />
+    <KanBan v-if="false" />
   </div>
 </template>
 
 <style scoped>
-
+.bg-color {
+  background-color: #f5f5f5;
+}
 </style>
 
 <script>

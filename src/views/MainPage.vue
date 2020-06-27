@@ -3,9 +3,9 @@
     <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
     <v-content>
       <v-container>
-        <v-list two-line flat>
+        <v-list two-line flat v-if="blogList.length">
           <template v-for="(blog, index) in blogList">
-            <v-list-item :key="blog.id" @click="handleSelected(blog.id)" style="padding: 0" class="blog-box">
+            <v-list-item :key="blog.id" @click="handleSelected(blog.id)" class="pa-0 blog-box">
               <template>
                 <v-card
                   class="grow"
@@ -56,11 +56,31 @@
             <v-divider
               v-if="index + 1 < blogList.length"
               :key="blog.id"
-              style="margin-top: 0"
+              class="mt-0"
             ></v-divider>
           </template>
         </v-list>
+
+        <v-list v-else>
+          <template v-for="n in 5">
+            <v-list-item :key="n" >
+              <template>
+                <v-skeleton-loader
+                  class="grow"
+                  type="article, list-item-avatar"
+                ></v-skeleton-loader>
+              </template>
+            </v-list-item>
+            <v-divider
+              v-if="n < 5"
+              :key="n"
+              class="mt-2"
+            ></v-divider>
+          </template>
+        </v-list>
+
         <v-pagination
+          v-if="blogList.length"
           color="#00a4ff"
           v-model="currentPage"
           :length="totalPages"
@@ -72,7 +92,6 @@
       </v-container>
       <v-footer
         class="font-weight-medium"
-        color="#F7F8FA"
       >
         <v-col
           class="text-center"
@@ -83,7 +102,7 @@
           <a style="color: black; text-decoration: none;" href="http://beian.miit.gov.cn/publish/query/indexFirst.action" rel="noreferrer" target="_blank">粤ICP备20048983号-1</a>
         </v-col>
       </v-footer>
-      <KanBan />
+      <KanBan v-if="false" />
     </v-content>
   </div>
 </template>

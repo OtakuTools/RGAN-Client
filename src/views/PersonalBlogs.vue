@@ -1,5 +1,5 @@
 <template>
-  <v-tabs right>
+  <v-tabs>
     <v-tab>
       已发布
     </v-tab>

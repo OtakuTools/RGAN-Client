@@ -47,6 +47,7 @@
       </v-list-item-group>
     </v-list>
     <v-pagination
+      v-if="blogList.length"
       v-model="currentPage"
       :length="totalPages"
       :total-visible="7"

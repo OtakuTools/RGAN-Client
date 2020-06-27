@@ -87,7 +87,7 @@
         </v-row>
       </v-container>
     </v-content>
-    <KanBan />
+    <KanBan v-if="false" />
   </div>
 </template>
 

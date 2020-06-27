@@ -1,63 +1,47 @@
 <template>
   <div>
     <v-list two-line flat>
-      <v-list-item-group
-        multiple
-      >
-        <template v-for="(blog, index) in blogList">
-          <v-list-item :key="blog.id">
-            <template>
-              <v-list-item-content>
-                <v-list-item-title v-text="blog.title"></v-list-item-title>
-                <v-list-item-subtitle v-text="blog.summary"></v-list-item-subtitle>
-                <v-list-item-subtitle>
-                  <v-chip-group
-                    column
-                  >
-                    <v-chip v-for="tag in blog.tags" :key="tag.id" x-small>
-                      {{ tag.title }}
-                    </v-chip>
-                  </v-chip-group>
-                </v-list-item-subtitle>
-                <v-list-item-subtitle>
-                  <v-chip-group
-                    column
-                    disabled
-                  >
-                    <v-chip style="border: none" outlined small label>
-                      <v-icon left small>mdi-calendar</v-icon>
-                      {{blog.createdTime.replace("T", " ")}}
-                    </v-chip>
+      <template v-for="(blog, index) in blogList">
+        <v-list-item :key="blog.id" class="pa-0 blog-box" @click="handleSelected(blog.id)" v-if="blogStatus === 0">
+          <template>
+            <v-card
+              class="grow"
+              flat
+            >
+              <v-card-title class="headline blog-box-title">
+                {{blog.title}}
+                <v-subheader>
+                  <v-icon class="mr-1 ml-1" v-if="blog.tags.length">mdi-tag-outline</v-icon>
+                  <span class="text-md-body-1">{{blog.tags.map(item => item.title).join(',')}}</span>
+                </v-subheader>
+              </v-card-title>
+              <v-card-actions>
+                <v-row align="center" justify="start" class="ml-2">
+                  <div>{{blog.createdTime.replace("T", " ")}}</div>
+                  <v-icon size="24" class="mr-1 ml-3">mdi-thumb-up-outline</v-icon>
+                  <div>{{blog.voteCount}}</div>
+                </v-row>
+                <v-row align="center" justify="end" class="mr-2">
+                  <v-btn icon @click="editBlog(blog.id)">
+                    <v-icon color="primary lighten-1">mdi-square-edit-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="removeBlog(blog.id)">
+                    <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
+                  </v-btn>
+                </v-row>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-list-item>
 
-                    <v-chip style="border: none" outlined small label>
-                      <v-icon left small>mdi-thumb-up-outline</v-icon>
-                      {{blog.voteCount}}
-                    </v-chip>
-                  </v-chip-group>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn icon @click="handleSelected(blog.id)" v-if="blogStatus === 0">
-                  <v-icon color="primary lighten-1">mdi-eye-outline</v-icon>
-                </v-btn>
-                <v-btn icon @click="editBlog(blog.id)">
-                  <v-icon color="cyan lighten-1">mdi-square-edit-outline</v-icon>
-                </v-btn>
-                <v-btn icon @click="removeBlog(blog.id)">
-                  <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </template>
-          </v-list-item>
-
-          <v-divider
-            v-if="index + 1 < blogList.length"
-            :key="blog.id"
-          ></v-divider>
-        </template>
-      </v-list-item-group>
+        <v-divider
+          v-if="index + 1 < blogList.length"
+          :key="blog.id"
+        ></v-divider>
+      </template>
     </v-list>
     <v-pagination
+      v-if="blogList.length"
       v-model="currentPage"
       :length="totalPages"
       :total-visible="7"
@@ -69,7 +53,10 @@
 </template>
 
 <style lang="less" scoped>
-
+.blog-box:hover .blog-box-title {
+  color: #00a4ff;
+  cursor: pointer;
+}
 </style>
 
 <script lang="ts">
