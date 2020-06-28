@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
+import { EChartsRender } from '@/plugins/EChartsRender'
 // import * as MarkdownIt from 'markdown-it'
 
 @Component
@@ -13,6 +14,9 @@ export default class MarkdownViewer extends Vue {
   blogMdText : string = ''
 
   MdEditor : any = null
+
+  echarts : any = null
+  echartRender : EChartsRender = null
 
   // edirotConfig : any = {
   //   // Omit the trailing newline in a code block
@@ -60,12 +64,15 @@ export default class MarkdownViewer extends Vue {
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
     this.$nextTick(() => {
       window.mermaid.init({noteMargin: 10}, ".language-mermaid")
+      this.echartRender.init('.language-echarts')
     })
   }
 
   mounted () {
     this.MdEditor = require('markdown-it')()
+    this.echarts = require('echarts')
     // this.MdEditor = new window.showdown.Converter(this.edirotConfig)
+    this.echartRender = new EChartsRender(this.echarts)
     this.MdTranslationFunc()
   }
 
@@ -91,6 +98,10 @@ pre > code {
 }
 
 .language-mermaid {
+  background-color: unset !important;
+}
+
+.language-echarts {
   background-color: unset !important;
 }
 

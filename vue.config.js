@@ -60,7 +60,8 @@ module.exports = {
       'monaco-editor': 'monaco',
       'vuetify': 'Vuetify',
       'qiniu': 'qiniu',
-      'showdown': 'showdown'
+      'showdown': 'showdown',
+      'echarts' : 'echarts'
     }
   },
   devServer: {
