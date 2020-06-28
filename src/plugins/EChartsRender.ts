@@ -10,7 +10,7 @@ export class EChartsRender {
       try {
         let option : any = item.textContent
         let chart : any = this.echarts.init(item)
-        eval(`option = ${option}`)
+        eval(option)
         chart.setOption(option)
         chart.resize(option.size || { width: 'auto', height: 300})
       } catch (err) {
