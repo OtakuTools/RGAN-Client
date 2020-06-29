@@ -6,7 +6,7 @@ export class EChartsRender {
     this.echarts = echarts
     this.sandboxProxies = new WeakMap()
     this.sandbox = {
-      widow: {},
+      window: {},
       Object,
       JSON,
       Math,
