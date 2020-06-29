@@ -237,6 +237,23 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <v-overlay
+      absolute
+      :value="overlay"
+      z-index="10000"
+    >
+      <v-progress-circular
+        :rotate="-90"
+        :size="100"
+        :width="15"
+        :value="ProgressCount"
+        color="white"
+        indeterminate
+      >
+        {{ ProgressCount.toFixed(1) }}
+      </v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -244,7 +261,7 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 import { addBlog, modifyBlog, getBlogById } from '@/api/data'
 import { BLOG_TYPE, BLOG_STATUS } from '@/libs/constant'
-import { getStorageToken } from '@/api/storage'
+import { QiniuModule } from '@/plugins/QiniuModule'
 
 const MonacoEditor = () => import('./MonacoEditor.vue')
 const MarkdownViewer = () => import('@/components/MarkdownViewer.vue')
@@ -287,6 +304,11 @@ export default class MDEditor extends Vue {
 
   viewMode : boolean = false
   fullScreen : boolean = false
+
+  qiniu : QiniuModule = null
+
+  overlay: boolean = false
+  ProgressCount : number = 0
 
   handleCodeChange (val: string) : void {
     this.blogInfo.content = val
@@ -400,42 +422,28 @@ export default class MDEditor extends Vue {
   }
 
   getImageFromImageEditor (image) : void {
-    var putExtra = {
-      fname: 'test',
-      params: {},
-      mimeType: null
-    }
-    var observer = {
-      next: (res) => {
-        
-      },
-      error (err) {
-        console.log('err', err)
-      },
-      complete: (res) => {
-        let profilePicturePath = `http://res.rgan.work/${res.key}`
-        this.insertContentWithoutSelection(`![图片](${profilePicturePath})\n`, '')
-        this.imageEditorVisible = false
-      }
-    }
-    let compressOptions = {
-      quality: 1.00,
-      noCompressIfLarger: true
-      // maxWidth: 1000,
-      // maxHeight: 618
-    }
     let img = image.image.src
     img = this.dataURLtoFile(img, `pic${this.guid()}.png`)
-    getStorageToken().then(res => {
-      let token = res.data
-      window.qiniu.compressImage(img, compressOptions).then(() => {
-        let observable = window.qiniu.upload(img, img.name, token, putExtra)
-        let subscription = observable.subscribe(observer) // 上传开始
-        // subscription.unsubscribe()
-      })
-    }).catch(err => {
-      console.log(err)
-    })
+    this.overlay = true
+    let observer = {
+      next: (res) => {
+        this.ProgressCount = res.total.percent
+      },
+      error: (err) => {
+        this.overlay = false
+      },
+      complete: (profilePicturePath, res) => {
+        this.insertContentWithoutSelection(`![图片](${profilePicturePath})\n`, '')
+        this.imageEditorVisible = false
+        this.overlay = false
+        this.ProgressCount = 0
+      }
+    }
+    this.qiniu.uploadFile(
+      img,
+      img.name,
+      observer
+    )
   }
 
   dataURLtoFile(dataurl, filename) {
@@ -505,6 +513,7 @@ export default class MDEditor extends Vue {
   }
 
   mounted () {
+    this.qiniu = new QiniuModule()
     if (this.$route.query.hasOwnProperty('blog')) {
       let blogId : any = this.$route.query.blog
       getBlogById(parseInt(blogId)).then(res => {

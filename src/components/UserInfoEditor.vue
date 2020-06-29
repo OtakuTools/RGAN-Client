@@ -23,7 +23,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-file-input v-model="uploadAvartar" show-size accept="image/*" label="选择图片文件"></v-file-input>
+                    <v-file-input :loading="uploadingFile" v-model="uploadAvartar" show-size accept="image/*" label="选择图片文件"></v-file-input>
                   </v-col>
                 </v-row>
               </v-container>
@@ -113,7 +113,7 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
 import { getUserInfo, modifyUserInfo } from '@/api/user'
-import { getStorageToken } from '@/api/storage'
+import { QiniuModule } from '@/plugins/QiniuModule'
 
 @Component
 export default class UserInfoEditor extends Vue {
@@ -132,7 +132,11 @@ export default class UserInfoEditor extends Vue {
   avatarDialog : boolean = false
   emailVerifyLoading : boolean = false
 
+  qiniu : QiniuModule = null
+  uploadingFile : boolean = false
+
   mounted () {
+    this.qiniu = new QiniuModule()
     getUserInfo(this.$store.state.user.id).then(res => {
       Object.assign(this.userInfo, res.data)
     }).catch(err => {
@@ -169,47 +173,31 @@ export default class UserInfoEditor extends Vue {
   }
 
   onSubmitAvatar () {
-    var putExtra = {
-      fname: 'test',
-      params: {},
-      mimeType: null
-    }
-    var observer = {
+    let fileName = this.uploadAvartar.name
+    let extName = fileName.substring(fileName.lastIndexOf('.') + 1);
+    let observer = {
       next: (res) => {
-        
+        this.uploadingFile = true
       },
-      error (err) {
-        console.log('err', err)
+      error: (err) => {
+        this.uploadingFile = false
       },
-      complete: (res) => {
-        let profilePicturePath = `http://res.rgan.work/${res.key}`
+      complete: (profilePicturePath, res) => {
         modifyUserInfo(this.userInfo.id, { profilePicturePath }).then(res => {
           this.userInfo.profilePicturePath = profilePicturePath
           this.uploadAvartar = ''
+          this.uploadingFile = false
           this.avatarDialog = false
         }).catch(err => {
           console.error(err)
         })
       }
     }
-    let compressOptions = {
-      quality: 0.92,
-      noCompressIfLarger: true
-      // maxWidth: 1000,
-      // maxHeight: 618
-    }
-    getStorageToken().then(res => {
-      let token = res.data
-      window.qiniu.compressImage(this.uploadAvartar, compressOptions).then(() => {
-        let fileName = this.uploadAvartar.name
-        let extName = fileName.substring(fileName.lastIndexOf('.')+1);    //后缀名
-        let observable = window.qiniu.upload(this.uploadAvartar, `${this.userInfo.username}.${extName}`, token, putExtra)
-        let subscription = observable.subscribe(observer) // 上传开始
-        // subscription.unsubscribe()
-      })
-    }).catch(err => {
-      console.log(err)
-    })
+    this.qiniu.uploadFile(
+      this.uploadAvartar,
+      `${this.userInfo.username}.${extName}`,
+      observer
+    )
   }
 }
 </script>
