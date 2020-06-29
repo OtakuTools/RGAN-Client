@@ -34,7 +34,7 @@ export class EChartsRender {
         chart.resize(option.size || { width: 'auto', height: 300})
       } catch (err) {
         // do nothing
-        console.log(err)
+        // console.log(err)
       }
     }
   }

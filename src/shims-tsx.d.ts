@@ -19,6 +19,7 @@ declare global {
     qiniu: any,
     showdown: any,
     Cropper: any,
-    mermaid: any
+    mermaid: any,
+    renderMathInElement: any
   }
 }
