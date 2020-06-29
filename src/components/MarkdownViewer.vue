@@ -63,16 +63,26 @@ export default class MarkdownViewer extends Vue {
     this.blogMdText = this.MdEditor.render(this.inputText)
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
     this.$nextTick(() => {
-      window.mermaid.init({noteMargin: 10}, ".language-mermaid")
+      window.mermaid.init({ noteMargin: 10 }, '.language-mermaid')
       this.echartRender.init('.language-echarts')
-      window.renderMathInElement(this.$refs.display, {
-        delimiters: [
-          {left: "$$", right: "$$", display: true},
-          {left: "$", right: "$", display: false},
-          {left: "\\(", right: "\\)", display: false},
-          {left: "\\[", right: "\\]", display: true}
-        ]
-      })
+      try {
+        window.renderMathInElement(this.$refs.display, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+  
+          preProcess: (code : string) => {
+            return code.replace(/\\(?=(\s|\r|\n))/g, '\\\\')
+          },
+
+          strict: false
+        })
+      } catch(err) {
+        //
+      }
     })
   }
 
