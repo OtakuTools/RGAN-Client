@@ -1,9 +1,19 @@
 export class EChartsRender {
   echarts : any = null
   sandboxProxies : any = null
+  sandbox: any = {}
   constructor (echarts : any) {
     this.echarts = echarts
     this.sandboxProxies = new WeakMap()
+    this.sandbox = {
+      widow: {},
+      Object,
+      JSON,
+      Math,
+      console,
+      document,
+      option: {}
+    }
   }
 
   init (className : string = '') {
@@ -14,18 +24,12 @@ export class EChartsRender {
     for (let item of echartList) {
       try {
         let renderCode : string = item.textContent
+        if (renderCode === '') {
+          return
+        }
         let chart : any = this.echarts.init(item)
         let option : any = {}
-        let sandbox : any = {
-          widow: {},
-          Object,
-          JSON,
-          Math,
-          console,
-          document,
-          option
-        }
-        option = this.compileCode(renderCode)(sandbox)
+        option = this.compileCode(renderCode)(this.sandbox)
         chart.setOption(option)
         chart.resize(option.size || { width: 'auto', height: 300})
       } catch (err) {
