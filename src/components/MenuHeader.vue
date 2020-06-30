@@ -1,7 +1,6 @@
 <template>
   <v-app-bar
     color="white"
-    hide-on-scroll
     elevation="1"
     app
     clipped-left
@@ -79,7 +78,7 @@
         <v-btn icon>
           <v-avatar size="38" v-on="on">
             <img
-              :src="userInfo.avatarImgPath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+              :src="$store.state.user.avatarImgPath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
               alt="user"
             >
           </v-avatar>
@@ -128,7 +127,6 @@ export default class MenuHeader extends Vue {
   sseRtryTimes: number = 3
   userInfo : any = this.$store.state.user
 
-  mapActions
 
   mounted () {
     this.menuOptions = [

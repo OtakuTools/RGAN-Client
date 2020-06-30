@@ -52,6 +52,9 @@
             <v-btn depressed tile icon @click="handleShortcut('codeblock')">
               <v-icon>mdi-code-tags</v-icon>
             </v-btn>
+            <v-btn depressed tile icon @click="handleShortcut('math')">
+              <v-icon>mdi-math-integral</v-icon>
+            </v-btn>
             <v-btn depressed tile icon @click="handleShortcut('table')">
               <v-icon>mdi-table</v-icon>
             </v-btn>
@@ -489,6 +492,9 @@ export default class MDEditor extends Vue {
         break
       case 'codeblock':
         this.insertContentWithoutSelection('```code\n\n```', 'code')
+        break
+      case 'math':
+        this.insertContentWithoutSelection('$$输入公式$$', '输入公式')
         break
       case 'table':
         this.insertContentWithoutSelection(`|  |  |\n|--|--|\n|  |  |`, '  ')

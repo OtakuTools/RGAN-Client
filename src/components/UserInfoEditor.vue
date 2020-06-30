@@ -185,7 +185,8 @@ export default class UserInfoEditor extends Vue {
       complete: (profilePicturePath, res) => {
         modifyUserInfo(this.userInfo.id, { profilePicturePath }).then(res => {
           this.userInfo.profilePicturePath = profilePicturePath
-          this.uploadAvartar = ''
+          this.$store.state.user.avatarImgPath = profilePicturePath
+          this.uploadAvartar = null
           this.uploadingFile = false
           this.avatarDialog = false
         }).catch(err => {
@@ -195,7 +196,7 @@ export default class UserInfoEditor extends Vue {
     }
     this.qiniu.uploadFile(
       this.uploadAvartar,
-      `${this.userInfo.username}.${extName}`,
+      `${this.userInfo.username}-${new Date().getTime()}.${extName}`,
       observer
     )
   }

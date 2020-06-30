@@ -35,7 +35,7 @@ export default class MonacoEditor extends Vue {
     minimap: {
       enabled: false
     },
-    cursorSmoothCaretAnimation: true,
+    cursorSmoothCaretAnimation: false,
     detectIndentation: true,
     tabSize: 2,
     wordWrap: 'on',

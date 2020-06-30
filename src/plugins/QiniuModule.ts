@@ -19,9 +19,6 @@ export class QiniuModule {
           let observable = window.qiniu.upload(fileData, fileName || defaultFileName, this.token, putExtra)
           // 上传开始
           subscription = observable.subscribe(observer) 
-        }).catch(err => {
-          // 终止上传
-          subscription && subscription.unsubscribe()
         })
       })
     } else {

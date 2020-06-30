@@ -60,37 +60,24 @@ export default class MarkdownViewer extends Vue {
   // }
 
   MdTranslationFunc () {
-    this.blogMdText = this.MdEditor.render(this.inputText)
+    this.blogMdText = this.MdEditor.render(this.inputText.replace(/\\/g, '\\\\'))
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
     this.$nextTick(() => {
-      window.mermaid.init({ noteMargin: 10 }, '.language-mermaid')
+      window.MathJax.typeset([this.$refs.display])
       this.echartRender.init('.language-echarts')
-      try {
-        window.renderMathInElement(this.$refs.display, {
-          delimiters: [
-            { left: '$$', right: '$$', display: true },
-            { left: '$', right: '$', display: false },
-            { left: '\\(', right: '\\)', display: false },
-            { left: '\\[', right: '\\]', display: true }
-          ],
-  
-          preProcess: (code : string) => {
-            return code.replace(/\\(?=(\s|\r|\n))/g, '\\\\')
-          },
-
-          strict: false
-        })
-      } catch(err) {
-        //
-      }
+      window.mermaid.init({ noteMargin: 10 }, '.language-mermaid')
     })
   }
 
-  mounted () {
-    this.MdEditor = require('markdown-it')()
+  initPlugIn () {
+    this.MdEditor = require('markdown-it')({ html: true })
     this.echarts = require('echarts')
-    // this.MdEditor = new window.showdown.Converter(this.edirotConfig)
     this.echartRender = new EChartsRender(this.echarts)
+    // this.MdEditor = new window.showdown.Converter(this.edirotConfig)
+  }
+
+  mounted () {
+    this.initPlugIn()
     this.MdTranslationFunc()
   }
 
@@ -117,6 +104,26 @@ pre > code {
 
 .language-mermaid {
   background-color: unset !important;
+  overflow-x: auto;
+}
+
+.language-mermaid::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.language-mermaid::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.2);
+}
+
+.language-mermaid::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10;
+  background: rgba(0,0,0,0.1);
 }
 
 .language-echarts {

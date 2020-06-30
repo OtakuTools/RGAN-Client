@@ -2,7 +2,7 @@
   <div>
     <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
     <v-content>
-      <v-container>
+      <v-container class="pb-0">
         <v-list two-line flat v-if="blogList.length">
           <template v-for="(blog, index) in blogList">
             <v-list-item :key="blog.id" @click="handleSelected(blog.id)" class="pa-0 blog-box">
@@ -89,19 +89,16 @@
           @next="handleNextPage"
           @previous="handlePrevPage"
         ></v-pagination>
-      </v-container>
-      <v-footer
-        class="font-weight-medium"
-      >
-        <v-col
-          class="text-center"
-          cols="12"
+
+        <v-divider class="mt-4" />
+
+        <div
+          class="text-center font-weight-medium my-2"
         >
-          <span>©2020</span>
-          &nbsp;&nbsp;&nbsp;
+          <span>©2020&nbsp;&nbsp;-&nbsp;&nbsp;</span>
           <a style="color: black; text-decoration: none;" href="http://beian.miit.gov.cn/publish/query/indexFirst.action" rel="noreferrer" target="_blank">粤ICP备20048983号-1</a>
-        </v-col>
-      </v-footer>
+        </div>
+      </v-container>
       <KanBan v-if="false" />
     </v-content>
   </div>

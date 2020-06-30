@@ -20,6 +20,6 @@ declare global {
     showdown: any,
     Cropper: any,
     mermaid: any,
-    renderMathInElement: any
+    MathJax: any
   }
 }

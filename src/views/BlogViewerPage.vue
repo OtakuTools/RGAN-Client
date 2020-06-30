@@ -4,7 +4,7 @@
     <v-content>
       <v-container style="max-width: 1400px;">
         <v-row>
-          <v-col cols="10">
+          <v-col :cols="indexInfo.length ? 10 : 12">
             <v-card flat>
               <v-card-title class="headline" v-text="blogInfo.title"></v-card-title>
               <v-card-subtitle class="pa-0">
@@ -59,7 +59,7 @@
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="auto" v-if="indexInfo.length">
             <div class="v-navigation-drawer__content pin">
               <ul class="pt-8 mb-6 documentation-toc">
                 <li class="mb-4">

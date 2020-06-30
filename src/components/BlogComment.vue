@@ -136,7 +136,7 @@ class Comment {
 
 @Component
 export default class BlogComment extends Vue {
-  @Prop({ default: '', type: Number }) blogId!: number;
+  @Prop({ default: -1, type: Number }) blogId: number;
 
   commentLevelTree : any = {}
 
@@ -307,7 +307,7 @@ export default class BlogComment extends Vue {
 
   @Watch('blogId')
   handleBlogIdChange (newVal: number) : void {
-    this.getComments()
+    // this.getComments()
     this.forceRefresh = newVal
   }
 }
