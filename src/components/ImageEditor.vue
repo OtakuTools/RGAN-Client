@@ -806,6 +806,14 @@ export default class ImageEditor extends Vue {
     }
   }
 
+  S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+
+  guid() {
+    return (this.S4() + this.S4() + "-" + this.S4() + "-" + this.S4() + this.S4());
+  }
+
   saveImage () : void {
     var image = new Image()
     if (this.editMode === 'crop') {
@@ -819,9 +827,7 @@ export default class ImageEditor extends Vue {
       image.src = this.container.toDataURL('image/png')
     }
     this.reset()
-    this.$emit('getImage', { image })
-    // image.src = image.src.replace(/^data:image\/(png|jpg);base64,/, "")
-    // document.body.appendChild( image )
+    this.$emit('getImage', { image, name: `pic${this.guid()}.png` })
   }
 
   cancel () : void {

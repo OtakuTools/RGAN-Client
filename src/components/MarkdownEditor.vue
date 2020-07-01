@@ -74,8 +74,32 @@
                 <v-list-item @click="handleShortcut('image')">
                   <v-list-item-title>插入图片</v-list-item-title>
                 </v-list-item>
-                <v-list-item>
-                  <v-list-item-title>上传图片</v-list-item-title>
+                <v-list-item @click.stop="handleShortcut('image_from_file')">
+                  上传图片
+                  <v-dialog
+                    v-model="imageDialog"
+                    width="500"
+                  >
+                    <v-card>
+                      <v-card-title>
+                        <span class="headline">图片上传</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-container>
+                          <v-row>
+                            <v-col cols="12">
+                              <v-file-input :loading="uploadingImage" v-model="uploadImage" show-size accept="image/*" label="选择本地图片"></v-file-input>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="() => { imageDialog = false; uploadImage = null } ">取消</v-btn>
+                        <v-btn color="blue darken-1" text @click="getImageFromFile()">提交</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item>
                 <v-list-item @click="handleShortcut('image_from_clipboard')">
                   <v-list-item-title>上传截图</v-list-item-title>
@@ -313,6 +337,10 @@ export default class MDEditor extends Vue {
   overlay: boolean = false
   ProgressCount : number = 0
 
+  imageDialog: boolean = false
+  uploadImage: any = null
+  uploadingImage: boolean = false
+
   handleCodeChange (val: string) : void {
     this.blogInfo.content = val
   }
@@ -426,7 +454,7 @@ export default class MDEditor extends Vue {
 
   getImageFromImageEditor (image) : void {
     let img = image.image.src
-    img = this.dataURLtoFile(img, `pic${this.guid()}.png`)
+    img = this.dataURLtoFile(img, image.name)
     this.overlay = true
     let observer = {
       next: (res) => {
@@ -436,7 +464,7 @@ export default class MDEditor extends Vue {
         this.overlay = false
       },
       complete: (profilePicturePath, res) => {
-        this.insertContentWithoutSelection(`![图片](${profilePicturePath})\n`, '')
+        this.insertContentWithoutSelection(`![图片说明](${profilePicturePath})\n`, '')
         this.imageEditorVisible = false
         this.overlay = false
         this.ProgressCount = 0
@@ -445,6 +473,30 @@ export default class MDEditor extends Vue {
     this.qiniu.uploadFile(
       img,
       img.name,
+      observer
+    )
+  }
+
+  getImageFromFile () : void {
+    let fileName = this.uploadImage.name
+    let extName = fileName.substring(fileName.lastIndexOf('.') + 1);
+    let observer = {
+      next: (res) => {
+        this.uploadingImage = true
+      },
+      error: (err) => {
+        this.uploadingImage = false
+      },
+      complete: (profilePicturePath, res) => {
+        this.insertContentWithoutSelection(`![图片说明](${profilePicturePath})\n`, '')
+        this.uploadingImage = false
+        this.imageDialog = false
+        this.uploadImage = null
+      }
+    }
+    this.qiniu.uploadFile(
+      this.uploadImage,
+      `pic${this.guid()}.${extName}`,
       observer
     )
   }
@@ -468,6 +520,34 @@ export default class MDEditor extends Vue {
 
   closeImageEditor () : void {
     this.imageEditorVisible = false
+  }
+
+  downloadMarkdownFile () : void {
+    let errMsg = this.valid()
+    if (errMsg !== '') {
+      this.$emit('alertMsg', {
+        message: errMsg,
+        type: 'error'
+      })
+      return
+    }
+    const blob = new Blob([this.blogInfo.content], { type:"text/plain;charset=UTF-8" })
+    let WURL = window.URL || window.webkitURL
+    let bloburl = WURL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    if ('download' in anchor) {
+      anchor.style.display = 'none'
+      anchor.href = bloburl
+      anchor.download = `${this.blogInfo.title}.md`
+      document.body.appendChild(anchor)
+      var evt = document.createEvent('MouseEvents')
+      evt.initEvent('click', true, true)
+      anchor.dispatchEvent(evt)
+      document.body.removeChild(anchor)
+      WURL.revokeObjectURL(bloburl)
+    } else {
+      location.href = bloburl
+    }
   }
 
   handleShortcut (mode: string) : void {
@@ -503,12 +583,20 @@ export default class MDEditor extends Vue {
         this.insertContentWithoutSelection(`[链接内容](  )`, '链接内容')
         break
       case 'image':
-        this.insertContentWithoutSelection(`![图片](图片URL)`, '图片URL')
+        this.insertContentWithoutSelection(`![图片说明](图片URL)`, '图片URL')
+        break
+      case 'image_from_file':
+        this.imageDialog = true
         break
       case 'image_from_clipboard':
         this.imageEditorVisible = true
+        break
       case 'save':
+        this.onSubmit('draft')
+        break
       case 'derive':
+        this.downloadMarkdownFile()
+        break
       default:
         //
     }
