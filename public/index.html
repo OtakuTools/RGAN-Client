@@ -49,6 +49,16 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.11.1/contrib/auto-render.min.js"></script> -->
     <script src="https://cdn.staticfile.org/raphael/2.3.0/raphael.min.js"></script>
     <script src="https://cdn.staticfile.org/flowchart/1.13.0/flowchart.min.js"></script>
+    <script src="https://cdn.staticfile.org/crypto-js/4.0.0/crypto-js.js"></script>
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      }
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs/loader.min.js"></script>
     <script>
       require.config({ paths: { 'vs': 'https://cdn.staticfile.org/monaco-editor/0.19.3/min/vs' }});
@@ -61,13 +71,6 @@
         },
       })
       jQuery = $
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        }
-      }
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </body>
 </html>

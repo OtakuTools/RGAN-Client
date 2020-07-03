@@ -1,13 +1,12 @@
 <template>
-  <div id="display" ref="display" v-html="blogMdText" v-highlight></div>
-  <!-- <div id="display" ref="display" v-highlight></div> -->
+  <div id="display" ref="display"></div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { EChartsRender } from '@/plugins/EChartsRender'
-import { FlowChartRender } from '@/plugins/FlowChartRender'
-import { debounce } from '@/libs/util'
+// import { EChartsRender } from '@/plugins/EChartsRender'
+// import { FlowChartRender } from '@/plugins/FlowChartRender'
+import { MarkdownRender } from '@/plugins/MarkdownRender'
 // import * as MarkdownIt from 'markdown-it'
 
 @Component
@@ -19,26 +18,14 @@ export default class MarkdownViewer extends Vue {
   MdEditor : any = null
 
   echarts : any = null
-  echartRender : EChartsRender = null
-  flowchartRender : FlowChartRender = null
+  // echartRender : EChartsRender = null
+  // flowchartRender : FlowChartRender = null
+
+  mdRender : MarkdownRender = null
 
   MdTranslationFunc () {
-    this.blogMdText = this.MdEditor.render(this.inputText.replace(/\\/g, '\\\\'))
-    
-    this.$nextTick(() => {
-        // console.time('math')
-        window.MathJax.typeset([this.$refs.display])
-        // console.timeEnd('math')
-        // console.time('mermaid')
-        window.mermaid.init(undefined, '.language-mermaid')
-        // console.timeEnd('mermaid')
-        // console.time('echarts')
-        this.echartRender.init('.language-echarts')
-        // console.timeEnd('echarts')
-        // console.time('flowchart')
-        this.flowchartRender.init('.language-flowchart')
-        // console.timeEnd('flowchart')
-    })
+    let t = this.inputText.replace(/\\/g, '\\\\')
+    this.mdRender.render(t, 'display')
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
   }
 
@@ -53,39 +40,39 @@ export default class MarkdownViewer extends Vue {
       flowchart: {
         useMaxWidth: true,
         htmlLabels: true,
-        curve: 'cardinal'
+        curve: 'linear'
       },
 
-      sequence: {
-        diagramMarginX: 50,
-        diagramMarginY: 10,
-        actorMargin: 50,
-        width: 150,
-        height: 65,
-        boxMargin: 10,
-        boxTextMargin: 5,
-        noteMargin: 10,
-        messageMargin: 35,
-        messageAlign: 'center',
-        mirrorActors: true,
-        bottomMarginAdj: 1,
-        useMaxWidth: true,
-        rightAngles: false,
-        showSequenceNumbers: false,
-      },
+      // sequence: {
+      //   diagramMarginX: 50,
+      //   diagramMarginY: 10,
+      //   actorMargin: 50,
+      //   width: 150,
+      //   height: 65,
+      //   boxMargin: 10,
+      //   boxTextMargin: 5,
+      //   noteMargin: 10,
+      //   messageMargin: 35,
+      //   messageAlign: 'center',
+      //   mirrorActors: true,
+      //   bottomMarginAdj: 1,
+      //   useMaxWidth: true,
+      //   rightAngles: false,
+      //   showSequenceNumbers: false,
+      // },
 
-      gantt: {
-        titleTopMargin: 25,
-        barHeight: 20,
-        barGap: 4,
-        topPadding: 50,
-        leftPadding: 75,
-        gridLineStartPadding: 35,
-        fontSize: 11,
-        fontFamily: '"Open-Sans", "sans-serif"',
-        numberSectionStyles: 4,
-        axisFormat: '%Y-%m-%d',
-      } 
+      // gantt: {
+      //   titleTopMargin: 25,
+      //   barHeight: 20,
+      //   barGap: 4,
+      //   topPadding: 50,
+      //   leftPadding: 75,
+      //   gridLineStartPadding: 35,
+      //   fontSize: 11,
+      //   fontFamily: '"Open-Sans", "sans-serif"',
+      //   numberSectionStyles: 4,
+      //   axisFormat: '%Y-%m-%d',
+      // } 
     }
 
     this.MdEditor = require('markdown-it')({
@@ -95,9 +82,17 @@ export default class MarkdownViewer extends Vue {
       typographer:  true
     })
     this.echarts = require('echarts')
-    this.echartRender = new EChartsRender(this.echarts)
-    this.flowchartRender = new FlowChartRender(window.flowchart)
+    // this.echartRender = new EChartsRender(this.echarts)
+    // this.flowchartRender = new FlowChartRender(window.flowchart)
     window.mermaid.initialize(mermaidConfig)
+    this.mdRender = new MarkdownRender(
+      window.CryptoJS, 
+      this.MdEditor, 
+      this.echarts,
+      window.mermaid,
+      window.flowchart,
+      window.MathJax
+    )
     // this.MdEditor = new window.showdown.Converter(this.edirotConfig)
   }
 
@@ -123,8 +118,13 @@ export default class MarkdownViewer extends Vue {
   color: unset;
 }
 
-pre > code {
+.preview_block > code {
   width: 100%;
+}
+
+.language-mermaid {
+  width: 100%;
+  text-align: center;
 }
 
 .language-mermaid {
@@ -155,7 +155,7 @@ pre > code {
   background-color: unset !important;
 }
 
-.flowchart {
+.language-flowchart {
   background-color: unset !important;
   font-weight: unset !important;
   text-align: center !important;
@@ -192,12 +192,12 @@ th {
   color: #333;
 }
 
-#display > p,
-#display > h1,
-#display > h2,
-#display > h3,
-#display > h4,
-#display > h5 {
+#display p,
+#display h1,
+#display h2,
+#display h3,
+#display h4,
+#display h5 {
   line-height: 2;
 }
 </style>

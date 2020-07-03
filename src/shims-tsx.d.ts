@@ -21,6 +21,7 @@ declare global {
     Cropper: any,
     mermaid: any,
     MathJax: any,
-    flowchart: any
+    flowchart: any,
+    CryptoJS: any
   }
 }
