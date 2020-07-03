@@ -123,13 +123,9 @@ export default class MarkdownViewer extends Vue {
 }
 
 .language-mermaid {
-  width: 100%;
-  text-align: center;
-}
-
-.language-mermaid {
   background-color: unset !important;
   overflow-x: auto;
+  text-align: center;
 }
 
 .language-mermaid::-webkit-scrollbar {

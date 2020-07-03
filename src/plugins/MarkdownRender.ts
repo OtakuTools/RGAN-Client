@@ -93,7 +93,7 @@ export class MarkdownRender {
         } else if (/close/.test(node.type)) {
           codeStr += `</${node.tag}>`
         } else if (/inline/.test(node.type)) {
-          codeStr += this.mdRender.render(`${node.content}`)
+          codeStr += this.mdRender.render(`${node.content}`).replace(/<\/?p>/g, '')
         } else if (/fence/.test(node.type)) {
           codeStr += `<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`
         }
@@ -216,7 +216,7 @@ export class MarkdownRender {
       } else if (/^language-.*/.test(cnode.className)) {
         hljs.highlightBlock(cnode)
       } else {
-        this.mathjaxRender.typeset([node])
+        this.mathjaxRender.typeset([cnode])
       }
     } catch(err) {
       
