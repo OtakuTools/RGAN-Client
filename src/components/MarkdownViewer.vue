@@ -161,6 +161,10 @@ export default class MarkdownViewer extends Vue {
   text-align: center !important;
 }
 
+mjx-container {
+  font-size: 117.4%;
+}
+
 p > code {
   color: #bd4147 !important;
   margin: 0 4px;
