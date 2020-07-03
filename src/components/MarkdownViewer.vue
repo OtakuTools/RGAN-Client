@@ -24,7 +24,7 @@ export default class MarkdownViewer extends Vue {
   mdRender : MarkdownRender = null
 
   MdTranslationFunc () {
-    let t = this.inputText.replace(/\\/g, '\\\\')
+    let t = this.inputText
     this.mdRender.render(t, 'display')
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
   }
@@ -91,7 +91,7 @@ export default class MarkdownViewer extends Vue {
       this.echarts,
       window.mermaid,
       window.flowchart,
-      window.MathJax
+      window.katex
     )
     // this.MdEditor = new window.showdown.Converter(this.edirotConfig)
   }
@@ -199,6 +199,10 @@ th {
 #display h4,
 #display h5 {
   line-height: 2;
+}
+
+.katex { 
+  font-size: 1.5em; 
 }
 </style>
 <style src="./../assets/editor-styles/highlight/styles/atom-one-light.css"></style>

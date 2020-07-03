@@ -24,7 +24,7 @@ export class MarkdownRender {
   echartRender: any = null
   mermaidRender: any = null
   flowchartRender: any = null
-  mathjaxRender:any = null
+  katexRender: any = null
 
   cacheHTML : any = null
   cacheLifeTime : any = null
@@ -36,13 +36,13 @@ export class MarkdownRender {
   flowchartList : any = []
   historySignArray : Array<string> = []
 
-  constructor (crypto, mdRender, echartRender, mermaidRender, flowchartRender, mathjaxRender) {
+  constructor (crypto, mdRender, echartRender, mermaidRender, flowchartRender, katexRender) {
     this.crypto = crypto
     this.mdRender = mdRender
     this.echartRender = echartRender
     this.mermaidRender = mermaidRender
     this.flowchartRender = flowchartRender
-    this.mathjaxRender = mathjaxRender
+    this.katexRender = katexRender
 
     this.cacheHTML = new Map()
     this.cacheLifeTime = new Map()
@@ -93,7 +93,11 @@ export class MarkdownRender {
         } else if (/close/.test(node.type)) {
           codeStr += `</${node.tag}>`
         } else if (/inline/.test(node.type)) {
-          codeStr += this.mdRender.render(`${node.content}`).replace(/<\/?p>/g, '')
+          codeStr += node.content.replace(
+            /\$\$([\s\S]*)\$\$/g, ($1) => this.katexRender.renderToString($1.replace(/(^\$*)|(\$*$)/g, ''), { displayMode: true})
+          ).replace(
+            /\$([\s\S]*)\$/g, ($1) => this.katexRender.renderToString($1.replace(/(^\$*)|(\$*$)/g, ''), { displayMode: false})
+          ).replace(/(\!\[.*\]\(.*\))/g, ($1) => this.mdRender.render($1)).replace(/<\/?p>/g, '')
         } else if (/fence/.test(node.type)) {
           codeStr += `<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`
         }
@@ -103,7 +107,6 @@ export class MarkdownRender {
     }
 
     let oriChangeNodes : Array<number> = []
-    let modifyNode : boolean = false
     let newChangeNodes : Array<number> = []
     let newLen = signArray.length
     let hisLen = this.historySignArray.length
@@ -144,7 +147,6 @@ export class MarkdownRender {
       newChangeNodes = [newFrontPtr, newBackPtr]
     } else {
       // 渲染块数量一致，说明段落内容出现变化
-      modifyNode = true
       for (let i = 0; i < newLen; i++) {
         if (signArray[i] !== this.historySignArray[i]) {
           oriChangeNodes = [i, i]
@@ -190,8 +192,8 @@ export class MarkdownRender {
         container.replaceChild(frag, blockDom[changePos])
       }
     }
-
     this.updateCharts()
+    // console.timeEnd('renderStart')
   }
 
   _render(node) {
@@ -215,8 +217,6 @@ export class MarkdownRender {
         this.flowchartList.push({node: cnode, chart})
       } else if (/^language-.*/.test(cnode.className)) {
         hljs.highlightBlock(cnode)
-      } else {
-        this.mathjaxRender.typeset([cnode])
       }
     } catch(err) {
       
@@ -226,10 +226,10 @@ export class MarkdownRender {
   updateCharts() {
     this.echartList.forEach(item => {
       item.node.resize(item.size)
-    });
+    })
     this.flowchartList.forEach(item => {
       item.chart.drawSVG(item.node)
-    });
+    })
   }
 
   parse (code) : Array<AstNode> {

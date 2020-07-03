@@ -20,8 +20,9 @@ declare global {
     showdown: any,
     Cropper: any,
     mermaid: any,
-    MathJax: any,
+    // MathJax: any,
     flowchart: any,
-    CryptoJS: any
+    CryptoJS: any,
+    katex: any
   }
 }
