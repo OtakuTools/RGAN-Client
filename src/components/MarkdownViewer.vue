@@ -25,7 +25,11 @@ export default class MarkdownViewer extends Vue {
 
   MdTranslationFunc () {
     let t = this.inputText
-    this.mdRender.render(t, 'display')
+    try {
+      this.mdRender.render(t, 'display')
+    } catch(err) {
+      // console.log(err)
+    }
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
   }
 
@@ -76,10 +80,11 @@ export default class MarkdownViewer extends Vue {
     }
 
     this.MdEditor = require('markdown-it')({
-      html: true,
+      html: false,
+      breaks: true,
       langPrefix: 'language-',
       linkify: true,
-      typographer:  true
+      typographer: true
     })
     this.echarts = require('echarts')
     // this.echartRender = new EChartsRender(this.echarts)

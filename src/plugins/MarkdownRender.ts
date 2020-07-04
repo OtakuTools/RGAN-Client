@@ -93,11 +93,7 @@ export class MarkdownRender {
         } else if (/close/.test(node.type)) {
           codeStr += `</${node.tag}>`
         } else if (/inline/.test(node.type)) {
-          codeStr += node.content.replace(
-            /\$\$([\s\S]*)\$\$/g, ($1) => this.katexRender.renderToString($1.replace(/(^\$*)|(\$*$)/g, ''), { displayMode: true})
-          ).replace(
-            /\$([\s\S]*)\$/g, ($1) => this.katexRender.renderToString($1.replace(/(^\$*)|(\$*$)/g, ''), { displayMode: false})
-          ).replace(/(\!\[.*\]\(.*\))/g, ($1) => this.mdRender.render($1)).replace(/<\/?p>/g, '')
+          codeStr += this._renderInlineContent(node.content)
         } else if (/fence/.test(node.type)) {
           codeStr += `<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`
         }
@@ -176,7 +172,7 @@ export class MarkdownRender {
       let b = document.createElement('div')
       b.className = 'preview_block'
       b.innerHTML = codeArray[idx + changePos]
-      this._render(b)
+      this._renderNode(b)
       frag.appendChild(b)
     }
     if (blockDom.length === 0 || changePos >= blockDom.length) {
@@ -196,7 +192,21 @@ export class MarkdownRender {
     // console.timeEnd('renderStart')
   }
 
-  _render(node) {
+  _renderInlineContent (text) {
+    return text.replace(
+      /\$\$([\s\S]*?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true}) // 段落数学公式
+    ).replace(
+      /\$([\s\S]*?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false}) // 行内数学公式
+    ).replace(
+      /\!\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
+    ).replace(
+      /\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
+    ).replace(
+      /^\-\[([x\s]+?)\]\s+([\s\S]*?)\n?$/g, ($1, $2, $3) => `<input type="checkbox" ${$2.indexOf('x') !== -1? 'checked' : ''}/><span class="ml-2">${$3}</span>` // checkbox
+    )
+  }
+
+  _renderNode(node) {
     let cnode = node.children[0]
     let renderCode = cnode.textContent
     try {
@@ -233,7 +243,7 @@ export class MarkdownRender {
   }
 
   parse (code) : Array<AstNode> {
-    return this.mdRender.parse(code)
+    return this.mdRender.parse(code, {})
   }
 
   compileCode (src : string) {
