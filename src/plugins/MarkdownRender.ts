@@ -200,7 +200,7 @@ export class MarkdownRender {
     ).replace(
       /\-\[(x|\s)\]/g, ($1, $2) => `<input type="checkbox" ${$2.indexOf('x') !== -1? 'checked' : ''}></input>` // checkbox
     ).replace(
-      /(?<!\-|\!)\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
+      /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
     ).replace(
       /\*\*(.*?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
     ).replace(
