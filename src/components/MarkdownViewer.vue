@@ -91,7 +91,6 @@ export default class MarkdownViewer extends Vue {
     // this.flowchartRender = new FlowChartRender(window.flowchart)
     window.mermaid.initialize(mermaidConfig)
     this.mdRender = new MarkdownRender(
-      window.CryptoJS, 
       this.MdEditor, 
       this.echarts,
       window.mermaid,
@@ -162,14 +161,15 @@ export default class MarkdownViewer extends Vue {
   text-align: center !important;
 }
 
-mjx-container {
-  font-size: 117.4%;
-}
-
-p > code {
+p > code,
+h1 > code,
+h2 > code,
+h3 > code,
+h4 > code,
+h6 > code {
   color: #bd4147 !important;
-  margin: 0 4px;
-  padding: 0 2px;
+  margin: 0 2px;
+  padding: 0 3px;
 }
 
 table {

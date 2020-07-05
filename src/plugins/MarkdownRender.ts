@@ -18,8 +18,6 @@ class AstNode {
 
 export class MarkdownRender {
 
-  crypto: any = null
-
   mdRender: any = null
   echartRender: any = null
   mermaidRender: any = null
@@ -36,8 +34,7 @@ export class MarkdownRender {
   flowchartList : any = []
   historySignArray : Array<string> = []
 
-  constructor (crypto, mdRender, echartRender, mermaidRender, flowchartRender, katexRender) {
-    this.crypto = crypto
+  constructor (mdRender, echartRender, mermaidRender, flowchartRender, katexRender) {
     this.mdRender = mdRender
     this.echartRender = echartRender
     this.mermaidRender = mermaidRender
@@ -59,7 +56,6 @@ export class MarkdownRender {
   }
 
   render (code, DomId) : void {
-    // console.time('renderStart')
     this.echartList = []
     this.flowchartList = []
     let ast : Array<AstNode> = this.parse(code)
@@ -86,21 +82,23 @@ export class MarkdownRender {
     let codeArray : Array<string> = []
     for (let i = 0; i < astBlockArray.length; i++) {
       let block = astBlockArray[i]
+      let codeStrArr : Array<string> = []
       let codeStr : string = ''
       for (let node of block) {
         if (/open/.test(node.type)) {
-          codeStr += `<${node.tag}>`
+          codeStrArr.push(`<${node.tag}>`)
         } else if (/close/.test(node.type)) {
-          codeStr += `</${node.tag}>`
+          codeStrArr.push(`</${node.tag}>`)
         } else if (/inline/.test(node.type)) {
-          codeStr += this._renderInlineContent(node.content)
+          codeStrArr.push(this._renderInlineContent(node.content))
         } else if (/fence/.test(node.type)) {
-          codeStr += `<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`
+          codeStrArr.push(`<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`)
         } else if (/hr/.test(node.type)) {
-          codeStr += '<hr/>'
+          codeStrArr.push('<hr/>')
         }
       }
-      signArray.push(this.crypto.MD5(codeStr).toString())
+      codeStr = codeStrArr.join('')
+      signArray.push(codeStr)
       codeArray.push(codeStr)
     }
 
@@ -189,6 +187,7 @@ export class MarkdownRender {
     }
     this.updateCharts()
     this.historySignArray = signArray
+    // console.timeEnd('renderStart')
   }
 
   _renderInlineContent (text) {
