@@ -254,7 +254,7 @@ export default {
     },
 
     generateIndex() {
-      let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6') || []
+      let idxs = document.querySelectorAll('.preview_block > h1, .preview_block > h2, .preview_block > h3, .preview_block > h4, .preview_block > h5， .preview_block > h6') || []
       let idxTree = []
       idxs.forEach((item, index) => {
         item.id = `idx_${index}`
@@ -272,7 +272,7 @@ export default {
 
     updateCurrentIndex(e) {
       if (!this.manualSelected) {
-        let idxs = document.querySelectorAll('#display > h1, #display > h2, #display > h3, #display > h4, #display > h5， #display > h6')
+        let idxs = document.querySelectorAll('.preview_block > h1, .preview_block > h2, .preview_block > h3, .preview_block > h4, .preview_block > h5， .preview_block > h6')
         let len = idxs.length
         let i = 0
         for (; i < len; i++) {

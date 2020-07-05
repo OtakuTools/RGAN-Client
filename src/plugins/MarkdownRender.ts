@@ -96,6 +96,8 @@ export class MarkdownRender {
           codeStr += this._renderInlineContent(node.content)
         } else if (/fence/.test(node.type)) {
           codeStr += `<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`
+        } else if (/hr/.test(node.type)) {
+          codeStr += '<hr/>'
         }
       }
       signArray.push(this.crypto.MD5(codeStr).toString())
@@ -134,8 +136,6 @@ export class MarkdownRender {
         hisBackPtr--
       }
 
-      // console.log(newBackPtr, hisBackPtr)
-      
       newBackPtr += newFrontPtr
       hisBackPtr += hisFrontPtr
 
@@ -152,12 +152,6 @@ export class MarkdownRender {
       }
     }
 
-    // console.log('====== render ======')
-    // console.log(oriChangeNodes)
-    // console.log(newChangeNodes)
-
-    this.historySignArray = signArray
-
     if (!(oriChangeNodes.length > 0 && newChangeNodes.length > 0)) {
       return
     }
@@ -168,6 +162,7 @@ export class MarkdownRender {
     let blockDom = document.querySelectorAll('.preview_block')
     let container = document.getElementById(DomId)
     let frag = document.createDocumentFragment()
+
     for (let idx = 0; idx <= changeNum && (idx + changePos) < codeArray.length; idx ++) {
       let b = document.createElement('div')
       b.className = 'preview_block'
@@ -183,26 +178,42 @@ export class MarkdownRender {
           container.removeChild(blockDom[changePos + i])
         }
         blockDom = document.querySelectorAll('.preview_block')
-        container.insertBefore(frag, blockDom[newChangeNodes[1]])
+        if (newChangeNodes[1] >= 0 && changePos >= 0 && signArray[changePos] !== this.historySignArray[changePos]) {
+          blockDom[newChangeNodes[1]].innerHTML = codeArray[changePos]
+        } else {
+          container.insertBefore(frag, blockDom[newChangeNodes[1]])
+        }
       } else {
         container.replaceChild(frag, blockDom[changePos])
       }
     }
     this.updateCharts()
-    // console.timeEnd('renderStart')
+    this.historySignArray = signArray
   }
 
   _renderInlineContent (text) {
     return text.replace(
-      /\$\$([\s\S]*?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true}) // 段落数学公式
+      /\$\$([\s\S]*?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
     ).replace(
-      /\$([\s\S]*?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false}) // 行内数学公式
+      /\$([\s\S]*?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
     ).replace(
       /\!\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
     ).replace(
-      /\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
+      /\-\[(x|\s)\]/g, ($1, $2) => `<input type="checkbox" ${$2.indexOf('x') !== -1? 'checked' : ''}></input>` // checkbox
     ).replace(
-      /^\-\[([x\s]+?)\]\s+([\s\S]*?)\n?$/g, ($1, $2, $3) => `<input type="checkbox" ${$2.indexOf('x') !== -1? 'checked' : ''}/><span class="ml-2">${$3}</span>` // checkbox
+      /(?<!\-|\!)\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
+    ).replace(
+      /\*\*(.*?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
+    ).replace(
+      /\*(.*?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
+    ).replace(
+      /\_\_(.*?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
+    ).replace(
+      /\~\~(.*?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
+    ).replace(
+      /\`(.*?)\`/g, ($1, $2) => `<code>${$2}</code>` // 引用
+    ).replace(
+      /\n/g, '<br/>' // 回车
     )
   }
 
@@ -219,8 +230,8 @@ export class MarkdownRender {
         let chart : any = this.echartRender.init(cnode)
         let option : any = {}
         option = this.compileCode(renderCode)(this.sandbox)
-        chart.setOption(option, true, true)
-        this.echartList.push({ node: chart, size: option.size || { width: 500, height: 300 }})
+        chart.setOption(option)
+        this.echartList.push({ node: chart, size: option.size || { width: 'auto', height: 300 }})
       } else if (cnode.className === 'language-flowchart') {
         let chart : any = this.flowchartRender.parse(renderCode)
         cnode.textContent = ''
