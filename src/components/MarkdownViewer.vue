@@ -161,6 +161,12 @@ export default class MarkdownViewer extends Vue {
   text-align: center !important;
 }
 
+ul > li.checkbox-list {
+  list-style: none;
+  margin-left: -20px;
+}
+
+
 p > code,
 h1 > code,
 h2 > code,

@@ -24,15 +24,14 @@ export class MarkdownRender {
   flowchartRender: any = null
   katexRender: any = null
 
-  cacheHTML : any = null
-  cacheLifeTime : any = null
-
   sandboxProxies : any = null
   sandbox: any = {}
 
   echartList : any = []
   flowchartList : any = []
   historySignArray : Array<string> = []
+
+  CONTAINER_CLASS_NAME : string = 'preview_block'
 
   constructor (mdRender, echartRender, mermaidRender, flowchartRender, katexRender) {
     this.mdRender = mdRender
@@ -41,8 +40,6 @@ export class MarkdownRender {
     this.flowchartRender = flowchartRender
     this.katexRender = katexRender
 
-    this.cacheHTML = new Map()
-    this.cacheLifeTime = new Map()
     this.sandboxProxies = new WeakMap()
     this.sandbox = {
       window: {},
@@ -84,13 +81,21 @@ export class MarkdownRender {
       let block = astBlockArray[i]
       let codeStrArr : Array<string> = []
       let codeStr : string = ''
+      let parentTags : Array<Object> = []
       for (let node of block) {
         if (/open/.test(node.type)) {
+          parentTags.push({ tag: node.tag, pos: codeStrArr.length })
           codeStrArr.push(`<${node.tag}>`)
         } else if (/close/.test(node.type)) {
           codeStrArr.push(`</${node.tag}>`)
+          parentTags.pop()
         } else if (/inline/.test(node.type)) {
-          codeStrArr.push(this._renderInlineContent(node.content))
+          let c : any = this._renderInlineContent(node.content, parentTags)
+          let uTag : any = c.updateTag
+          if (uTag.hasOwnProperty('pos')) {
+            codeStrArr[uTag.pos] = codeStrArr[uTag.pos].replace(/^\<(.*)\>$/, `\<$1 class="${uTag.cls}"\>`)
+          }
+          codeStrArr.push(c.text)
         } else if (/fence/.test(node.type)) {
           codeStrArr.push(`<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`)
         } else if (/hr/.test(node.type)) {
@@ -157,13 +162,13 @@ export class MarkdownRender {
     let changePos = oriChangeNodes[0]
     let changeNum = newChangeNodes[1] - oriChangeNodes[1]
 
-    let blockDom = document.querySelectorAll('.preview_block')
+    let blockDom = document.querySelectorAll(`.${this.CONTAINER_CLASS_NAME}`)
     let container = document.getElementById(DomId)
     let frag = document.createDocumentFragment()
 
     for (let idx = 0; idx <= changeNum && (idx + changePos) < codeArray.length; idx ++) {
       let b = document.createElement('div')
-      b.className = 'preview_block'
+      b.className = this.CONTAINER_CLASS_NAME
       b.innerHTML = codeArray[idx + changePos]
       this._renderNode(b)
       frag.appendChild(b)
@@ -175,7 +180,7 @@ export class MarkdownRender {
         for (let i = 0; i < -changeNum; i++) {
           container.removeChild(blockDom[changePos + i])
         }
-        blockDom = document.querySelectorAll('.preview_block')
+        blockDom = document.querySelectorAll(`.${this.CONTAINER_CLASS_NAME}`)
         if (newChangeNodes[1] >= 0 && changePos >= 0 && signArray[changePos] !== this.historySignArray[changePos]) {
           blockDom[newChangeNodes[1]].innerHTML = codeArray[changePos]
           this._renderNode(blockDom[newChangeNodes[1]])
@@ -191,15 +196,24 @@ export class MarkdownRender {
     // console.timeEnd('renderStart')
   }
 
-  _renderInlineContent (text) {
-    return text.replace(
-      /\$\$([\s\S]*?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
+  _renderInlineContent (text, parents) {
+    let listTagPos : number = parents.findIndex((parent) => parent.tag === 'li')
+    let newTagInfo : Object = {}
+    let buildText : string = text.replace(
+      /\$\$([\s\S]+?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
     ).replace(
-      /\$([\s\S]*?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
+      /\$([\s\S]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
     ).replace(
       /\!\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
     ).replace(
-      /\-\[(x|\s)\]/g, ($1, $2) => `<input type="checkbox" ${$2.indexOf('x') !== -1? 'checked' : ''}></input>` // checkbox
+      listTagPos !== -1? /^\[(x|\s)\]/ig : '', ($1, $2) => {
+        if ( listTagPos !== -1) { 
+          newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' } ;
+          return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
+        } else { 
+          return '' 
+        } 
+      } // checkbox
     ).replace(
       /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
     ).replace(
@@ -215,13 +229,17 @@ export class MarkdownRender {
     ).replace(
       /\n/g, '<br/>' // 回车
     )
+    return {
+      text: buildText,
+      updateTag: newTagInfo
+    }
   }
 
   _renderNode(node) {
     let cnode = node.children[0]
     let renderCode = cnode.textContent
     try {
-      if (cnode.className === 'language-mermaid') {
+      if (cnode.className === `language-mermaid`) {
         var f = function(svgCode) {
           cnode.innerHTML = svgCode
         }
@@ -236,7 +254,7 @@ export class MarkdownRender {
         let chart : any = this.flowchartRender.parse(renderCode)
         cnode.textContent = ''
         this.flowchartList.push({node: cnode, chart})
-      } else if (/^language-.*/.test(cnode.className)) {
+      } else if (/^language\-.*/.test(cnode.className)) {
         hljs.highlightBlock(cnode)
       }
     } catch(err) {
