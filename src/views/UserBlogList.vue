@@ -5,7 +5,7 @@
       <v-container>
         <v-row>
           <v-col cols="3" style="text-align: center;">
-            <v-card>
+            <v-card outlined>
               <v-card-text>
                 <v-avatar
                   class="profile"
@@ -32,8 +32,8 @@
             </v-card>
           </v-col>
           <v-col cols="9">
-            <v-card>
-              <v-card-text style="padding-top: 0">
+            <v-card outlined>
+              <v-card-text class="pt-0">
                 <BlogListForUser :userInfo="userInfo" :getData="getData" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
