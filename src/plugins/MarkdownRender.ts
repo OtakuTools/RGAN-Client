@@ -178,6 +178,7 @@ export class MarkdownRender {
         blockDom = document.querySelectorAll('.preview_block')
         if (newChangeNodes[1] >= 0 && changePos >= 0 && signArray[changePos] !== this.historySignArray[changePos]) {
           blockDom[newChangeNodes[1]].innerHTML = codeArray[changePos]
+          this._renderNode(blockDom[newChangeNodes[1]])
         } else {
           container.insertBefore(frag, blockDom[newChangeNodes[1]])
         }
