@@ -1,4 +1,10 @@
 import hljs from 'highlight.js'
+import { math_plugin } from '@/plugins/Plugin_Math'
+import { mark_plugin } from '@/plugins/Plugin_Mark'
+import { sub_plugin } from '@/plugins/Plugin_Sub'
+import { sup_plugin } from '@/plugins/Plugin_Sup'
+import { ins_plugin } from '@/plugins/Plugin_Ins'
+
 
 class AstNode {
   attrs: any
@@ -50,6 +56,21 @@ export class MarkdownRender {
       document,
       option: {}
     }
+
+    this.mdRender.use(math_plugin, {
+      inlineOpen: '$',
+      inlineClose: '$',
+      blockOpen: '$$',
+      blockClose: '$$'
+    }).use(
+      mark_plugin
+    ).use(
+      sub_plugin
+    ).use(
+      sup_plugin
+    ).use(
+      ins_plugin
+    )
   }
 
   render (code, DomId) : void {
@@ -74,6 +95,8 @@ export class MarkdownRender {
       }
     }
 
+    // console.log(astBlockArray)
+
     // ast分块生成签名
     let signArray : Array<string> = []
     let codeArray : Array<string> = []
@@ -90,16 +113,22 @@ export class MarkdownRender {
           codeStrArr.push(`</${node.tag}>`)
           parentTags.shift()
         } else if (/inline/.test(node.type)) {
-          let c : any = this._renderInlineContent(node.content, parentTags)
-          let uTag : any = c.updateTag
-          if (uTag.hasOwnProperty('pos')) {
-            codeStrArr[uTag.pos] = codeStrArr[uTag.pos].replace(/^\<(.*)\>$/, `\<$1 class="${uTag.cls}"\>`)
+          if (node.children && node.children.length) {
+            let c : any = this._renderInlineNode(node.children, parentTags)
+            let uTag : any = c.updateTag
+            if (uTag.hasOwnProperty('pos')) {
+              codeStrArr[uTag.pos] = codeStrArr[uTag.pos].replace(/^\<(.*)\>$/, `\<$1 class="${uTag.cls}"\>`)
+            }
+            codeStrArr.push(c.text)
+          } else {
+            codeStrArr.push(node.content)
           }
-          codeStrArr.push(c.text)
         } else if (/fence/.test(node.type)) {
           codeStrArr.push(`<${node.tag} class="language-${node.info}">${node.content}</${node.tag}>`)
         } else if (/hr/.test(node.type)) {
           codeStrArr.push('<hr/>')
+        } else if (/math_block/.test(node.type)) {
+          codeStrArr.push(`${this.katexRender.renderToString(node.content, { displayMode: true })}`)
         }
       }
       codeStr = codeStrArr.join('')
@@ -200,48 +229,113 @@ export class MarkdownRender {
     // console.timeEnd('renderStart')
   }
 
-  _renderInlineContent (text, parents) {
+  _renderInlineNode (nodes, parents) {
     let listTagPos : number = parents.findIndex((parent) => parent.tag === 'li')
-    let newTagInfo : Object = {}
-    let buildText : string = text.replace(
-      /\$\$([\s\S]+?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
-    ).replace(
-      /\$([^\$]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
-    ).replace(
-      /\!\[([^\]]*?)\]\(([^\)]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
-    ).replace(
-      listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', ($1, $2) => {
-        if ( listTagPos !== -1) { 
-          newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
-          return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
-        } else { 
-          return '' 
-        } 
-      } // checkbox
-    ).replace(
-      /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
-    ).replace(
-      /\*\*(.+?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
-    ).replace(
-      /\*([^\*]+?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
-    ).replace(
-      /\_\_(.+?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
-    ).replace(
-      /\_([^\_]+?)\_/g, ($1, $2) => `<i>${$2}</i>` // 斜体
-    ).replace(
-      /\~\~(.+?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
-    ).replace(
-      /\~([^\~]+?)\~/g, ($1, $2) => `<sub>${$2}</sub>` // 下标
-    ).replace(
-      /\^(.+?)\^/g, ($1, $2) => `<sup>${$2}</sup>` // 上标
-    ).replace(
-      /\`(.*?)\`/g, ($1, $2) => `<code>${$2}</code>` // 引用
-    )
+
+    let renderArr : Array<string> = []
+
+    let blocks : Array<any> = []
+    let dfsArr : Array<any> = []
+
+    for (let node of nodes) {
+      dfsArr.push(node)
+    }
+
+    while(dfsArr.length) {
+      let q = dfsArr.shift()
+      if (q.children && q.children.length) {
+        for (let node of q.children) {
+          dfsArr.unshift(node)
+        }
+      }
+      blocks.push(q)
+    }
+
+    console.log(blocks)
+
+    let newTagInfo : any = {}
+    for (let i = 0; i < blocks.length; ) {
+      let block : any = blocks[i]
+      if (/open/.test(block.type)) {
+        renderArr.push(`<${block.tag}>`)
+      } else if (/close/.test(block.type)) {
+        renderArr.push(`</${block.tag}>`)
+      } else if (/image/.test(block.type)) {
+        renderArr.push(`<${block.tag} src="${block.attrs[0][1]}" alt="${blocks[i+1].content}" />`)
+        i += 2
+        continue
+      } else if (/math/.test(block.type)) {
+        renderArr.push(this.katexRender.renderToString(block.content, { displayMode: false }))
+      } else if (/code/.test(block.type)) {
+        renderArr.push(`<${block.tag}>${block.content}</${block.tag}>`)
+      } else if (/softbreak/.test(block.type)) {
+        renderArr.push(`<${block.tag} />`)
+      } else if (/text/.test(block.type)) {
+        if (i === 0) {
+          let t = block.content.replace(
+            listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', 
+            ($1, $2) => {
+              if (listTagPos !== -1) {
+                newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
+                return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
+              } else {
+                return ''
+              }
+            })
+          renderArr.push(t)
+        } else {
+          renderArr.push(block.content)
+        }
+      }
+      i++
+    }
+
     return {
-      text: buildText,
+      text: renderArr.join(''),
       updateTag: newTagInfo
     }
   }
+
+  // _renderInlineContent (text, parents) {
+  //   let listTagPos : number = parents.findIndex((parent) => parent.tag === 'li')
+  //   let newTagInfo : Object = {}
+  //   let buildText : string = text.replace(
+  //     /\$\$([\s\S]+?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
+  //   ).replace(
+  //     /\$([^\$]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
+  //   ).replace(
+  //     /\!\[([^\]]*?)\]\(([^\)]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
+  //   ).replace(
+  //     listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', ($1, $2) => {
+  //       if ( listTagPos !== -1) { 
+  //         newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
+  //         return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
+  //       } else { 
+  //         return '' 
+  //       } 
+  //     } // checkbox
+  //   ).replace(
+  //     /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
+  //   ).replace(
+  //     /\*\*(.+?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
+  //   ).replace(
+  //     /\*([^\*]+?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
+  //   ).replace(
+  //     /\_\_(.+?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
+  //   ).replace(
+  //     /\~\~(.+?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
+  //   ).replace(
+  //     /\~([^\~]+?)\~/g, ($1, $2) => `<sub>${$2}</sub>` // 下标
+  //   ).replace(
+  //     /\^(.+?)\^/g, ($1, $2) => `<sup>${$2}</sup>` // 上标
+  //   ).replace(
+  //     /\`(.*?)\`/g, ($1, $2) => `<code>${$2}</code>` // 引用
+  //   )
+  //   return {
+  //     text: buildText,
+  //     updateTag: newTagInfo
+  //   }
+  // }
 
   _renderNode(node) {
     let cnode = node.children[0]

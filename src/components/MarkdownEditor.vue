@@ -31,45 +31,133 @@
           color="rgb(238, 238, 238)"
         >
           <v-toolbar-items>
-            <v-btn depressed tile icon @click="handleShortcut('bold')">
-              <v-icon>mdi-format-bold</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('italic')">
-              <v-icon>mdi-format-italic</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('title')">
-              <v-icon>mdi-format-header-1</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('delete')">
-              <v-icon>mdi-format-strikethrough</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('underline')">
-              <v-icon>mdi-format-underline</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('quote')">
-              <v-icon>mdi-format-quote-close</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('codeblock')">
-              <v-icon>mdi-code-tags</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('math')">
-              <v-icon>mdi-math-integral</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('table')">
-              <v-icon>mdi-table</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('link')">
-              <v-icon>mdi-link</v-icon>
-            </v-btn>
-            <v-menu
-              :close-on-content-click="true"
-              offset-y
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn depressed tile icon v-on="on">
-                  <v-icon>mdi-image-search-outline</v-icon>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('bold')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-bold</v-icon>
                 </v-btn>
               </template>
+              <span>加粗</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('italic')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-italic</v-icon>
+                </v-btn>
+              </template>
+              <span>斜体</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('title')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-header-1</v-icon>
+                </v-btn>
+              </template>
+              <span>标题</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('delete')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-strikethrough</v-icon>
+                </v-btn>
+              </template>
+              <span>删除线</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('underline')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-underline</v-icon>
+                </v-btn>
+              </template>
+              <span>下划线</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('quote')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-quote-close</v-icon>
+                </v-btn>
+              </template>
+              <span>引用</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('codeblock')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-code-tags</v-icon>
+                </v-btn>
+              </template>
+              <span>代码</span>
+            </v-tooltip>
+            <v-menu
+              close-on-content-click
+              offset-y
+            >
+              <template v-slot:activator="{ on: menu, attrs }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on: tooltip }">
+                    <v-btn depressed tile icon v-on="{ ...tooltip, ...menu }" v-bind="attrs">
+                      <v-icon>mdi-math-integral</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>公式</span>
+                </v-tooltip>
+              </template>
+              <v-list>
+                <v-list-item @click="handleShortcut('math_inline')">
+                  <v-list-item-title>行内公式</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="handleShortcut('math_block')">
+                  <v-list-item-title>块级公式</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('table')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-table</v-icon>
+                </v-btn>
+              </template>
+              <span>表格</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('link')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-link</v-icon>
+                </v-btn>
+              </template>
+              <span>链接</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('sup')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-superscript</v-icon>
+                </v-btn>
+              </template>
+              <span>上标</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('sub')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-format-subscript</v-icon>
+                </v-btn>
+              </template>
+              <span>下标</span>
+            </v-tooltip>
+            
+            <v-menu
+              close-on-content-click
+              offset-y
+            >
+              <template v-slot:activator="{ on: menu }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on: tooltip }">
+                    <v-btn depressed tile icon v-on="{ ...tooltip, ...menu }" v-bind="attrs">
+                      <v-icon>mdi-image-search-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>图片</span>
+                </v-tooltip>
+              </template>
+              
               <v-list>
                 <v-list-item @click="handleShortcut('image')">
                   <v-list-item-title>插入图片</v-list-item-title>
@@ -106,20 +194,40 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-btn depressed tile icon @click="handleShortcut('save')">
-              <v-icon>mdi-content-save-outline</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="handleShortcut('derive')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="() => { fullScreen = !fullScreen; if (viewMode) { viewMode = false }}">
-              <v-icon v-if="fullScreen">mdi-fullscreen</v-icon>
-              <v-icon v-else>mdi-fullscreen-exit</v-icon>
-            </v-btn>
-            <v-btn depressed tile icon @click="() => { viewMode = !viewMode; if (fullScreen) { fullScreen = false }}">
-              <v-icon v-if="viewMode">mdi-eye-off-outline</v-icon>
-              <v-icon v-else>mdi-eye-outline</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('save')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-content-save-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>保存</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="handleShortcut('derive')" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-download</v-icon>
+                </v-btn>
+              </template>
+              <span>导出</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="() => { fullScreen = !fullScreen; if (viewMode) { viewMode = false }}" v-on="on" v-bind="attrs">
+                  <v-icon v-if="fullScreen">mdi-fullscreen</v-icon>
+                  <v-icon v-else>mdi-fullscreen-exit</v-icon>
+                </v-btn>
+              </template>
+              <span>全屏</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn depressed tile icon @click="() => { viewMode = !viewMode; if (fullScreen) { fullScreen = false }}" v-on="on" v-bind="attrs">
+                  <v-icon v-if="viewMode">mdi-eye-off-outline</v-icon>
+                  <v-icon v-else>mdi-eye-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>预览</span>
+            </v-tooltip>
           </v-toolbar-items>
         </v-toolbar>
       </v-col>
@@ -438,11 +546,11 @@ export default class MDEditor extends Vue {
     let endCol : number = selection.endColumn
     let endLine : number = selection.endLineNumber
     // 尾部插入
-    let range : any = new window.monaco.Range(endLine, endCol + 1, endLine, endCol + 1)
+    let range : any = new window.monaco.Range(endLine, endCol, endLine, endCol)
     let id : any = { major: 1, minor: 1 }
     let op1 : any = { identifier: id, range: range, text: textFront, forceMoveMarkers: false }
     // 头部插入
-    range = new window.monaco.Range(startLine, startCol === 0 ? 0 : startCol - 1, startLine, startCol - 1)
+    range = new window.monaco.Range(startLine, startCol === 0 ? 0 : startCol, startLine, startCol)
     id = { major: 1, minor: 1 }
     let op2 = { identifier: id, range: range, text: textBack || textFront, forceMoveMarkers: false }
     // 调整选中部分
@@ -565,7 +673,13 @@ export default class MDEditor extends Vue {
         this.insertContentWithSelection('~~')
         break
       case 'underline':
-        this.insertContentWithSelection('__')
+        this.insertContentWithSelection('++')
+        break
+      case 'sup':
+        this.insertContentWithSelection('^')
+        break
+      case 'sub':
+        this.insertContentWithSelection('~')
         break
       case 'quote':
         this.insertContentWithoutSelection('`输入引用内容`', '输入引用内容')
@@ -573,14 +687,17 @@ export default class MDEditor extends Vue {
       case 'codeblock':
         this.insertContentWithoutSelection('```code\n\n```', 'code')
         break
-      case 'math':
+      case 'math_inline':
+        this.insertContentWithoutSelection('$输入公式$', '输入公式')
+        break
+      case 'math_block':
         this.insertContentWithoutSelection('$$输入公式$$', '输入公式')
         break
       case 'table':
         this.insertContentWithoutSelection(`|  |  |\n|--|--|\n|  |  |`, '  ')
         break
       case 'link':
-        this.insertContentWithoutSelection(`[链接内容](  )`, '链接内容')
+        this.insertContentWithoutSelection(`[链接内容]()`, '链接内容')
         break
       case 'image':
         this.insertContentWithoutSelection(`![图片说明](图片URL)`, '图片URL')
