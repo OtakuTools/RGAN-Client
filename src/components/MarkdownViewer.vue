@@ -166,6 +166,9 @@ ul > li.checkbox-list {
   margin-left: -20px;
 }
 
+code[class^="language"] {
+  font-family: 'Consolas', 'Courier New', Courier, monospace !important;
+}
 
 p > code,
 h1 > code,

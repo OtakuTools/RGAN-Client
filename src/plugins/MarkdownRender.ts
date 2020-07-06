@@ -257,7 +257,7 @@ export class MarkdownRender {
         let option : any = {}
         option = this.compileCode(renderCode)(this.sandbox)
         chart.setOption(option)
-        this.echartList.push({ node: chart, size: option.size || { width: 'auto', height: 300 }})
+        this.echartList.push({ node: chart, size: option.size || { width: 500, height: 300 }})
       } else if (cnode.className === 'language-flowchart') {
         let chart : any = this.flowchartRender.parse(renderCode)
         cnode.textContent = ''
