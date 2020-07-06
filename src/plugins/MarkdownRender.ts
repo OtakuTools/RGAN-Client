@@ -84,11 +84,11 @@ export class MarkdownRender {
       let parentTags : Array<Object> = []
       for (let node of block) {
         if (/open/.test(node.type)) {
-          parentTags.push({ tag: node.tag, pos: codeStrArr.length })
+          parentTags.unshift({ tag: node.tag, pos: codeStrArr.length })
           codeStrArr.push(`<${node.tag}>`)
         } else if (/close/.test(node.type)) {
           codeStrArr.push(`</${node.tag}>`)
-          parentTags.pop()
+          parentTags.shift()
         } else if (/inline/.test(node.type)) {
           let c : any = this._renderInlineContent(node.content, parentTags)
           let uTag : any = c.updateTag
@@ -181,9 +181,13 @@ export class MarkdownRender {
           container.removeChild(blockDom[changePos + i])
         }
         blockDom = document.querySelectorAll(`.${this.CONTAINER_CLASS_NAME}`)
-        if (newChangeNodes[1] >= 0 && changePos >= 0 && signArray[changePos] !== this.historySignArray[changePos]) {
-          blockDom[newChangeNodes[1]].innerHTML = codeArray[changePos]
-          this._renderNode(blockDom[newChangeNodes[1]])
+        if (newChangeNodes[1] >= 0 && newChangeNodes[0] >= 0) {
+          for (let i = newChangeNodes[0]; i <= newChangeNodes[1]; i++) {
+            if (signArray[i] !== this.historySignArray[i]) {
+              blockDom[i].innerHTML = codeArray[i]
+              this._renderNode(blockDom[i])
+            }
+          }
         } else {
           container.insertBefore(frag, blockDom[newChangeNodes[1]])
         }
@@ -202,13 +206,13 @@ export class MarkdownRender {
     let buildText : string = text.replace(
       /\$\$([\s\S]+?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
     ).replace(
-      /\$([\s\S]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
+      /\$([^\$]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
     ).replace(
-      /\!\[([\s\S]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
+      /\!\[([^\]]*?)\]\(([^\)]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
     ).replace(
-      listTagPos !== -1? /^\[(x|\s)\]/ig : '', ($1, $2) => {
+      listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', ($1, $2) => {
         if ( listTagPos !== -1) { 
-          newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' } ;
+          newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
           return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
         } else { 
           return '' 
@@ -217,17 +221,21 @@ export class MarkdownRender {
     ).replace(
       /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
     ).replace(
-      /\*\*(.*?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
+      /\*\*(.+?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
     ).replace(
-      /\*(.*?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
+      /\*([^\*]+?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
     ).replace(
-      /\_\_(.*?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
+      /\_\_(.+?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
     ).replace(
-      /\~\~(.*?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
+      /\_([^\_]+?)\_/g, ($1, $2) => `<i>${$2}</i>` // 斜体
+    ).replace(
+      /\~\~(.+?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
+    ).replace(
+      /\~([^\~]+?)\~/g, ($1, $2) => `<sub>${$2}</sub>` // 下标
+    ).replace(
+      /\^(.+?)\^/g, ($1, $2) => `<sup>${$2}</sup>` // 上标
     ).replace(
       /\`(.*?)\`/g, ($1, $2) => `<code>${$2}</code>` // 引用
-    ).replace(
-      /\n/g, '<br/>' // 回车
     )
     return {
       text: buildText,
