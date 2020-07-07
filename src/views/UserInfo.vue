@@ -57,6 +57,7 @@ const FavouriteListForUser = () => import('@/components/FavouriteListForUser')
 const CommentListForUser = () => import('@/components/CommentListForUser')
 const Timeline = () => import('@/views/Timeline')
 const PersonalBlogs = () => import('@/views/PersonalBlogs')
+const ResourcesList = () => import('@/components/ResourcesList')
 
 export default {
   name: 'UserInfoPage',
@@ -68,7 +69,8 @@ export default {
     FavouriteListForUser,
     CommentListForUser,
     Timeline,
-    PersonalBlogs
+    PersonalBlogs,
+    ResourcesList
   },
   data () {
     return {
@@ -85,6 +87,7 @@ export default {
         'PersonalBlogs',
         'CommentListForUser',
         'FavouriteListForUser',
+        'ResourcesList'
       ],
 
       drawer: null,
@@ -96,6 +99,7 @@ export default {
         { icon: 'mdi-text', text: '博客管理' },
         { icon: 'mdi-comment-outline', text: '评论管理' },
         { icon: 'mdi-heart-outline', text: '收藏管理' },
+        { icon: 'mdi-share-variant', text: '资源共享' }
       ]
     }
   },

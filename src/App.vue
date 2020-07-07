@@ -6,7 +6,7 @@
       <router-view @alertMsg="handleAlertMsg"></router-view>
       <v-speed-dial
         v-model="fab"
-
+        v-if="$route.name !== 'editor'"
         direction="top"
         open-on-hover="true"
         transition="slide-y-reverse-transition"

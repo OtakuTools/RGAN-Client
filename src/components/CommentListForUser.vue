@@ -1,42 +1,42 @@
 <template>
   <div>
     <v-list two-line flat>
-      <v-list-item-group
-        multiple
-      >
-        <template v-for="(comment, index) in commentList">
-          <v-list-item :key="comment.id">
-            <template>
-              <v-list-item-content>
-                <v-list-item-title style="-webkit-line-clamp: unset;">
-                  {{comment.content}}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  <v-chip-group
-                    column
-                    disabled
-                  >
-                    <v-chip style="border: none" outlined small label>
-                      <v-icon left small>mdi-calendar</v-icon>
-                      {{comment.createdTime.replace("T", " ")}}
-                    </v-chip>
+      <template v-for="(comment, index) in commentList">
+        <v-list-item :key="comment.id" class="pa-0 comment-box">
+          <template>
+            <v-card
+              class="grow"
+              flat
+            >
+              <v-card-title class="comment-box-title">
+                <v-icon class="mr-2">mdi-reply</v-icon>
+                <span @click="handleSelected(comment.id)">{{comment.blogTitle}}</span>
+              </v-card-title>
+              <v-card-text class="headline pb-0">
+                <v-icon>mdi-comment-quote-outline</v-icon>
+                {{comment.content}}
+              </v-card-text>
+              <v-card-actions>
+                <v-row align="center" justify="start" class="ml-2">
+                  <div>{{comment.createdTime.replace("T", " ")}}</div>
+                  <v-icon class="mr-1 ml-3">mdi-thumb-up-outline</v-icon>
+                  <div>{{comment.voteCount}}</div>
+                </v-row>
+                <v-row align="center" justify="end" class="mr-2">
+                  <v-btn icon @click="removeComment(comment.id)">
+                    <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
+                  </v-btn>
+                </v-row>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-list-item>
 
-                    <v-chip style="border: none" outlined small label>
-                      <v-icon left small>mdi-thumb-up-outline</v-icon>
-                      {{comment.voteCount}}
-                    </v-chip>
-                  </v-chip-group>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-
-          <v-divider
-            v-if="index + 1 < commentList.length"
-            :key="comment.id"
-          ></v-divider>
-        </template>
-      </v-list-item-group>
+        <v-divider
+          v-if="index + 1 < commentList.length"
+          :key="comment.id"
+        ></v-divider>
+      </template>
     </v-list>
     <v-pagination
       v-if="commentList.length"
@@ -51,13 +51,16 @@
 </template>
 
 <style lang="less" scoped>
-
+.comment-box:hover .comment-box-title {
+  color: #00a4ff;
+  cursor: pointer;
+}
 </style>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { getUserInfoByName } from '@/api/user'
-import { getSelfComments } from '@/api/data'
+import { getSelfComments, deleteBlogComment } from '@/api/data'
 
 class UserInfo {
   username: string
@@ -83,10 +86,9 @@ export default class CommentListForUser extends Vue {
   }
 
   refreshComments (page : number = 0, pageSize : number = 10) : void {
-    getSelfComments(page, pageSize).then(res => {
-      let data = res.data.content
+    getSelfComments(page, pageSize).then(res => { 
       this.totalPages = res.data.totalPages
-      this.commentList = data
+      this.commentList = res.data.content
     }).catch(err => {
       this.$emit('alertMsg', {
         message: '获取评论列表失败',
@@ -109,7 +111,22 @@ export default class CommentListForUser extends Vue {
   }
 
   handleSelected (id : any) : void {
-    this.$router.push({ name: 'blog', query: { id } })
+    this.$router.push({ name: 'blog', params: { id }})
+  }
+
+  removeComment (id: any) : void {
+    deleteBlogComment(id).then(res => {
+      this.refreshComments()
+      this.$emit('alertMsg', {
+        message: '删除评论成功',
+        type: 'success'
+      })
+    }).catch(err => {
+      this.$emit('alertMsg', {
+        message: '删除评论失败',
+        type: 'error'
+      })
+    })
   }
 
   @Watch('userInfo')

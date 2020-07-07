@@ -56,13 +56,6 @@ export default [
     component: () => import('../views/UserBlogList.vue')
   },
   {
-    path: '/resource',
-    meta: {
-      keepAlive: true
-    },
-    component: () => import('../views/ResourcesPage.vue')
-  },
-  {
     path: '/verification/:mode',
     name: 'verification',
     component: () => import('../views/VerificationPage.vue')
