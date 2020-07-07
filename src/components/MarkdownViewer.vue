@@ -28,7 +28,7 @@ export default class MarkdownViewer extends Vue {
     try {
       this.mdRender.render(t, 'display')
     } catch(err) {
-      console.log(err)
+      // console.log(err)
     }
     // this.blogMdText = this.MdEditor.makeHtml(this.inputText)
   }
@@ -161,9 +161,13 @@ export default class MarkdownViewer extends Vue {
   text-align: center !important;
 }
 
-ul > li.checkbox-list {
+ul > li.md-checkbox-list {
   list-style: none;
   margin-left: -20px;
+}
+
+.md-link {
+  text-decoration: none;
 }
 
 code[class*="language"] {

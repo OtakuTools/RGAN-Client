@@ -226,7 +226,6 @@ export class MarkdownRender {
     }
     this.updateCharts()
     this.historySignArray = signArray
-    // console.timeEnd('renderStart')
   }
 
   _renderInlineNode (nodes, parents) {
@@ -251,32 +250,20 @@ export class MarkdownRender {
       blocks.push(q)
     }
 
-    console.log(blocks)
-
     let newTagInfo : any = {}
     for (let i = 0; i < blocks.length; ) {
       let block : any = blocks[i]
-      if (/open/.test(block.type)) {
-        renderArr.push(`<${block.tag}>`)
-      } else if (/close/.test(block.type)) {
-        renderArr.push(`</${block.tag}>`)
-      } else if (/image/.test(block.type)) {
+      if (block.type === 'image') {
         renderArr.push(`<${block.tag} src="${block.attrs[0][1]}" alt="${blocks[i+1].content}" />`)
         i += 2
         continue
-      } else if (/math/.test(block.type)) {
-        renderArr.push(this.katexRender.renderToString(block.content, { displayMode: false }))
-      } else if (/code/.test(block.type)) {
-        renderArr.push(`<${block.tag}>${block.content}</${block.tag}>`)
-      } else if (/softbreak/.test(block.type)) {
-        renderArr.push(`<${block.tag} />`)
-      } else if (/text/.test(block.type)) {
+      } else if (block.type === 'text') {
         if (i === 0) {
-          let t = block.content.replace(
+          let t : string = block.content.replace(
             listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', 
             ($1, $2) => {
               if (listTagPos !== -1) {
-                newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
+                newTagInfo = { ...parents[listTagPos], cls: 'md-checkbox-list' }
                 return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
               } else {
                 return ''
@@ -286,6 +273,18 @@ export class MarkdownRender {
         } else {
           renderArr.push(block.content)
         }
+      } else if (block.type === 'softbreak') {
+        renderArr.push(`<${block.tag} />`)
+      } else if (block.type === 'link_open') {
+        renderArr.push(`<${block.tag} class="md-link" href="${block.attrs[0][1]}">`)
+      } else if (/open/.test(block.type)) {
+        renderArr.push(`<${block.tag}>`)
+      } else if (/close/.test(block.type)) {
+        renderArr.push(`</${block.tag}>`)
+      } else if (/math/.test(block.type)) {
+        renderArr.push(this.katexRender.renderToString(block.content, { displayMode: false }))
+      } else if (/code/.test(block.type)) {
+        renderArr.push(`<${block.tag}>${block.content}</${block.tag}>`)
       }
       i++
     }
