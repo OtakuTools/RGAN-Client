@@ -114,6 +114,7 @@ import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { emailVerificationSend } from '@/api/verification'
 import { getUserInfo, modifyUserInfo } from '@/api/user'
 import { QiniuModule } from '@/plugins/QiniuModule'
+import { formatErrorMsg } from '@/libs/util'
 
 @Component
 export default class UserInfoEditor extends Vue {
@@ -140,10 +141,7 @@ export default class UserInfoEditor extends Vue {
     getUserInfo(this.$store.state.user.id).then(res => {
       Object.assign(this.userInfo, res.data)
     }).catch(err => {
-      this.$emit('alertMsg', {
-        message: err,
-        type: 'error'
-      })
+      this.$emit('alertMsg', formatErrorMsg(err))
     })
   }
 
@@ -158,10 +156,7 @@ export default class UserInfoEditor extends Vue {
           type: 'success'
         })
       }).catch(err => {
-        this.$emit('alertMsg', {
-          message: err,
-          type: 'error'
-        })
+        this.$emit('alertMsg', formatErrorMsg(err))
       }).finally(() => {
         this.emailVerifyLoading = false
       })
@@ -169,7 +164,15 @@ export default class UserInfoEditor extends Vue {
   }
 
   onSubmit () {
-
+    modifyUserInfo(this.userInfo.id, { description: this.userInfo.description }).then(res => {
+      this.modifyMode = false
+      this.$emit('alertMsg', {
+        message: '修改用户信息成功',
+        type: 'success'
+      })
+    }).catch(err => {
+      this.$emit('alertMsg', formatErrorMsg(err))
+    })
   }
 
   onSubmitAvatar () {

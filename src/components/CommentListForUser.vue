@@ -1,6 +1,11 @@
 <template>
   <div>
     <v-list two-line flat>
+      <template v-if="!commentList.length">
+        <v-list-item>
+          <v-list-item-content>评论列表为空</v-list-item-content>
+        </v-list-item>
+      </template>
       <template v-for="(comment, index) in commentList">
         <v-list-item :key="comment.id" class="pa-0 comment-box">
           <template>

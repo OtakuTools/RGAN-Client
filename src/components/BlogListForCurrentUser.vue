@@ -1,14 +1,19 @@
 <template>
   <div>
     <v-list two-line flat>
+      <template v-if="!blogList.length">
+        <v-list-item>
+          <v-list-item-content>博客列表为空</v-list-item-content>
+        </v-list-item>
+      </template>
       <template v-for="(blog, index) in blogList">
-        <v-list-item :key="blog.id" class="pa-0 blog-box" @click="handleSelected(blog.id)" v-if="blogStatus === 0">
+        <v-list-item :key="blog.id" class="pa-0 blog-box">
           <template>
             <v-card
               class="grow"
               flat
             >
-              <v-card-title class="headline blog-box-title">
+              <v-card-title class="headline blog-box-title" @click="handleSelected(blog.id)">
                 {{blog.title}}
                 <v-subheader>
                   <v-icon class="mr-1 ml-1" v-if="blog.tags.length">mdi-tag-outline</v-icon>
@@ -63,6 +68,7 @@
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { getUserInfoByName } from '@/api/user'
 import { getSelfBlogs, deleteBlog } from '@/api/data'
+import { BLOG_STATUS } from '@/libs/constant'
 
 class UserInfo {
   username: string
@@ -137,7 +143,14 @@ export default class BlogListForCurrentUser extends Vue {
   }
 
   handleSelected (id : any) : void {
-    this.$router.push({ name: 'blog', query: { id } })
+    if(this.blogStatus === BLOG_STATUS.PUBLISHED) {
+      this.$router.push({ name: 'blog', query: { id } })
+    } else {
+      this.$emit('alertMsg', {
+        message: '该博客不允许查看',
+        type: 'error'
+      })
+    }
   }
 
   editBlog (id : any) : void {

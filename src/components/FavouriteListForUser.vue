@@ -1,6 +1,11 @@
 <template>
   <div>
     <v-list two-line flat>
+      <template v-if="!blogList.length">
+        <v-list-item>
+          <v-list-item-content>收藏列表为空</v-list-item-content>
+        </v-list-item>
+      </template>
       <template v-for="(blog, index) in blogList">
         <v-list-item :key="blog.id" class="pa-0 blog-box" @click="handleSelected(blog.id)">
           <template>

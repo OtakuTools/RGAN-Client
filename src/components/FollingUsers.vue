@@ -8,25 +8,32 @@
     </v-tab>
     <v-tab-item>
       <v-list two-line>
-        <v-list-item v-for="following in followings" :key="following.id">
-          <v-list-item-avatar>
-            <img
-              :src="following.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
-              alt="user"
-            >
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{following.username}}
-              <!-- <v-icon size="20" color="green lighten-1" style="margin-left: 10px">mdi-account-convert-outline</v-icon> -->
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon @click="unfollowUser(following.id)">
-              <v-icon color="red lighten-1">mdi-account-minus-outline</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
+        <template v-if="!followings.length">
+          <v-list-item>
+            <v-list-item-content>暂无关注用户</v-list-item-content>
+          </v-list-item>
+        </template>
+        <template v-for="following in followings">
+          <v-list-item :key="following.id">
+            <v-list-item-avatar>
+              <img
+                :src="following.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+                alt="user"
+              >
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{following.username}}
+                <!-- <v-icon size="20" color="green lighten-1" style="margin-left: 10px">mdi-account-convert-outline</v-icon> -->
+              </v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon @click="unfollowUser(following.id)">
+                <v-icon color="red lighten-1">mdi-account-minus-outline</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
       </v-list>
       <v-pagination
         v-if="followings.length"
@@ -40,22 +47,29 @@
     </v-tab-item>
     <v-tab-item>
       <v-list two-line>
-        <v-list-item v-for="follower in followers" :key="follower.id">
-          <v-list-item-avatar>
-            <img
-              :src="follower.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
-              alt="user"
-            >
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title v-text="follower.username"></v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon @click="followUser(follower.id)">
-              <v-icon color="primary lighten-1">mdi-account-plus-outline</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
+        <template v-if="!followers.length">
+          <v-list-item>
+            <v-list-item-content>暂无粉丝用户</v-list-item-content>
+          </v-list-item>
+        </template>
+        <template v-for="follower in followers">
+          <v-list-item :key="follower.id">
+            <v-list-item-avatar>
+              <img
+                :src="follower.profilePicturePath || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'"
+                alt="user"
+              >
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="follower.username"></v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon @click="followUser(follower.id)">
+                <v-icon color="primary lighten-1">mdi-account-plus-outline</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
       </v-list>
       <v-pagination
         v-if="followers.length"

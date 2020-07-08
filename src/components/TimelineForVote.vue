@@ -35,6 +35,11 @@
         </v-card>
       </v-timeline-item>
     </v-timeline>
+    <v-list v-else>
+      <v-list-item>
+        <v-list-item-content>暂无动态</v-list-item-content>
+      </v-list-item>
+    </v-list>
     <v-pagination
       v-if="infoList.length"
       v-model="currentPage"

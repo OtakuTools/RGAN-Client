@@ -3,7 +3,27 @@
     <MenuHeader @search="handleSearch" v-bind="$attrs" v-on="$listeners"/>
     <v-content>
       <v-container class="pb-0">
-        <v-list two-line flat v-if="blogList.length">
+        <v-list two-line flat>
+          <template v-if="loadingData">
+            <v-list-item v-for="n in 5" :key="n">
+              <template>
+                <v-skeleton-loader
+                  class="grow"
+                  type="article, list-item-avatar"
+                ></v-skeleton-loader>
+              </template>
+            </v-list-item>
+            <v-divider
+              v-if="n < 5"
+              :key="n"
+              class="mt-2"
+            ></v-divider>
+          </template>
+          <template v-if="!loadingData && !blogList.length">
+            <v-list-item>
+              <v-list-item-content>博客列表为空</v-list-item-content>
+            </v-list-item>
+          </template>
           <template v-for="(blog, index) in blogList">
             <v-list-item :key="blog.id" @click="handleSelected(blog.id)" class="pa-0 blog-box">
               <template>
@@ -61,24 +81,6 @@
           </template>
         </v-list>
 
-        <v-list v-else>
-          <template v-for="n in 5">
-            <v-list-item :key="n" >
-              <template>
-                <v-skeleton-loader
-                  class="grow"
-                  type="article, list-item-avatar"
-                ></v-skeleton-loader>
-              </template>
-            </v-list-item>
-            <v-divider
-              v-if="n < 5"
-              :key="n"
-              class="mt-2"
-            ></v-divider>
-          </template>
-        </v-list>
-
         <v-pagination
           v-if="blogList.length"
           color="#00a4ff"
@@ -132,7 +134,8 @@ export default {
       totalElements: 0,
       selected: null,
 
-      searchVal: ''
+      searchVal: '',
+      loadingData: false
     }
   },
   mounted () {
@@ -140,6 +143,7 @@ export default {
   },
   methods: {
     refreshBlogs (page = 0, pageSize = 10) {
+      this.loadingData = true
       if (this.searchVal === '') {
         getBlogList(page, pageSize).then(res => {
           this.updateData(res)
@@ -148,6 +152,8 @@ export default {
             message: '获取博客列表失败',
             type: 'error'
           })
+        }).finally(() => {
+          this.loadingData = false
         })
       } else {
         searchBlog(this.searchVal, page, pageSize).then(res => {
@@ -157,6 +163,8 @@ export default {
             message: '获取博客列表失败',
             type: 'error'
           })
+        }).finally(() => {
+          this.loadingData = false
         })
       }
     },

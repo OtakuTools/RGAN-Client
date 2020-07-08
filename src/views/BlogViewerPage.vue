@@ -4,7 +4,7 @@
     <v-content>
       <v-container style="max-width: 1400px;">
         <v-row>
-          <v-col :cols="indexInfo.length ? 10 : 12">
+          <v-col cols="10">
             <v-card flat>
               <v-card-title class="headline" v-text="blogInfo.title"></v-card-title>
               <v-card-subtitle class="pa-0">
@@ -24,7 +24,7 @@
                           readonly
                         >
                           <div class="mr-2" style="line-height: 24px;">标签</div>
-                          <v-chip v-for="tag in blogInfo.tags" :key="tag.id" x-small>
+                          <v-chip v-for="tag in blogInfo.tags" :key="tag.id" color="#757575" x-small label outlined>
                             {{ tag.title }}
                           </v-chip>
                         </v-chip-group>
@@ -38,28 +38,13 @@
               </v-card-subtitle>
               <v-card-text class="pt-0">
                 <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
-                <v-btn outlined color="orange" class="mr-2">
-                  <v-icon left>mdi-star-outline</v-icon>
-                  {{blogInfo.voteCount}}
-                </v-btn>
-                <v-btn :outlined="voteStatus != voteType.UP_VOTE" @click="voteBlog(1)" color="red" dark class="mr-2">
-                  <v-icon left>mdi-thumb-up-outline</v-icon>
-                  赞
-                </v-btn>
-                <v-btn :outlined="voteStatus != voteType.DOWN_VOTE" @click="voteBlog(-1)" dark color="blue" class="mr-2">
-                  <v-icon left>mdi-thumb-down-outline</v-icon>
-                  踩
-                </v-btn>
-                <v-btn :outlined="!favouriteStatus" @click="favouriteBlog" dark color="pink">
-                  <v-icon left>mdi-heart-outline</v-icon>
-                  收藏
-                </v-btn>
                 <v-divider class="my-5"/>
+                <p class="title">评论</p>
                 <BlogComment :blogId ="blogId" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="auto" v-if="indexInfo.length">
+          <v-col cols="2">
             <div class="v-navigation-drawer__content pin">
               <ul class="pt-8 mb-6 documentation-toc">
                 <li class="mb-4">
@@ -69,17 +54,46 @@
                     </div>
                   </h3>
                 </li>
-                <li
-                  class="documentation-toc__link mb-2"
-                  v-bind:class="{'primary--text': currentIndex === i, 'text--disabled': currentIndex !== i}"
-                  style="border-color: currentcolor"
-                  v-for="(item, i) in indexInfo"
-                  :key="i"
-                  @click="() => { currentIndex = i; manualSelected = true; $vuetify.goTo(`#${item.id}`)}"
-                >
-                  <a class="d-block font-weight-medium" v-bind:class="{'text--disabled': currentIndex !== i}">
-                    {{item.text}}
+                <li v-if="indexInfo.length === 0">
+                  <a class="d-block font-weight-medium text--disabled" >
+                    暂无目录信息
                   </a>
+                </li>
+                <div id="idx-list" class="pin-height">
+                  <li
+                    class="documentation-toc__link mb-2"
+                    v-bind:class="{'primary--text': currentIndex === i, 'text--disabled': currentIndex !== i}"
+                    style="border-color: currentcolor"
+                    v-for="(item, i) in indexInfo"
+                    :key="i"
+                    @click="() => { currentIndex = i; manualSelected = true; $vuetify.goTo(`#${item.id}`)}"
+                  >
+                    <a class="d-block font-weight-medium" v-bind:class="{'text--disabled': currentIndex !== i}">
+                      {{item.text}}
+                    </a>
+                  </li>
+                </div>
+              </ul>
+              <ul class="action-list mt-8">
+                <li>
+                  <v-badge color="red" bordered overlap :content="`${blogInfo.voteCount}`" offset-x="20" offset-y="20">
+                    <!-- <v-btn outlined icon color="orange" class="mr-2">
+                      <v-icon small>mdi-star-outline</v-icon>
+                    </v-btn> -->
+                    <v-btn icon fab @click="voteBlog(1)" color="red" dark>
+                      <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon>
+                    </v-btn>
+                  </v-badge>
+                </li>
+                <li>
+                  <v-btn icon fab @click="voteBlog(-1)" dark color="blue">
+                    <v-icon>{{ voteStatus !== voteType.DOWN_VOTE? 'mdi-thumb-down-outline' : 'mdi-thumb-down' }}</v-icon>
+                  </v-btn>
+                </li>
+                <li>
+                  <v-btn icon fab @click="favouriteBlog" dark color="pink">
+                    <v-icon>{{ favouriteStatus? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                  </v-btn>
                 </li>
               </ul>
             </div>
@@ -95,6 +109,35 @@
 .pin {
   position: fixed;
   max-width: 200px;
+}
+
+.pin-height {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.pin-height::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.pin-height::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.2);
+}
+
+.pin-height::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10;
+  background: rgba(0,0,0,0.1);
+}
+
+.action-list {
+  list-style-type: none;
+  padding: 0;
 }
 
 .index-on {
@@ -120,7 +163,7 @@
 import { getBlogById } from '@/api/data'
 import { getFavouriteStatus, addFavourite, deleteFavourite } from '@/api/favourite'
 import { voteBlog, getBlogStatus } from '@/api/vote'
-import { formatErrorMsg } from '@/libs/util'
+import { formatErrorMsg, setTitle } from '@/libs/util'
 import { BLOG_TYPE, BLOG_STATUS, VOTE_STATUS } from '@/libs/constant'
 const MarkdownViewer = () => import('@/components/MarkdownViewer')
 const BlogComment = () => import('@/components/BlogComment')
@@ -141,7 +184,8 @@ export default {
     return {
       blogId: 0,
       blogInfo: {
-        author: {}
+        author: {},
+        voteCount: 0
       },
       indexInfo: [],
       currentIndex: 0,
@@ -159,6 +203,7 @@ export default {
     this.blogId = parseInt(this.$route.query.id)
     getBlogById(this.$route.query.id).then(res => {
       this.blogInfo = res.data
+      setTitle(this.blogInfo.title)
       this.$nextTick(() => {
         this.generateIndex()
         this.currentIndex = 0
@@ -169,13 +214,11 @@ export default {
     this.getVoteStatus()
     this.getFavouriteStatus()
     window.addEventListener('scroll', this.updateCurrentIndex, false)
-    // window.addEventListener('scroll', this.debounce(this.updateIndexPosition, 50), false)
     window.addEventListener('mousewheel', this.handleMouseWheel, false)
   },
 
   beforeDestroy () {
     window.removeEventListener('scroll', this.updateCurrentIndex)
-    // window.removeEventListener('scroll', this.debounce(this.updateIndexPosition, 50))
     window.removeEventListener('mousewheel', this.handleMouseWheel)
   },
 
@@ -284,8 +327,13 @@ export default {
         if (i >= len) {
           this.currentIndex = len - 1
         }
+        this.$nextTick(() => {
+          let a_idxs = document.querySelector('.pin-height > li.primary--text')
+          a_idxs.scrollIntoView(false)
+        })
       }
     },
+
     updateIndexPosition (e) {
       let cp = document.getElementById('indexCard')
       cp = cp && cp.getBoundingClientRect().top <= 20
@@ -296,15 +344,7 @@ export default {
         this.fixedIndexCard = false
       }
     },
-    debounce(fn, delay) {
-      let timer = null //借助闭包
-      return function() {
-        if(timer){
-          clearTimeout(timer) 
-        }
-        timer = setTimeout(fn, delay) // 简化写法
-      }
-    },
+
     checkIfOutsideWindowTop(item) {
       return item && item.getBoundingClientRect().top < 0
     },

@@ -10,15 +10,17 @@
 
     <v-spacer></v-spacer>
 
-    <v-text-field
-      label="搜索..."
-      clearable
-      single-line
-      v-model="searchValue"
-      hide-details
-      append-icon="mdi-magnify"
-      @click:append="search"
-    ></v-text-field>
+    <v-col cols="12" sm="6" md="3">
+      <v-text-field
+        label="搜索..."
+        clearable
+        single-line
+        v-model="searchValue"
+        hide-details
+        append-icon="mdi-magnify"
+        @click:append="search"
+      ></v-text-field>
+    </v-col>
 
     <v-btn icon @click="openEditor">
       <v-icon>mdi-feather</v-icon>
@@ -46,7 +48,7 @@
       </template>
       <v-list>
         <v-list-item
-          @click="$router.push({name: 'userinfo', params: { module: 2, submodule: 1}})"
+          @click="openNotification({name: 'userinfo', params: { module: 2, submodule: 1}})"
         >
           <v-list-item-title>
             评论数
@@ -56,7 +58,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item
-          @click="$router.push({name: 'userinfo', params: { module: 2, submodule: 2}})"
+          @click="openNotification({name: 'userinfo', params: { module: 2, submodule: 2}})"
         >
           <v-list-item-title>
             点赞数
@@ -265,8 +267,15 @@ export default class MenuHeader extends Vue {
     this.evtSrc && this.evtSrc.close()
   }
 
-  notification () {
-    this.$router.push('/userinfo')
+  openNotification (path) {
+    if (this.userInfo.hasGetInfo && this.userInfo.token && this.userInfo.token !== '') {
+      this.$router.push(path)
+    } else {
+      this.$emit('alertMsg', {
+        message: '请先登录',
+        type: 'error'
+      })
+    }
   }
 
   login () {
@@ -274,7 +283,14 @@ export default class MenuHeader extends Vue {
   }
 
   openEditor () {
-    this.$router.push('/editor')
+    if (this.userInfo.hasGetInfo && this.userInfo.token && this.userInfo.token !== '') {
+      this.$router.push('/editor')
+    } else {
+      this.$emit('alertMsg', {
+        message: '请先登录',
+        type: 'error'
+      })
+    }
   }
 
   search () {
