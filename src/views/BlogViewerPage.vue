@@ -38,8 +38,32 @@
               </v-card-subtitle>
               <v-card-text class="pt-0">
                 <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
+                <div id="userActionPart"></div>
+                <v-bottom-navigation class="userAction-normal userAction-fixed" >
+                  <v-btn icon fab color="rgba(0,0,0,.54)">
+                    <v-badge color="red" overlap :content="`${blogInfo.voteCount}`" offset-x="5" offset-y="5">
+                      <!-- <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon> -->
+                      <v-icon color="orange">mdi-star-outline</v-icon>
+                    </v-badge>
+                  </v-btn>
+                  <v-btn icon fab @click="voteBlog(1)" :color="voteStatus === voteType.UP_VOTE? 'red' : 'rgba(0,0,0,.54)'">
+                    <!-- <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon> -->
+                    <v-icon>mdi-thumb-up-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon fab @click="voteBlog(-1)" :color="voteStatus === voteType.DOWN_VOTE? 'blue' : 'rgba(0,0,0,.54)'" >
+                    <!-- <v-icon>{{ voteStatus !== voteType.DOWN_VOTE? 'mdi-thumb-down-outline' : 'mdi-thumb-down' }}</v-icon> -->
+                    <v-icon>mdi-thumb-down-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon fab @click="favouriteBlog" :color="favouriteStatus? 'pink' : 'rgba(0,0,0,.54)'">
+                    <!-- <v-icon>{{ favouriteStatus? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon> -->
+                    <v-icon>mdi-heart-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon fab @click="scrollToComment" color="rgba(0,0,0,.54)">
+                    <v-icon color="light-blue">mdi-comment-text-outline</v-icon>
+                  </v-btn>
+                </v-bottom-navigation>
                 <v-divider class="my-5"/>
-                <p class="title">评论</p>
+                <p class="title" id="commentPart">评论</p>
                 <BlogComment :blogId ="blogId" v-bind="$attrs" v-on="$listeners"/>
               </v-card-text>
             </v-card>
@@ -73,28 +97,6 @@
                     </a>
                   </li>
                 </div>
-              </ul>
-              <ul class="action-list mt-8">
-                <li>
-                  <v-badge color="red" bordered overlap :content="`${blogInfo.voteCount}`" offset-x="20" offset-y="20">
-                    <!-- <v-btn outlined icon color="orange" class="mr-2">
-                      <v-icon small>mdi-star-outline</v-icon>
-                    </v-btn> -->
-                    <v-btn icon fab @click="voteBlog(1)" color="red" dark>
-                      <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon>
-                    </v-btn>
-                  </v-badge>
-                </li>
-                <li>
-                  <v-btn icon fab @click="voteBlog(-1)" dark color="blue">
-                    <v-icon>{{ voteStatus !== voteType.DOWN_VOTE? 'mdi-thumb-down-outline' : 'mdi-thumb-down' }}</v-icon>
-                  </v-btn>
-                </li>
-                <li>
-                  <v-btn icon fab @click="favouriteBlog" dark color="pink">
-                    <v-icon>{{ favouriteStatus? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-                  </v-btn>
-                </li>
               </ul>
             </div>
           </v-col>
@@ -155,6 +157,18 @@
 .documentation-toc li {
   border-left: 2px solid transparent;
   padding: 0 24px 0 8px;
+}
+
+.d-block {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.userAction-normal {
+  box-shadow: unset !important;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0px;
 }
 </style>
 
@@ -296,6 +310,10 @@ export default {
       }
     },
 
+    scrollToComment() {
+      document.getElementById('commentPart').scrollIntoView()
+    },
+
     generateIndex() {
       let idxs = document.querySelectorAll('.preview_block > h1, .preview_block > h2, .preview_block > h3, .preview_block > h4, .preview_block > h5， .preview_block > h6') || []
       let idxTree = []
@@ -348,6 +366,7 @@ export default {
     checkIfOutsideWindowTop(item) {
       return item && item.getBoundingClientRect().top < 0
     },
+
     checkIfOutsideWindowBottom(item) {
       return item && item.getBoundingClientRect().top > (document.documentElement.clientHeight || document.body.clientHeight)
     }

@@ -10,7 +10,7 @@
         direction="top"
         open-on-hover="true"
         transition="slide-y-reverse-transition"
-        style="position: fixed; right: 20px; bottom: 50px;"
+        style="position: fixed; right: 20px; bottom: 65px;"
       >
         <template v-slot:activator>
           <v-btn

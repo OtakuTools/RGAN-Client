@@ -254,7 +254,7 @@ export class MarkdownRender {
     for (let i = 0; i < blocks.length; ) {
       let block : any = blocks[i]
       if (block.type === 'image') {
-        renderArr.push(`<${block.tag} src="${block.attrs[0][1]}" alt="${blocks[i+1].content}" />`)
+        renderArr.push(`<${block.tag} src="${block.attrs[0][1]}" alt="${block.content}" />`)
         i += 2
         continue
       } else if (block.type === 'text') {
@@ -294,47 +294,6 @@ export class MarkdownRender {
       updateTag: newTagInfo
     }
   }
-
-  // _renderInlineContent (text, parents) {
-  //   let listTagPos : number = parents.findIndex((parent) => parent.tag === 'li')
-  //   let newTagInfo : Object = {}
-  //   let buildText : string = text.replace(
-  //     /\$\$([\s\S]+?)\$\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: true }) // 段落数学公式
-  //   ).replace(
-  //     /\$([^\$]+?)\$/g, ($1, $2) => this.katexRender.renderToString($2, { displayMode: false }) // 行内数学公式
-  //   ).replace(
-  //     /\!\[([^\]]*?)\]\(([^\)]*?)\)/g, ($1, $2, $3) => `<img src="${$3}" alt="${$2}"></img>` // 图片
-  //   ).replace(
-  //     listTagPos !== -1? /^\[(x|\s)\](?=\s)/ig : '', ($1, $2) => {
-  //       if ( listTagPos !== -1) { 
-  //         newTagInfo = { ...parents[listTagPos], cls: 'checkbox-list' }
-  //         return `<input type="checkbox" ${$2.indexOf('x') !== -1 || $2.indexOf('X') !== -1? 'checked' : ''}></input>`
-  //       } else { 
-  //         return '' 
-  //       } 
-  //     } // checkbox
-  //   ).replace(
-  //     /\[([^\]]*?)\]\(([\s\S]*?)\)/g, ($1, $2, $3) => `<a href="${$3}" style="text-decoration:none">${$2}</a>` // 链接
-  //   ).replace(
-  //     /\*\*(.+?)\*\*/g, ($1, $2) => `<strong>${$2}</strong>` // 粗体
-  //   ).replace(
-  //     /\*([^\*]+?)\*/g, ($1, $2) => `<i>${$2}</i>` // 斜体
-  //   ).replace(
-  //     /\_\_(.+?)\_\_/g, ($1, $2) => `<u>${$2}</u>` // 下划线
-  //   ).replace(
-  //     /\~\~(.+?)\~\~/g, ($1, $2) => `<s>${$2}</s>` // 删除线
-  //   ).replace(
-  //     /\~([^\~]+?)\~/g, ($1, $2) => `<sub>${$2}</sub>` // 下标
-  //   ).replace(
-  //     /\^(.+?)\^/g, ($1, $2) => `<sup>${$2}</sup>` // 上标
-  //   ).replace(
-  //     /\`(.*?)\`/g, ($1, $2) => `<code>${$2}</code>` // 引用
-  //   )
-  //   return {
-  //     text: buildText,
-  //     updateTag: newTagInfo
-  //   }
-  // }
 
   _renderNode(node) {
     let cnode = node.children[0]
