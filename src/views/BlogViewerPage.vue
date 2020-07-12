@@ -39,7 +39,7 @@
               <v-card-text class="pt-0">
                 <MarkdownViewer :inputText="blogInfo.content" v-bind="$attrs" v-on="$listeners" />
                 <div id="userActionPart"></div>
-                <v-bottom-navigation class="userAction-normal userAction-fixed" >
+                <v-bottom-navigation class="userAction-normal" >
                   <v-btn icon fab color="rgba(0,0,0,.54)">
                     <v-badge color="red" overlap :content="`${blogInfo.voteCount}`" offset-x="5" offset-y="5">
                       <!-- <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon> -->

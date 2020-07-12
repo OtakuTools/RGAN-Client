@@ -133,7 +133,7 @@ export default class MenuHeader extends Vue {
   mounted () {
     this.menuOptions = [
       {
-        title: '个人信息',
+        title: '个人中心',
         handler: () => {
           this.$router.push('/userinfo')
         }
