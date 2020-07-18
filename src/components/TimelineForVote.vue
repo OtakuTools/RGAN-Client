@@ -25,7 +25,7 @@
             <span style="font-size: 12pt; margin-left: 5px;">{{`点赞了我的${info.voteType === 'blog'? '博客':'评论'}`}}</span>
             <v-spacer></v-spacer>
             <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.createdTime.replace('T', ' ')}}</span>
-            <v-btn icon>
+            <v-btn @click="deleteInfo(info.id)" icon>
               <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
             </v-btn>
           </v-card-title>
@@ -54,7 +54,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getTimelineForVote, updateReadStatus } from '@/api/timeline'
+import { getTimelineForVote, updateReadStatus, deleteTimelineMsg } from '@/api/timeline'
+import { formatErrorMsg } from '@/libs/util'
 
 @Component
 export default class TimelineForVote extends Vue {
@@ -66,6 +67,18 @@ export default class TimelineForVote extends Vue {
 
   mounted () {
     this.refreshInfo()
+  }
+
+  deleteInfo (id: number) {
+    deleteTimelineMsg(id).then(res => {
+      this.$emit('alertMsg', {
+        message: '删除动态成功',
+        type: 'success'
+      })
+      this.refreshInfo()
+    }).catch(err => {
+      formatErrorMsg(err)
+    })
   }
 
   refreshInfo (page: number = 0, size: number = 0) {

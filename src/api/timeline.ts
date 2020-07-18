@@ -41,6 +41,13 @@ export const getTimelineNews = (page: number = 0, size: number = 10) => {
   })
 }
 
+export const deleteTimelineMsg = (id: number) => {
+  return axios.request({
+    url: `/api/timeline/message/${id}`,
+    method: 'delete'
+  })
+}
+
 export const updateReadStatus = (messageItemIds: Array<number>) => {
   return axios.request({
     url: `/api/timeline/read`,

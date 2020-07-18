@@ -42,21 +42,17 @@
                 <v-bottom-navigation class="userAction-normal" >
                   <v-btn icon fab color="rgba(0,0,0,.54)">
                     <v-badge color="red" overlap :content="`${blogInfo.voteCount}`" offset-x="5" offset-y="5">
-                      <!-- <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon> -->
                       <v-icon color="orange">mdi-star-outline</v-icon>
                     </v-badge>
                   </v-btn>
-                  <v-btn icon fab @click="voteBlog(1)" :color="voteStatus === voteType.UP_VOTE? 'red' : 'rgba(0,0,0,.54)'">
-                    <!-- <v-icon>{{ voteStatus !== voteType.UP_VOTE? 'mdi-thumb-up-outline' : 'mdi-thumb-up' }}</v-icon> -->
-                    <v-icon>mdi-thumb-up-outline</v-icon>
+                  <v-btn icon fab @click="voteBlog(1)">
+                    <v-icon :color="voteStatus === voteType.UP_VOTE? 'red' : 'rgba(0,0,0,.54)'">mdi-thumb-up-outline</v-icon>
                   </v-btn>
-                  <v-btn icon fab @click="voteBlog(-1)" :color="voteStatus === voteType.DOWN_VOTE? 'blue' : 'rgba(0,0,0,.54)'" >
-                    <!-- <v-icon>{{ voteStatus !== voteType.DOWN_VOTE? 'mdi-thumb-down-outline' : 'mdi-thumb-down' }}</v-icon> -->
-                    <v-icon>mdi-thumb-down-outline</v-icon>
+                  <v-btn icon fab @click="voteBlog(-1)">
+                    <v-icon :color="voteStatus === voteType.DOWN_VOTE? 'blue' : 'rgba(0,0,0,.54)'">mdi-thumb-down-outline</v-icon>
                   </v-btn>
-                  <v-btn icon fab @click="favouriteBlog" :color="favouriteStatus? 'pink' : 'rgba(0,0,0,.54)'">
-                    <!-- <v-icon>{{ favouriteStatus? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon> -->
-                    <v-icon>mdi-heart-outline</v-icon>
+                  <v-btn icon fab @click="favouriteBlog">
+                    <v-icon :color="favouriteStatus? 'pink' : 'rgba(0,0,0,.54)'">mdi-heart-outline</v-icon>
                   </v-btn>
                   <v-btn icon fab @click="scrollToComment" color="rgba(0,0,0,.54)">
                     <v-icon color="light-blue">mdi-comment-text-outline</v-icon>

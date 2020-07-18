@@ -25,7 +25,7 @@
             <span style="font-size: 12pt; margin-left: 5px;">发表了评论</span>
             <v-spacer></v-spacer>
             <span class="text--secondary" style="margin-right: 10px; font-size: 11pt;">{{info.modifiedTime.replace('T', ' ')}}</span>
-            <v-btn icon>
+            <v-btn @click="deleteInfo(info.id)" icon>
               <v-icon color="red lighten-1">mdi-trash-can-outline</v-icon>
             </v-btn>
           </v-card-title>
@@ -55,7 +55,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
-import { getTimelineForComment, updateReadStatus, getTimelineNews } from '@/api/timeline'
+import { getTimelineForComment, updateReadStatus, deleteTimelineMsg } from '@/api/timeline'
+import { formatErrorMsg } from '@/libs/util'
 
 @Component
 export default class TimelineForComment extends Vue {
@@ -67,6 +68,18 @@ export default class TimelineForComment extends Vue {
 
   mounted () {
     this.refreshInfo()
+  }
+
+  deleteInfo (id: number) {
+    deleteTimelineMsg(id).then(res => {
+      this.$emit('alertMsg', {
+        message: '删除动态成功',
+        type: 'success'
+      })
+      this.refreshInfo()
+    }).catch(err => {
+      formatErrorMsg(err)
+    })
   }
 
   refreshInfo (page: number = 0, size: number = 0) {
